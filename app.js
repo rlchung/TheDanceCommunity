@@ -15,6 +15,10 @@ app.get("/local", function(req,res){
     res.render("local");
 });
 
+app.get("/los-angeles", function(req,res){
+    res.render("los-angeles");
+})
+
 app.post("/local", function(req,res){
     var location = req.body.location;
     res.send("address is="+ location);

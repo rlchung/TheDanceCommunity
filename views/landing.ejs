@@ -29,5 +29,15 @@
                 <button type="submit">Click</button>
             </div>
         </form>
+        <!--API script to be loaded first-->
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2h-DBCBSUmKcgfpr2PPX_9vZTugX_iuU&libraries=places"></script>
+        <script>
+            var input = document.getElementById("location");
+            var options = {
+                componentRestrictions: {country: 'US'}  
+            };
+            
+            var autocomplete = new google.maps.places.Autocomplete(input, options);
+        </script>
     </body>
 </html>

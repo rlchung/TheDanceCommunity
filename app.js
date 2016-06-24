@@ -20,9 +20,11 @@ app.get("/los-angeles", function(req,res){
 });
 
 app.get("/cities", function(req,res){
-    var location = req.params('location'); 
+    var location = req.query.location; 
     res.send("address is="+ location);
 });
+
+
 
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("server is running");

@@ -17,12 +17,12 @@ app.get("/local", function(req,res){
 
 app.get("/los-angeles", function(req,res){
     res.render("los-angeles");
-})
+});
 
-app.post("/local", function(req,res){
-    var location = req.body.location;
+app.get("/cities", function(req,res){
+    var location = req.params('location'); 
     res.send("address is="+ location);
-})
+});
 
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("server is running");

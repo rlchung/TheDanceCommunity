@@ -21,9 +21,9 @@ app.get("/los-angeles", function(req,res){
 
 app.get("/cities", function(req,res){
     var location = req.query.location; 
+    // use res.redirect to process location input and redirect to page
     res.send("address is="+ location);
 });
-
 
 
 app.listen(process.env.PORT, process.env.IP, function(){

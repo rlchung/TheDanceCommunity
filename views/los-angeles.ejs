@@ -3,6 +3,9 @@
         <title>Dance Community Events near Los Angeles | TheDanceCommunity</title>
     </head>
     <body>
+        <!--Include jQuery for page dump-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+        <!--Facebook API integration: include in partials-->
         <script>
             window.fbAsyncInit = function() {
                 FB.init({
@@ -19,13 +22,20 @@
                 js.src = "//connect.facebook.net/en_US/sdk.js";
                 fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
+            
         </script>
         <h1>Los Angeles Page</h1>
-        <div
-            class="fb-like"
-            data-share="true"
-            data-width="450"
-            data-show-faces="true">
+        <!--Successful object dump from Facebook Graph API-->
+        <div>
+            <script type="text/javascript">
+            $(function(){
+                $.get('https://graph.facebook.com/545398148962340?fields=events.limit(1)&access_token=263412864027390|2a3058e3435b71c77c50bec7302dcff8', 
+                    function(data, textStatus) {
+                        console.log(data);    
+                    });
+            });
+            
+            </script>
         </div>
     </body>
 </html>

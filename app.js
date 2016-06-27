@@ -1,6 +1,11 @@
 var express     = require('express'),
+    app         = express(),
     bodyParser  = require('body-parser'),
-    app         = express();
+    mongoose    = require('mongoose'),
+    Event       = require('./models/event'),
+    Team        = require('./models/team');
+    // Have yet to implement
+    // User        = require('./models/user'); 
 
 // To parse form data
 app.use(bodyParser.urlencoded({extended:true}));

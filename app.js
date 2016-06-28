@@ -1,9 +1,10 @@
-var express     = require('express'),
+var express     = require("express"),
     app         = express(),
-    bodyParser  = require('body-parser'),
-    mongoose    = require('mongoose'),
-    Event       = require('./models/event'),
-    Team        = require('./models/team');
+    bodyParser  = require("body-parser"),
+    mongoose    = require("mongoose"),
+    Event       = require("./models/event"),
+    Team        = require("./models/team"),
+    teamTest   = require("./team_methods");
     // Have yet to implement
     // User        = require('./models/user'); 
 
@@ -11,6 +12,8 @@ var express     = require('express'),
 app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
+
+teamTest();
 
 app.get("/", function(req,res){
     res.render("landing"); 

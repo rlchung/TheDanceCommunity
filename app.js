@@ -1,19 +1,20 @@
-var express     = require("express"),
-    app         = express(),
-    bodyParser  = require("body-parser"),
-    mongoose    = require("mongoose"),
-    Event       = require("./models/event"),
-    Team        = require("./models/team"),
-    teamTest   = require("./team_methods");
+var express         = require("express"),
+    app             = express(),
+    bodyParser      = require("body-parser"),
+    mongoose        = require("mongoose"),
+    Event           = require("./models/event"),
+    Team            = require("./models/team"),
+    team_methods    = require("./team_methods");
     // Have yet to implement
     // User        = require('./models/user'); 
 
+mongoose.connect("mongodb://localhost/thedancecommunity");
 // To parse form data
 app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
 
-teamTest();
+team_methods.initialize_team();
 
 app.get("/", function(req,res){
     res.render("landing"); 

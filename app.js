@@ -8,14 +8,14 @@ var express         = require("express"),
     // Have yet to implement
     // User        = require('./models/user'); 
 
-mongoose.connect("mongodb://localhost/thedancecommunity");
+// mongoose.connect("mongodb://localhost/thedancecommunity");
 // To parse form data
 app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
 
-// team_methods.tester();
-team_methods.initialize_team("acahiphop");
+team_methods.tester();
+// team_methods.initialize_team("acahiphop");
 
 app.get("/", function(req,res){
     res.render("landing"); 

@@ -63,16 +63,14 @@ function tester(page_id){
                             console.log(property + ": " + newTeam[property] + "\n");
                         }
                     }
-                } 
-                else {
+                } else {
                     console.log("Unsuccessful Graph API call to photos");
                     console.log("Error: " + error + "\n" + 
                                 "Response: " + response + "\n" +
                                 "Response Status Code: " + response.statusCode);
                 }
             });
-        }
-        else {
+        } else {
             console.log("Unsuccessful Graph API call");
             console.log("Error: " + error + "\n" + 
                         "Response: " + response + "\n" +
@@ -126,16 +124,14 @@ function initialize_team(page_id){
                             console.log("Successfully created " + name + " team object");
                         }
                     });
-                } 
-                else {
+                } else {
                     console.log("Unsuccessful Graph API call to photos");
                     console.log("Error: " + error + "\n" + 
                                 "Response: " + response + "\n" +
                                 "Response Status Code: " + response.statusCode);
                 }
             });
-        }
-        else {
+        } else {
             console.log("Unsuccessful Graph API call");
             console.log("Error: " + error + "\n" + 
                         "Response: " + response + "\n" +
@@ -144,7 +140,19 @@ function initialize_team(page_id){
     });
 };
 
+// Removes all teams from database
+function delete_teams(){
+    Team.remove({},function(error){
+        if(error){
+            console.log(error);
+        } else {
+            console.log("Removed all Team Objects from Database");
+        }
+    });
+};
+
 module.exports = {
     tester : tester,
-    initialize_team : initialize_team
+    initialize_team : initialize_team,
+    delete_teams : delete_teams
 };

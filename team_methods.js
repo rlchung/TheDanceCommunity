@@ -9,7 +9,7 @@ var secret = "2a3058e3435b71c77c50bec7302dcff8",
     token = app_id + '|' + secret;
 
 function tester(page_id){ 
-    request("https://graph.facebook.com/" + page_id + "?fields=name,id,emails,link,bio,description,about,personal_info,general_info,awards&access_token=" + token, function (error, response, body) {
+    request("https://graph.facebook.com/" + page_id + "?fields=name,id,cover,emails,link,bio,description,about,personal_info,general_info,awards&access_token=" + token, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var info_json = JSON.parse(body);
             request("https://graph.facebook.com/" + page_id + "/photos?fields=images&access_token="+ token, function (error, response, body){
@@ -18,6 +18,7 @@ function tester(page_id){
                     
                     var name                = info_json["name"],
                         id                  = info_json["id"],
+                        cover_pic           = info_json["cover"]["source"],
                         email               = info_json["emails"],
                         fb_link             = info_json["link"],
                         bio                 = info_json["bio"],
@@ -26,11 +27,12 @@ function tester(page_id){
                         personal_info       = info_json["personal_info"],
                         general_info        = info_json["general_info"],
                         awards              = info_json["awards"],
-                        image               = images_json["data"][0]["images"][0]["source"];
+                        profile_pic         = images_json["data"][0]["images"][0]["source"];
                     
                     var newTeam = {
                         name                : name,
                         id                  : id,
+                        cover_pic           : cover_pic,
                         email               : email,
                         fb_link             : fb_link,
                         bio                 : bio,
@@ -39,9 +41,8 @@ function tester(page_id){
                         personal_info       : personal_info,
                         general_info        : general_info,
                         awards              : awards,
-                        image               : image
+                        profile_pic         : profile_pic
                     }
-                    
                     
                     for (var property in newTeam) {
                         if (newTeam.hasOwnProperty(property)){
@@ -68,7 +69,7 @@ function tester(page_id){
 // To be implemented: event population function
 // page_id : the page_id of the team to be initialized
 function initialize_team(page_id){
-    request("https://graph.facebook.com/" + page_id + "?fields=name,id,emails,link,bio,description,about,personal_info,general_info,awards&access_token=" + token, function (error, response, body) {
+    request("https://graph.facebook.com/" + page_id + "?fields=name,id,cover,emails,link,bio,description,about,personal_info,general_info,awards&access_token=" + token, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var info_json = JSON.parse(body);
             request("https://graph.facebook.com/" + page_id + "/photos?fields=images&access_token="+ token, function (error, response, body){
@@ -77,6 +78,7 @@ function initialize_team(page_id){
                     
                     var name                = info_json["name"],
                         id                  = info_json["id"],
+                        cover_pic           = info_json["cover"]["source"],
                         email               = info_json["emails"],
                         fb_link             = info_json["link"],
                         bio                 = info_json["bio"],
@@ -85,11 +87,12 @@ function initialize_team(page_id){
                         personal_info       = info_json["personal_info"],
                         general_info        = info_json["general_info"],
                         awards              = info_json["awards"],
-                        image               = images_json["data"][0]["images"][0]["source"];
+                        profile_pic         = images_json["data"][0]["images"][0]["source"];
                     
                     var newTeam = {
                         name                : name,
                         id                  : id,
+                        cover_pic           : cover_pic,
                         email               : email,
                         fb_link             : fb_link,
                         bio                 : bio,
@@ -98,7 +101,7 @@ function initialize_team(page_id){
                         personal_info       : personal_info,
                         general_info        : general_info,
                         awards              : awards,
-                        image               : image
+                        profile_pic         : profile_pic
                     }
                     
                     Team.create(newTeam, function(error, newlyCreated){
@@ -125,7 +128,7 @@ function initialize_team(page_id){
     });
 };
 
-// Removes all teams from database
+// Deletes all teams from database
 function delete_all_teams(){
     Team.remove({},function(error){
         if(error){
@@ -136,6 +139,7 @@ function delete_all_teams(){
     });
 };
 
+// Deletes a given team from the database
 function delete_team(page_id){
     Team.remove({id:page_id},function(error){
         if(error){

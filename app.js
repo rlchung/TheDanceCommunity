@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
 
 // team_methods.delete_all_teams();
-// team_methods.tester("samahangmodern");
+// team_methods.tester(team_dir.samahang_modern);
 // team_methods.initialize_team("acahiphop");
 // team_methods.delete_team(team_dir.aca);
 

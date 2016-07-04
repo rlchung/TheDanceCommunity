@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
 
-team_methods.tester();
+team_methods.tester("samahangmodern");
 // team_methods.initialize_team("acahiphop");
 
 app.get("/", function(req,res){

@@ -8,21 +8,6 @@ var secret = "2a3058e3435b71c77c50bec7302dcff8",
     app_id = "263412864027390",
     token = app_id + '|' + secret;
 
-// Contains key-value pairs of given teams and their page_id
-var team_dir = {
-    aca : "acahiphop",
-    chaotic_3: "chaoticthree",
-    foundations: "FoundationsChoreo",
-    grv : "GRVdnc",
-    hall_of_fame: "349717898382614",
-    maker_empire: "MakerEmpire",
-    the_mob: "MobbinSince2013",
-    nsu_modern: "1420546741605580",
-    samahang_modern : "samahangmodern",
-    vsu_modern : "vsumodern"
-    
-}
-
 function tester(page_id){ 
     request("https://graph.facebook.com/" + page_id + "?fields=name,id,emails,link,bio,description,about,personal_info,general_info,awards&access_token=" + token, function (error, response, body) {
         if (!error && response.statusCode == 200) {
@@ -141,7 +126,7 @@ function initialize_team(page_id){
 };
 
 // Removes all teams from database
-function delete_teams(){
+function delete_all_teams(){
     Team.remove({},function(error){
         if(error){
             console.log(error);
@@ -151,8 +136,19 @@ function delete_teams(){
     });
 };
 
+function delete_team(page_id){
+    Team.remove({id:page_id},function(error){
+        if(error){
+            console.log(error);
+        } else {
+            console.log("Removed " + page_id + " successfully");
+        }
+    });
+};
+
 module.exports = {
     tester : tester,
     initialize_team : initialize_team,
-    delete_teams : delete_teams
+    delete_all_teams : delete_all_teams,
+    delete_team : delete_team
 };

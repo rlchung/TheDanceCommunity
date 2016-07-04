@@ -10,7 +10,7 @@ var teamSchema = new mongoose.Schema({
     fb_link:            String,
 
     bio:                String,
-    description:        String,
+    long_description:   String,
     short_description:  String,
     personal_info:      String,
     general_info:       String,

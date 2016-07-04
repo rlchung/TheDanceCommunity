@@ -22,7 +22,7 @@ function tester(page_id){
                         email               = info_json["emails"],
                         fb_link             = info_json["link"],
                         bio                 = info_json["bio"],
-                        description         = info_json["description"],
+                        long_description    = info_json["description"],
                         short_description   = info_json["about"],
                         personal_info       = info_json["personal_info"],
                         general_info        = info_json["general_info"],
@@ -36,7 +36,7 @@ function tester(page_id){
                         email               : email,
                         fb_link             : fb_link,
                         bio                 : bio,
-                        description         : description,
+                        long_description    : long_description,
                         short_description   : short_description,
                         personal_info       : personal_info,
                         general_info        : general_info,
@@ -82,7 +82,7 @@ function initialize_team(page_id){
                         email               = info_json["emails"],
                         fb_link             = info_json["link"],
                         bio                 = info_json["bio"],
-                        description         = info_json["description"],
+                        long_description    = info_json["description"],
                         short_description   = info_json["about"],
                         personal_info       = info_json["personal_info"],
                         general_info        = info_json["general_info"],
@@ -96,13 +96,13 @@ function initialize_team(page_id){
                         email               : email,
                         fb_link             : fb_link,
                         bio                 : bio,
-                        description         : description,
+                        long_description    : long_description,
                         short_description   : short_description,
                         personal_info       : personal_info,
                         general_info        : general_info,
                         awards              : awards,
                         profile_pic         : profile_pic
-                    }
+                    };
                     
                     Team.create(newTeam, function(error, newlyCreated){
                         if(error){

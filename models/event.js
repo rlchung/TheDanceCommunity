@@ -3,7 +3,7 @@ var mongoose = require("mongoose");
 // SCHEMA SETUP FOR EVENT OBJECT
 var eventSchema = new mongoose.Schema({
     name:               String,
-    id:                 String,
+    fb_id:              String,
     image:              String,
     cover_photo:        String,
     host_name:          String,

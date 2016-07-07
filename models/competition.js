@@ -2,7 +2,7 @@ var mongoose    = require("mongoose");
 
 var competitionSchema = new mongoose.Schema({
     name:               String,
-    id:                 String,
+    fb_id:                 String,
     profile_pic:        String,
     cover_pic:          String,
     email:              String,

@@ -3,7 +3,7 @@ var mongoose = require("mongoose");
 // SCHEMA SETUP FOR DANCE TEAM OBJECT
 var teamSchema = new mongoose.Schema({
     name:               String,
-    id:                 String,
+    fb_id:                 String,
     profile_pic:        String,
     cover_pic:          String,
     email:              String,

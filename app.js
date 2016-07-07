@@ -39,9 +39,11 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
 
 // team_methods.delete_all_teams();
-team_methods.tester(team_dir.foundations);
-// team_methods.initialize_team("acahiphop");
+// team_methods.tester(team_dir.aca);
+// team_methods.initialize_team(team_dir.aca);
+// team_methods.initialize_team(team_dir.samahang_modern);
 // team_methods.delete_team(team_dir.aca);
+// team_methods.delete_all_teams();
 
 app.get("/", function(req,res){
     res.render("landing"); 

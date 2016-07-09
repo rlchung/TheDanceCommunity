@@ -2,7 +2,7 @@ var mongoose    = require("mongoose");
 
 var competitionSchema = new mongoose.Schema({
     name:               String,
-    fb_id:                 String,
+    fb_id:              String,
     profile_pic:        String,
     cover_pic:          String,
     email:              String,
@@ -13,7 +13,14 @@ var competitionSchema = new mongoose.Schema({
     long_description:   String,
     personal_info:      String,
     awards:             String,
-    website:            String
+    website:            String,
+    
+    events: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Event"
+        }
+    ]
 });
 
 module.exports = mongoose.model("Competition",competitionSchema);

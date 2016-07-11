@@ -3,33 +3,33 @@ var mongoose = require("mongoose");
 // SCHEMA SETUP FOR EVENT OBJECT
 var eventSchema = new mongoose.Schema({
     name:               String,
-    fb_id:              String,
-    image:              String,
-    cover_photo:        String,
-    host_name:          String,
+    fbId:               String,
+    cover:              String,
+    hostName:           String,
     hostId:             String,
     // general event information
     description:        String,
     place:              String,
-    start_time:         String,
-    end_time:           String,
+    startTime:          String,
+    endTime:            String,
     //To categorize which section to display it in (Audition, Workshop, General)
     category:           String,
     // Attendance information
-    attending_count:    Number,
-    declined_count:     Number,
-    interested_count:   Number,
-    maybe_count:        Number,
+    attendingCount:     Number,
+    declinedCount:      Number,
+    interestedCount:    Number,
+    maybeCount:         Number,
     // Posted Media
-    posts:              [
+    posts: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Post"
         }
-    ]
+    ],
+    
     photos:             [String],
     // Updating purposes
-    updated_time:       Date,
+    updatedTime:        Date,
 });
 
 module.exports = mongoose.model("Event", eventSchema);

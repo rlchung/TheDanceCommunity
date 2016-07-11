@@ -4,46 +4,47 @@ var express         = require("express"),
     mongoose        = require("mongoose"),
     Event           = require("./models/event"),
     Team            = require("./models/team"),
-    team_methods    = require("./team_methods");
+    teamMethods     = require("./teamMethods");
     // Have yet to implement
     // User        = require('./models/user'); 
     
 // Contains key-value pairs of given teams and their page_id
-var team_dir = {
+var teamDir = {
     aca: "75035611936",
-    chaotic_3: "124327507658376",
+    chaotic3: "124327507658376",
     foundations: "277137469077279",
     grv: "141226349256771",
-    hall_of_fame: "349717898382614",
-    maker_empire: "180722678616577",
-    the_mob: "435120296549776",
-    nsu_modern: "1420546741605580",
-    samahang_modern: "545398148962340",
-    vsu_modern: "578630488962319"
+    hallOfFame: "349717898382614",
+    makerEmpire: "180722678616577",
+    theMob: "435120296549776",
+    nsuModern: "1420546741605580",
+    samahangModern: "545398148962340",
+    vsuModern: "578630488962319"
 };
 
-var comp_dir = {
-    body_rock: 199437836735186,
+var compDir = {
+    bodyRock: 199437836735186,
     bridge: 361879750609377,
     fusion: 184822451538010,
-    maxt_out: 237658223056509,
-    prelude_norcal: 537913236272817,
-    ultimate_brawl: 381738788513134,
+    maxtOut: 237658223056509,
+    preludeNorcal: 537913236272817,
+    ultimateBrawl: 381738788513134,
     vibe: 122754417784582
 };
 
-mongoose.connect("mongodb://localhost/thedancecommunity");
+// mongoose.connect("mongodb://localhost/thedancecommunity");
 // To parse form data
 app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
 
-// team_methods.delete_all_teams();
-// team_methods.tester(team_dir.aca);
-// team_methods.initialize_team(team_dir.aca);
-// team_methods.initialize_team(team_dir.samahang_modern);
-// team_methods.delete_team(team_dir.aca);
-// team_methods.delete_all_teams();
+// teamMethods.createEvent(590123727856664,function(newEvent){
+//     console.log(newEvent);
+// });
+// teamMethods.initializeTeam(teamDir.aca);
+// teamMethods.initializeTeam(teamDir.samahangModern);
+// teamMethods.deleteTeam(teamDir.aca);
+// teamMethods.deleteAllTeams();
 
 app.get("/", function(req,res){
     res.render("landing"); 

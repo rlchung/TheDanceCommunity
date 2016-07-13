@@ -12,7 +12,7 @@ var secret = "2a3058e3435b71c77c50bec7302dcff8",
 // To be implemented: event population function
 // pageId : the pageId of the team to be initialized
 function initializeTeam(pageId){
-    request("https://graph.facebook.com/" + pageId + "?fields=name,id,cover,emails,link,bio,description,about,personal_info,general_info,awards&access_token=" + token, function (error, response, body) {
+    request("https://graph.facebook.com/" + pageId + "?fields=name,id,cover,emails,link,bio,description,about,personal_info,general_info,awards,events&access_token=" + token, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var infoJson = JSON.parse(body);
             request("https://graph.facebook.com/" + pageId + "/photos?fields=images&access_token="+ token, function (error, response, body){
@@ -50,14 +50,22 @@ function initializeTeam(pageId){
                                 profilePic          : profilePic
                             };
                             
-                            Team.create(newTeam, function(error, newlyCreated){
-                                if(error){
-                                    console.log("Error with creating Team object");
-                                } else {
-                                    console.log(newlyCreated);
-                                    console.log("Successfully created " + name + " team object");
-                                }
+                            var idArray = [];
+                            
+                            infoJson["events"]["data"].forEach(function(event){
+                                idArray.push(event["id"]);
                             });
+                            
+                            createEvents(idArray);
+                            
+                            // Team.create(newTeam, function(error, newlyCreated){
+                            //     if(error){
+                            //         console.log("Error with creating Team object");
+                            //     } else {
+                            //         console.log(newlyCreated);
+                            //         console.log("Successfully created " + name + " team object");
+                            //     }
+                            // });
                         } else {
                             console.log("Unsuccessful Graph API call to photos");
                             console.log("Error: " + error + "\n" + 
@@ -81,58 +89,80 @@ function initializeTeam(pageId){
     });
 };
 
+// createEvents takes in an array of eventIds and creates an array of Event objects
+function createEvents(idArray){
+    idArray.forEach(function(eventId){
+        createEvent(eventId,function(event){
+            console.log(event);
+        });
+    });
+};
+
 // createEvent takes an eventID and returns an Event object
 // 'category' and 'posts' properties have yet to be initialized
 function createEvent(eventId,callback){
     request("https://graph.facebook.com/" + eventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,updated_time&access_token=" + token, function (error, response, body){
         if (!error && response.statusCode == 200) {
             var eventJson = JSON.parse(body);
-            request("https://graph.facebook.com/" + eventJson["cover"]["id"] + "?fields=webp_images&access_token=" + token, function(error, response, body){
-                if (!error && response.statusCode == 200) {
-                    var coverJson = JSON.parse(body);
+            
+            var placeCheck;
+            var coverCheck;
+            
+            var name            = eventJson["name"],
+                hostName        = eventJson["owner"]["name"],
+                hostId          = eventJson["owner"]["id"],
+                description     = eventJson["description"],
+                startTime       = eventJson["start_time"],
+                endTime         = eventJson["end_time"],
+                attendingCount  = eventJson["attending_count"],
+                declinedCount   = eventJson["declined_count"],
+                interestedCount = eventJson["interested_count"],
+                maybeCount      = eventJson["maybe_count"],
+                updatedTime     = eventJson["updated_time"];
                     
-                    var name            = eventJson["name"],
-                        cover           = coverJson["webp_images"][1]["source"],
-                        hostName        = eventJson["owner"]["name"],
-                        hostId          = eventJson["owner"]["id"],
-                        description     = eventJson["description"],
-                        place           = eventJson["place"]["name"],
-                        startTime       = eventJson["start_time"],
-                        endTime         = eventJson["end_time"],
-                        attendingCount  = eventJson["attending_count"],
-                        declinedCount   = eventJson["declined_count"],
-                        interestedCount = eventJson["interested_count"],
-                        maybeCount      = eventJson["maybe_count"],
-                        updatedTime     = eventJson["updated_time"];
-                    
-                    var newEvent = {
-                        name            : name,
-                        cover           : cover,
-                        fbId            : eventId,
-                        hostName        : hostName,
-                        hostId          : hostId,
-                        description     : description,
-                        place           : place,
-                        startTime       : startTime,
-                        endTime         : endTime,
-                        attendingCount  : attendingCount,
-                        declinedCount   : declinedCount,
-                        interestedCount : interestedCount,
-                        maybeCount      : maybeCount,
-                        updatedTime     : updatedTime
-                    };
-                    
-                    callback(newEvent);
-                    
-                } else {
-                     console.log("Unsuccessful Cover Photo Graph API call");
-                     console.log("Error: " + error + "\n" + 
-                        "Response: " + response + "\n" +
-                        "Response Status Code: " + response.statusCode);
-                }
-            });
+            var newEvent = {
+                name            : name,
+                fbId            : eventId,
+                hostName        : hostName,
+                hostId          : hostId,
+                description     : description,
+                startTime       : startTime,
+                endTime         : endTime,
+                attendingCount  : attendingCount,
+                declinedCount   : declinedCount,
+                interestedCount : interestedCount,
+                maybeCount      : maybeCount,
+                updatedTime     : updatedTime
+            };
+            
+            // separate checks needed for possibly undefined nested properties
+            if (typeof eventJson["place"] != 'undefined') { 
+                placeCheck = eventJson["place"]["name"];
+                newEvent.place = placeCheck;
+            }
+            
+            if (typeof eventJson["cover"] != 'undefined') {
+                // coverCheck = eventJson["cover"]["id"];
+                request("https://graph.facebook.com/" + eventJson["cover"]["id"] + "?fields=webp_images&access_token=" + token, function(error, response, body){
+                    if (!error && response.statusCode == 200) {
+                        var coverObj = JSON.parse(body);
+                        coverCheck = coverObj["webp_images"][1]["source"];
+                        newEvent.cover = coverCheck;
+                        // callback needs to be nested in request statement for cover to process
+                        callback(newEvent);
+                    } else {
+                         console.log("Unsuccessful Cover Photo Graph API call");
+                         console.log("Error: " + error + "\n" + 
+                            "Response: " + response + "\n" +
+                            "Response Status Code: " + response.statusCode);
+                    }
+                });
+            }
+                
+            callback(newEvent);
+            
         } else {
-            console.log("Unsuccessful Graph API call");
+            console.log("createEvent: Unsuccessful Graph API call");
             console.log("Error: " + error + "\n" + 
                         "Response: " + response + "\n" +
                         "Response Status Code: " + response.statusCode);
@@ -141,8 +171,10 @@ function createEvent(eventId,callback){
     });
 };
 
-function createPost(postId){
-    
+
+
+function createPost(postId,cb){
+    cb(postId);
 };
 
 // Deletes all teams from database
@@ -171,6 +203,7 @@ function deleteTeam(pageId){
 };
 
 module.exports = {
+    createEvents    : createEvents,
     createEvent     : createEvent,
     initializeTeam  : initializeTeam,
     deleteAllTeams  : deleteAllTeams,

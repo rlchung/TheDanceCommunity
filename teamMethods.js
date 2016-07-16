@@ -1,7 +1,8 @@
 var mongoose    = require("mongoose"),
     request     = require("request"),
     Event       = require("./models/event"),
-    Team        = require("./models/team");
+    Team        = require("./models/team"),
+    async       = require("async");
 
 //CONFIDENTIAL APP TOKENS 
 var secret = "2a3058e3435b71c77c50bec7302dcff8",
@@ -33,6 +34,7 @@ function initializeTeam(pageId){
                                 personalInfo        = infoJson["personal_info"],
                                 generalInfo         = infoJson["general_info"],
                                 awards              = infoJson["awards"],
+                                events              = [],
                                 profilePic          = profilePicJson["data"][0]["images"][0]["source"];
                             
                             var newTeam = {
@@ -47,6 +49,7 @@ function initializeTeam(pageId){
                                 personalInfo        : personalInfo,
                                 generalInfo         : generalInfo,
                                 awards              : awards,
+                                events              : events,
                                 profilePic          : profilePic
                             };
                             
@@ -56,7 +59,13 @@ function initializeTeam(pageId){
                                 idArray.push(event["id"]);
                             });
                             
-                            createEvents(idArray);
+                            // An object containing newTeam and idArray
+                            var teamContainer = {
+                                newTeam : newTeam,
+                                idArray : idArray
+                            };
+                            
+                            createEvents(teamContainer);
                             
                             // Team.create(newTeam, function(error, newlyCreated){
                             //     if(error){
@@ -89,13 +98,30 @@ function initializeTeam(pageId){
     });
 };
 
-// createEvents takes in an array of eventIds and creates an array of Event objects
-function createEvents(idArray){
-    idArray.forEach(function(eventId){
-        createEvent(eventId,function(event){
-            console.log(event);
+// @param teamContainer is a obj containing a Team obj and an array of event id's
+// createEvents instantiates a Team object
+function createEvents(teamContainer){
+    // creates an event object for each id in idArray and pushes it into teamContainer.newTeam
+    var eventArray = [];
+    // teamContainer.idArray.forEach(function(eventId){
+    //     createEvent(eventId,function(event){
+    //         // teamContainer.newTeam.events.push(eventId);
+    //         eventArray.push(event);
+    //     });
+    // });
+    
+    async.each(teamContainer.idArray,function(id,callback){
+        createEvent(id,function(event){
+            teamContainer.newTeam.events.push(event);
+            callback();
         });
+    }, function(err){
+        if (err)
+            console.log(err);
+        else 
+            console.log(teamContainer.newTeam.events);
     });
+
 };
 
 // createEvent takes an eventID and returns an Event object
@@ -157,9 +183,9 @@ function createEvent(eventId,callback){
                             "Response Status Code: " + response.statusCode);
                     }
                 });
+            } else {
+                callback(newEvent);
             }
-                
-            callback(newEvent);
             
         } else {
             console.log("createEvent: Unsuccessful Graph API call");

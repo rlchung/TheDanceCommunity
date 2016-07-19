@@ -2,6 +2,7 @@ var mongoose    = require("mongoose"),
     request     = require("request"),
     Event       = require("./models/event"),
     Team        = require("./models/team"),
+    Post        = require("./models/post"),
     Credentials = require("./credentials"),
     async       = require("async");
 
@@ -21,6 +22,7 @@ function initializeTeam(pageId){
                             
                             var name                = infoJson["name"],
                                 fbId                = infoJson["id"],
+                                profilePic          = profilePicJson["data"][0]["images"][0]["source"],
                                 coverPic            = coverPicJson["webp_images"][0]["source"],
                                 email               = infoJson["emails"],
                                 fbLink              = infoJson["link"],
@@ -30,12 +32,12 @@ function initializeTeam(pageId){
                                 personalInfo        = infoJson["personal_info"],
                                 generalInfo         = infoJson["general_info"],
                                 awards              = infoJson["awards"],
-                                events              = [],
-                                profilePic          = profilePicJson["data"][0]["images"][0]["source"];
+                                events              = [];
                             
                             var newTeam = {
                                 name                : name,
                                 fbId                : fbId,
+                                profilePic          : profilePic,
                                 coverPic            : coverPic,
                                 email               : email,
                                 fbLink              : fbLink,
@@ -45,8 +47,7 @@ function initializeTeam(pageId){
                                 personalInfo        : personalInfo,
                                 generalInfo         : generalInfo,
                                 awards              : awards,
-                                events              : events,
-                                profilePic          : profilePic
+                                events              : events
                             };
                             
                             var eventIdArray = [];
@@ -97,14 +98,6 @@ function initializeTeam(pageId){
 // @param teamContainer is a obj containing a Team obj and an array of event id's
 // finalizeTeam adds event objects to Team and adds to DB
 function finalizeTeam(teamContainer){
-    // creates an event object for each id in eventIdArray and pushes it into teamContainer.newTeam
-    var eventArray = [];
-    // teamContainer.eventIdArray.forEach(function(eventId){
-    //     initializeEvent(eventId,function(event){
-    //         // teamContainer.newTeam.events.push(eventId);
-    //         eventArray.push(event);
-    //     });
-    // });
     
     async.each(teamContainer.eventIdArray,function(id,callback){
         initializeEvent(id,function(event){
@@ -114,15 +107,24 @@ function finalizeTeam(teamContainer){
     }, function(err){
         if (err)
             console.log(err);
-        else 
-            console.log(teamContainer.newTeam.events);
+        else {
+            Team.create(teamContainer.newTeam, function(error, newlyCreated){
+                if(error){
+                    console.log("Error with creating Team object");
+                    console.log("Error:" + error);
+                } else {
+                    console.log(newlyCreated);
+                    console.log("Successfully created " + teamContainer.newTeam.name + " team object");
+                }
+           });
+        }
     });
 };
 
 // initializeEvent takes an eventID and returns an Event object
 // 'category' properties have yet to be initialized
-function initializeEvent(eventId){
-    request("https://graph.facebook.com/" + eventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,updated_time&access_token=" + Credentials.token, function (error, response, body){
+function initializeEvent(eventId,callback){
+    request("https://graph.facebook.com/" + eventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,photos{images},updated_time&access_token=" + Credentials.token, function (error, response, body){
         if (!error && response.statusCode == 200) {
             var eventJson = JSON.parse(body);
             
@@ -130,6 +132,7 @@ function initializeEvent(eventId){
             var placeCheck;
             var coverCheck;
             
+            // newEvent variables
             var name            = eventJson["name"],
                 hostName        = eventJson["owner"]["name"],
                 hostId          = eventJson["owner"]["id"],
@@ -141,9 +144,10 @@ function initializeEvent(eventId){
                 interestedCount = eventJson["interested_count"],
                 maybeCount      = eventJson["maybe_count"],
                 posts           = [],
+                photos          = [],
                 updatedTime     = eventJson["updated_time"];
                     
-            var newEvent = {
+            var newEvent = new Event({
                 name            : name,
                 fbId            : eventId,
                 hostName        : hostName,
@@ -156,8 +160,16 @@ function initializeEvent(eventId){
                 interestedCount : interestedCount,
                 maybeCount      : maybeCount,
                 posts           : posts,
+                photos          : photos,
                 updatedTime     : updatedTime
-            };
+            });
+            
+            // adds photos to 'photos' array, if any
+            if (typeof eventJson["photos"] != 'undefined') {
+                eventJson["photos"]["data"].forEach(function(object){
+                    newEvent.photos.push(object["images"][0]["source"])
+                });
+            }
             
             //variables needed for creating posts 
             
@@ -184,11 +196,13 @@ function initializeEvent(eventId){
                 request("https://graph.facebook.com/" + eventJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(error, response, body){
                     if (!error && response.statusCode == 200) {
                         var coverObj = JSON.parse(body);
-                        coverCheck = coverObj["webp_images"][1]["source"];
+                        coverCheck = coverObj["webp_images"][0]["source"];
                         eventContainer.newEvent.cover = coverCheck;
                         
                         // callback needs to be nested in request statement for cover to process
-                        finalizeEvent(eventContainer);
+                        finalizeEvent(eventContainer,function(finalizedEvent){
+                            callback(finalizedEvent);
+                        });
   
                     } else {
                          console.log("Unsuccessful Cover Photo Graph API call");
@@ -198,7 +212,9 @@ function initializeEvent(eventId){
                     }
                 });
             } else {
-                finalizeEvent(eventContainer);
+                finalizeEvent(eventContainer,function(finalizedEvent){
+                    callback(finalizedEvent);
+                });
             }
             
         } else {
@@ -211,8 +227,8 @@ function initializeEvent(eventId){
 };
 
 // @param eventContainer is a obj containing an Event obj and an array of post id's
-// finalizeEvent adds post id's to the Event obj and adds to DB
-function finalizeEvent(eventContainer){
+// finalizeEvent adds post id's to the Event obj and returns a finalized Event object
+function finalizeEvent(eventContainer,callback){
     // var postArray = [];
 
     async.each(eventContainer.postIdArray,function(id,callback){
@@ -224,7 +240,7 @@ function finalizeEvent(eventContainer){
         if (err)
             console.log(err);
         else 
-            console.log(eventContainer.newEvent);
+            callback(eventContainer.newEvent);
     });    
 };
 
@@ -243,7 +259,7 @@ function createPost(postId,callback){
                 created_time    = postJson["created_time"],
                 updated_time    = postJson["updated_time"];
                 
-            var newPost = {
+            var newPost = new Post({
                 user            : user,
                 fbId            : fbId,
                 message         : message,
@@ -251,7 +267,7 @@ function createPost(postId,callback){
                 attachments     : attachments,
                 created_time    : created_time,
                 updated_time    : updated_time
-            };
+            });
             
             // separate checks needed for possibly undefined nested properties
             if (typeof postJson["attachments"] != 'undefined') { 
@@ -298,7 +314,27 @@ function deleteTeam(pageId){
     });
 };
 
+function tester(){
+    
+    var attachments = [];
+    
+    var newPost = new Post({
+        user            : "somebody",
+        fbId            : "102349023",
+        message         : "Yo",
+        link            : "http://asldfj.com",
+        attachments     : attachments,
+        created_time    : Date.now(),
+        updated_time    : Date.now()
+    });
+    
+    newPost.attachments.push("an item");
+    
+    console.log(newPost);
+};
+
 module.exports = {
+    tester          : tester,
     finalizeTeam    : finalizeTeam,
     finalizeEvent   : finalizeEvent,
     initializeEvent : initializeEvent,

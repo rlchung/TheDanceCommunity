@@ -32,11 +32,13 @@ var compDir = {
     vibe: 122754417784582
 };
 
-// mongoose.connect("mongodb://localhost/thedancecommunity");
+mongoose.connect("mongodb://localhost/thedancecommunity");
 // To parse form data
 app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
+
+// teamMethods.tester();
 
 // teamMethods.createEvent(590123727856664,function(newEvent){
 //     console.log(newEvent);

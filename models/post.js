@@ -5,7 +5,7 @@ var postSchema = new mongoose.Schema({
     fbId:               String,
     message:            String,
     link:               String,
-    attachment:         [String],
+    attachments:        [String],
     created_time:       Date,
     updated_time:       Date
 });

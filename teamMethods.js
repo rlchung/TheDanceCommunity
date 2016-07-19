@@ -2,24 +2,20 @@ var mongoose    = require("mongoose"),
     request     = require("request"),
     Event       = require("./models/event"),
     Team        = require("./models/team"),
+    Credentials = require("./credentials"),
     async       = require("async");
-
-//CONFIDENTIAL APP TOKENS 
-var secret = "2a3058e3435b71c77c50bec7302dcff8",
-    app_id = "263412864027390",
-    token = app_id + '|' + secret;
 
 // Creates a Team object with: name, id, image, and description (except events for now)
 // To be implemented: event population function
 // pageId : the pageId of the team to be initialized
 function initializeTeam(pageId){
-    request("https://graph.facebook.com/" + pageId + "?fields=name,id,cover,emails,link,bio,description,about,personal_info,general_info,awards,events&access_token=" + token, function (error, response, body) {
+    request("https://graph.facebook.com/" + pageId + "?fields=name,id,cover,emails,link,bio,description,about,personal_info,general_info,awards,events&access_token=" + Credentials.token, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var infoJson = JSON.parse(body);
-            request("https://graph.facebook.com/" + pageId + "/photos?fields=images&access_token="+ token, function (error, response, body){
+            request("https://graph.facebook.com/" + pageId + "/photos?fields=images&access_token="+ Credentials.token, function (error, response, body){
                 if (!error && response.statusCode == 200) {
                     var profilePicJson = JSON.parse(body);
-                    request("https://graph.facebook.com/" + infoJson["cover"]["id"] + "?fields=webp_images&access_token=" + token, function(error, response, body){
+                    request("https://graph.facebook.com/" + infoJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(error, response, body){
                         if (!error && response.statusCode == 200) {
                             var coverPicJson = JSON.parse(body);
                             
@@ -53,19 +49,19 @@ function initializeTeam(pageId){
                                 profilePic          : profilePic
                             };
                             
-                            var idArray = [];
+                            var eventIdArray = [];
                             
                             infoJson["events"]["data"].forEach(function(event){
-                                idArray.push(event["id"]);
+                                eventIdArray.push(event["id"]);
                             });
                             
-                            // An object containing newTeam and idArray
+                            // An object containing newTeam and eventIdArray
                             var teamContainer = {
                                 newTeam : newTeam,
-                                idArray : idArray
+                                eventIdArray : eventIdArray
                             };
                             
-                            createTeam(teamContainer);
+                            finalizeTeam(teamContainer);
                             
                             // Team.create(newTeam, function(error, newlyCreated){
                             //     if(error){
@@ -99,19 +95,19 @@ function initializeTeam(pageId){
 };
 
 // @param teamContainer is a obj containing a Team obj and an array of event id's
-// createEvents instantiates a Team object
-function createTeam(teamContainer){
-    // creates an event object for each id in idArray and pushes it into teamContainer.newTeam
+// finalizeTeam adds event objects to Team and adds to DB
+function finalizeTeam(teamContainer){
+    // creates an event object for each id in eventIdArray and pushes it into teamContainer.newTeam
     var eventArray = [];
-    // teamContainer.idArray.forEach(function(eventId){
-    //     createEvent(eventId,function(event){
+    // teamContainer.eventIdArray.forEach(function(eventId){
+    //     initializeEvent(eventId,function(event){
     //         // teamContainer.newTeam.events.push(eventId);
     //         eventArray.push(event);
     //     });
     // });
     
-    async.each(teamContainer.idArray,function(id,callback){
-        createEvent(id,function(event){
+    async.each(teamContainer.eventIdArray,function(id,callback){
+        initializeEvent(id,function(event){
             teamContainer.newTeam.events.push(event);
             callback();
         });
@@ -121,13 +117,12 @@ function createTeam(teamContainer){
         else 
             console.log(teamContainer.newTeam.events);
     });
-
 };
 
-// createEvent takes an eventID and returns an Event object
-// 'category' and 'posts' properties have yet to be initialized
-function createEvent(eventId,callback){
-    request("https://graph.facebook.com/" + eventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,updated_time&access_token=" + token, function (error, response, body){
+// initializeEvent takes an eventID and returns an Event object
+// 'category' properties have yet to be initialized
+function initializeEvent(eventId){
+    request("https://graph.facebook.com/" + eventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,updated_time&access_token=" + Credentials.token, function (error, response, body){
         if (!error && response.statusCode == 200) {
             var eventJson = JSON.parse(body);
             
@@ -145,6 +140,7 @@ function createEvent(eventId,callback){
                 declinedCount   = eventJson["declined_count"],
                 interestedCount = eventJson["interested_count"],
                 maybeCount      = eventJson["maybe_count"],
+                posts           = [],
                 updatedTime     = eventJson["updated_time"];
                     
             var newEvent = {
@@ -159,24 +155,41 @@ function createEvent(eventId,callback){
                 declinedCount   : declinedCount,
                 interestedCount : interestedCount,
                 maybeCount      : maybeCount,
+                posts           : posts,
                 updatedTime     : updatedTime
+            };
+            
+            //variables needed for creating posts 
+            
+            var postIdArray = [];
+                            
+            eventJson["feed"]["data"].forEach(function(event){
+                postIdArray.push(event["id"]);
+            });
+                            
+            // An object containing newEvent and postIdArray
+            var eventContainer = {
+                newEvent    : newEvent,
+                postIdArray : postIdArray
             };
             
             // separate checks needed for possibly undefined nested properties
             if (typeof eventJson["place"] != 'undefined') { 
                 placeCheck = eventJson["place"]["name"];
-                newEvent.place = placeCheck;
+                eventContainer.newEvent.place = placeCheck;
             }
             
             if (typeof eventJson["cover"] != 'undefined') {
                 // coverCheck = eventJson["cover"]["id"];
-                request("https://graph.facebook.com/" + eventJson["cover"]["id"] + "?fields=webp_images&access_token=" + token, function(error, response, body){
+                request("https://graph.facebook.com/" + eventJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(error, response, body){
                     if (!error && response.statusCode == 200) {
                         var coverObj = JSON.parse(body);
                         coverCheck = coverObj["webp_images"][1]["source"];
-                        newEvent.cover = coverCheck;
+                        eventContainer.newEvent.cover = coverCheck;
+                        
                         // callback needs to be nested in request statement for cover to process
-                        callback(newEvent);
+                        finalizeEvent(eventContainer);
+  
                     } else {
                          console.log("Unsuccessful Cover Photo Graph API call");
                          console.log("Error: " + error + "\n" + 
@@ -185,21 +198,38 @@ function createEvent(eventId,callback){
                     }
                 });
             } else {
-                callback(newEvent);
+                finalizeEvent(eventContainer);
             }
             
         } else {
-            console.log("createEvent: Unsuccessful Graph API call");
+            console.log("initializeEvent: Unsuccessful Graph API call");
             console.log("Error: " + error + "\n" + 
                         "Response: " + response + "\n" +
                         "Response Status Code: " + response.statusCode);
         }
-        
     });
 };
 
+// @param eventContainer is a obj containing an Event obj and an array of post id's
+// finalizeEvent adds post id's to the Event obj and adds to DB
+function finalizeEvent(eventContainer){
+    // var postArray = [];
+
+    async.each(eventContainer.postIdArray,function(id,callback){
+        createPost(id,function(post){
+            eventContainer.newEvent.posts.push(post);
+            callback();
+        });
+    }, function(err){
+        if (err)
+            console.log(err);
+        else 
+            console.log(eventContainer.newEvent);
+    });    
+};
+
 function createPost(postId,callback){
-    request("https://graph.facebook.com/" + postId + "?fields=from,message,link,attachments,created_time,updated_time&access_token=" + token, function (error, response, body){
+    request("https://graph.facebook.com/" + postId + "?fields=from,message,link,attachments,created_time,updated_time&access_token=" + Credentials.token, function (error, response, body){
         if(!error && response.statusCode == 200){
             var postJson = JSON.parse(body);
             
@@ -269,8 +299,9 @@ function deleteTeam(pageId){
 };
 
 module.exports = {
-    createTeam      : createTeam,
-    createEvent     : createEvent,
+    finalizeTeam    : finalizeTeam,
+    finalizeEvent   : finalizeEvent,
+    initializeEvent : initializeEvent,
     createPost      : createPost,
     initializeTeam  : initializeTeam,
     deleteAllTeams  : deleteAllTeams,

@@ -65,7 +65,7 @@ function initializeTeam(pageId){
                                 idArray : idArray
                             };
                             
-                            createEvents(teamContainer);
+                            createTeam(teamContainer);
                             
                             // Team.create(newTeam, function(error, newlyCreated){
                             //     if(error){
@@ -100,7 +100,7 @@ function initializeTeam(pageId){
 
 // @param teamContainer is a obj containing a Team obj and an array of event id's
 // createEvents instantiates a Team object
-function createEvents(teamContainer){
+function createTeam(teamContainer){
     // creates an event object for each id in idArray and pushes it into teamContainer.newTeam
     var eventArray = [];
     // teamContainer.idArray.forEach(function(eventId){
@@ -131,6 +131,7 @@ function createEvent(eventId,callback){
         if (!error && response.statusCode == 200) {
             var eventJson = JSON.parse(body);
             
+            // additional undefined tests needed
             var placeCheck;
             var coverCheck;
             
@@ -197,10 +198,49 @@ function createEvent(eventId,callback){
     });
 };
 
-
-
-function createPost(postId,cb){
-    cb(postId);
+function createPost(postId,callback){
+    request("https://graph.facebook.com/" + postId + "?fields=from,message,link,attachments,created_time,updated_time&access_token=" + token, function (error, response, body){
+        if(!error && response.statusCode == 200){
+            var postJson = JSON.parse(body);
+            
+            // additional undefined checks needed 
+            var attachments = [];    
+            
+            var user            = postJson["from"]["name"],
+                fbId            = postJson["id"],
+                message         = postJson["message"],
+                link            = postJson["link"],
+                created_time    = postJson["created_time"],
+                updated_time    = postJson["updated_time"];
+                
+            var newPost = {
+                user            : user,
+                fbId            : fbId,
+                message         : message,
+                link            : link,
+                attachments     : attachments,
+                created_time    : created_time,
+                updated_time    : updated_time
+            };
+            
+            // separate checks needed for possibly undefined nested properties
+            if (typeof postJson["attachments"] != 'undefined') { 
+                postJson["attachments"]["data"].forEach(function(object){
+                    for (var content in object["media"]){
+                        newPost.attachments.push(object["media"][content]["src"]);
+                    }
+                });
+            }
+            
+            callback(newPost);
+            
+        } else {
+            console.log("createPost: Unsuccessful Graph API call");
+            console.log("Error: " + error + "\n" + 
+                        "Response: " + response + "\n" +
+                        "Response Status Code: " + response.statusCode);
+        } 
+    });
 };
 
 // Deletes all teams from database
@@ -229,8 +269,9 @@ function deleteTeam(pageId){
 };
 
 module.exports = {
-    createEvents    : createEvents,
+    createTeam      : createTeam,
     createEvent     : createEvent,
+    createPost      : createPost,
     initializeTeam  : initializeTeam,
     deleteAllTeams  : deleteAllTeams,
     deleteTeam      : deleteTeam

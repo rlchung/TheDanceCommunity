@@ -2,8 +2,12 @@ var mongoose = require("mongoose");
 
 var postSchema = new mongoose.Schema({
     user:               String,
-    text:               String,
-    attachment:         String
+    fbId:               String,
+    message:            String,
+    link:               String,
+    attachment:         [String],
+    created_time:       Date,
+    updated_time:       Date
 });
 
 module.exports = mongoose.model("Post", postSchema);

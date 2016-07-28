@@ -44,7 +44,7 @@ app.set("view engine", "ejs");
 //     console.log(newEvent);
 // });
 // teamMethods.createPost("590123727856664_600442860158084");
-teamMethods.initializeTeam(teamDir.aca);
+teamMethods.initializeTeam(teamDir.samahangModern);
 // teamMethods.initializeEvent("590123727856664");
 // teamMethods.initializeTeam(teamDir.samahangModern);
 // teamMethods.deleteTeam(teamDir.aca);

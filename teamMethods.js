@@ -229,7 +229,6 @@ function initializeEvent(eventId,callback){
 // @param eventContainer is a obj containing an Event obj and an array of post id's
 // finalizeEvent adds post id's to the Event obj and returns a finalized Event object
 function finalizeEvent(eventContainer,callback){
-    // var postArray = [];
 
     async.each(eventContainer.postIdArray,function(id,callback){
         createPost(id,function(post){
@@ -314,27 +313,7 @@ function deleteTeam(pageId){
     });
 };
 
-function tester(){
-    
-    var attachments = [];
-    
-    var newPost = new Post({
-        user            : "somebody",
-        fbId            : "102349023",
-        message         : "Yo",
-        link            : "http://asldfj.com",
-        attachments     : attachments,
-        created_time    : Date.now(),
-        updated_time    : Date.now()
-    });
-    
-    newPost.attachments.push("an item");
-    
-    console.log(newPost);
-};
-
 module.exports = {
-    tester          : tester,
     finalizeTeam    : finalizeTeam,
     finalizeEvent   : finalizeEvent,
     initializeEvent : initializeEvent,

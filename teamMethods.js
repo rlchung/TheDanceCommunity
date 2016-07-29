@@ -4,10 +4,11 @@ var mongoose    = require("mongoose"),
     Team        = require("./models/team"),
     Post        = require("./models/post"),
     Credentials = require("./credentials"),
-    async       = require("async");
+    natural     = require("natural"),
+    async       = require("async"),
+    classifier  = new natural.BayesClassifier();
 
 // Creates a Team object with: name, id, image, and description (except events for now)
-// To be implemented: event population function
 // pageId : the pageId of the team to be initialized
 function initializeTeam(pageId){
     request("https://graph.facebook.com/" + pageId + "?fields=name,id,cover,emails,link,bio,description,about,personal_info,general_info,awards,events&access_token=" + Credentials.token, function (error, response, body) {
@@ -122,7 +123,6 @@ function finalizeTeam(teamContainer){
 };
 
 // initializeEvent takes an eventID and returns an Event object
-// 'category' properties have yet to be initialized
 function initializeEvent(eventId,callback){
     request("https://graph.facebook.com/" + eventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,photos{images},updated_time&access_token=" + Credentials.token, function (error, response, body){
         if (!error && response.statusCode == 200) {
@@ -163,6 +163,16 @@ function initializeEvent(eventId,callback){
                 photos          : photos,
                 updatedTime     : updatedTime
             });
+            
+            // classifies the event
+            natural.BayesClassifier.load('classifier.json',null,function(err,classifier){
+                if(err){
+                    console.log(err);
+                } else {
+                    newEvent.category = classifier.classify(newEvent.name);
+                }
+            });
+            
             
             // adds photos to 'photos' array, if any
             if (typeof eventJson["photos"] != 'undefined') {

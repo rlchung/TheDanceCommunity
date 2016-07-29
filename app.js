@@ -38,17 +38,12 @@ app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
 
-// teamMethods.tester();
-
-// teamMethods.createEvent(590123727856664,function(newEvent){
-//     console.log(newEvent);
-// });
 // teamMethods.createPost("590123727856664_600442860158084");
-teamMethods.initializeTeam(teamDir.samahangModern);
+// teamMethods.initializeTeam(teamDir.samahangModern);
 // teamMethods.initializeEvent("590123727856664");
 // teamMethods.initializeTeam(teamDir.samahangModern);
 // teamMethods.deleteTeam(teamDir.aca);
-// teamMethods.deleteAllTeams();
+teamMethods.deleteAllTeams();
 
 app.get("/", function(req,res){
     res.render("landing"); 

@@ -34,4 +34,3 @@ var natural     = require('natural'),
 // classifier.addDocument("Ignite: Foundations Choreography Spring 2016 Exhibition", 'other');
 
 // classifier.train();
-

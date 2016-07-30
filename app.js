@@ -4,7 +4,7 @@ var express         = require("express"),
     mongoose        = require("mongoose"),
     Event           = require("./models/event"),
     Team            = require("./models/team"),
-    teamMethods     = require("./teamMethods");
+    TeamMethods     = require("./teamMethods");
     // Have yet to implement
     // User        = require('./models/user'); 
     
@@ -38,12 +38,9 @@ app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
 
-// teamMethods.createPost("590123727856664_600442860158084");
-// teamMethods.initializeTeam(teamDir.samahangModern);
-// teamMethods.initializeEvent("590123727856664");
-// teamMethods.initializeTeam(teamDir.samahangModern);
-// teamMethods.deleteTeam(teamDir.aca);
-teamMethods.deleteAllTeams();
+// TeamMethods.initializeTeam(teamDir.samahangModern);
+// TeamMethods.deleteTeam(teamDir.aca);
+TeamMethods.deleteAllTeams();
 
 app.get("/", function(req,res){
     res.render("landing"); 

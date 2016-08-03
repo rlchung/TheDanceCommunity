@@ -39,7 +39,9 @@ app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
 
-EventMethods.initializeEvent(1079104932155214);
+// EventMethods.initializeEvent("1079104932155214");
+// EventMethods.deleteEvent("1079104932155214");
+EventMethods.deleteAllEvents();
 // TeamMethods.initializeTeam(teamDir.samahangModern);
 // TeamMethods.initializeTeam(teamDir.aca);
 // TeamMethods.deleteTeam(teamDir.aca);

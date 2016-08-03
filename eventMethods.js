@@ -189,8 +189,35 @@ function createPost(postId,callback){
     });
 };
 
+// Deletes all events from database
+function deleteAllEvents(){
+    Event.remove({},function(err){
+        if(err){
+            console.log(err);
+        } else {
+            console.log("Removed all Event Objects from Database");
+        }
+    });
+};
+
+// Deletes a given team from the database
+function deleteEvent(eventId){
+    Event.findOneAndRemove({fbId:eventId},function(err, teamObj){
+        if(err){
+            console.log(err);
+        // if teamObj exists 
+        } if(teamObj){
+            console.log("Removed " + eventId + " successfully");
+        } else {
+            console.log(eventId + " DOES NOT EXIST");
+        }
+    });
+};
+
 module.exports = {
     finalizeEvent   : finalizeEvent,
     initializeEvent : initializeEvent,
+    deleteAllEvents : deleteAllEvents,
+    deleteEvent     : deleteEvent,
     createPost      : createPost,
 };

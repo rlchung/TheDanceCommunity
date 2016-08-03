@@ -32,4 +32,8 @@ var eventSchema = new mongoose.Schema({
     updatedTime:        Date,
 });
 
+eventSchema.static('findByFbId', function (fbId, callback) {
+  return this.find({ fbId: fbId }, callback);
+});
+
 module.exports = mongoose.model("Event", eventSchema);

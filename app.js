@@ -39,8 +39,16 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
 
 // TeamMethods.initializeTeam(teamDir.samahangModern);
+// TeamMethods.initializeTeam(teamDir.aca);
 // TeamMethods.deleteTeam(teamDir.aca);
-TeamMethods.deleteAllTeams();
+// TeamMethods.deleteAllTeams();
+Event.findByFbId("1079104932155214", function(err,event){
+    if(err){
+        console.log(err);
+    } else {
+        console.log(event);
+    }
+})
 
 app.get("/", function(req,res){
     res.render("landing"); 

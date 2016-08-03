@@ -16,13 +16,12 @@ var teamSchema = new mongoose.Schema({
     personalInfo:       String,
     generalInfo:        String,
     awards:             String,
-    
-    events: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Event"
-        }
-    ]
+    // events is an array that contains the "fbId" of events
+    events:             [String]
+});
+
+teamSchema.static('findByFbId', function (fbId, callback) {
+  return this.find({ fbId: fbId }, callback);
 });
 
 module.exports = mongoose.model("Team", teamSchema);

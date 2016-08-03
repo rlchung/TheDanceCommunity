@@ -8,10 +8,10 @@ var mongoose    = require('mongoose'),
     async       = require('async'),
     classifier  = new natural.BayesClassifier();
 
-// initializeEvent takes an eventID and returns an Event object
-function initializeEvent(eventId,callback){
-    request("https://graph.facebook.com/" + eventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,photos{images},updated_time&access_token=" + Credentials.token, function (error, response, body){
-        if (!error && response.statusCode == 200) {
+// initializeEvent initializes all values of a given event and adds the event to the DB through helper function finalizeEvent
+function initializeEvent(eventId){
+    request("https://graph.facebook.com/" + eventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,photos{images},updated_time&access_token=" + Credentials.token, function (err, response, body){
+        if (!err && response.statusCode == 200) {
             var eventJson = JSON.parse(body);
             
             // additional undefined tests needed
@@ -89,42 +89,38 @@ function initializeEvent(eventId,callback){
             
             if (typeof eventJson["cover"] != 'undefined') {
                 // coverCheck = eventJson["cover"]["id"];
-                request("https://graph.facebook.com/" + eventJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(error, response, body){
-                    if (!error && response.statusCode == 200) {
+                request("https://graph.facebook.com/" + eventJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(err, response, body){
+                    if (!err && response.statusCode == 200) {
                         var coverObj = JSON.parse(body);
                         coverCheck = coverObj["webp_images"][0]["source"];
                         eventContainer.newEvent.cover = coverCheck;
                         
                         // callback needs to be nested in request statement for cover to process
-                        finalizeEvent(eventContainer,function(finalizedEvent){
-                            callback(finalizedEvent);
-                        });
+                        finalizeEvent(eventContainer);
   
                     } else {
                          console.log("Unsuccessful Cover Photo Graph API call");
-                         console.log("Error: " + error + "\n" + 
+                         console.log("Error: " + err + "\n" + 
                             "Response: " + response + "\n" +
                             "Response Status Code: " + response.statusCode);
                     }
                 });
             } else {
-                finalizeEvent(eventContainer,function(finalizedEvent){
-                    callback(finalizedEvent);
-                });
+                finalizeEvent(eventContainer);
             }
             
         } else {
             console.log("initializeEvent: Unsuccessful Graph API call");
-            console.log("Error: " + error + "\n" + 
+            console.log("Error: " + err + "\n" + 
                         "Response: " + response + "\n" +
                         "Response Status Code: " + response.statusCode);
         }
     });
 };
 
+// finalizeEvent is a helper function that adds post id's to the Event obj and adds finalized event to DB
 // @param eventContainer is a obj containing an Event obj and an array of post id's
-// finalizeEvent adds post id's to the Event obj and returns a finalized Event object
-function finalizeEvent(eventContainer,callback){
+function finalizeEvent(eventContainer){
 
     async.each(eventContainer.postIdArray,function(id,callback){
         createPost(id,function(post){
@@ -134,14 +130,23 @@ function finalizeEvent(eventContainer,callback){
     }, function(err){
         if (err)
             console.log(err);
-        else 
-            callback(eventContainer.newEvent);
+        else {
+            Event.create(eventContainer.newEvent, function(err, newlyCreated){
+                if(err){
+                    console.log("Error with creating Event object");
+                    console.log("Error:" + err);
+                } else {
+                    console.log(newlyCreated);
+                    console.log("Successfully created " + eventContainer.newEvent.name + " event object");
+                }
+            })
+        };
     });    
 };
 
 function createPost(postId,callback){
-    request("https://graph.facebook.com/" + postId + "?fields=from,message,link,attachments,created_time,updated_time&access_token=" + Credentials.token, function (error, response, body){
-        if(!error && response.statusCode == 200){
+    request("https://graph.facebook.com/" + postId + "?fields=from,message,link,attachments,created_time,updated_time&access_token=" + Credentials.token, function (err, response, body){
+        if(!err && response.statusCode == 200){
             var postJson = JSON.parse(body);
             
             // additional undefined checks needed 
@@ -177,7 +182,7 @@ function createPost(postId,callback){
             
         } else {
             console.log("createPost: Unsuccessful Graph API call");
-            console.log("Error: " + error + "\n" + 
+            console.log("Error: " + err + "\n" + 
                         "Response: " + response + "\n" +
                         "Response Status Code: " + response.statusCode);
         } 

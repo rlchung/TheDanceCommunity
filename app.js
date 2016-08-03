@@ -3,6 +3,7 @@ var express         = require("express"),
     bodyParser      = require("body-parser"),
     mongoose        = require("mongoose"),
     Event           = require("./models/event"),
+    EventMethods    = require("./eventMethods"),
     Team            = require("./models/team"),
     TeamMethods     = require("./teamMethods");
     // Have yet to implement
@@ -38,17 +39,11 @@ app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
 
+EventMethods.initializeEvent(1079104932155214);
 // TeamMethods.initializeTeam(teamDir.samahangModern);
 // TeamMethods.initializeTeam(teamDir.aca);
 // TeamMethods.deleteTeam(teamDir.aca);
 // TeamMethods.deleteAllTeams();
-Event.findByFbId("1079104932155214", function(err,event){
-    if(err){
-        console.log(err);
-    } else {
-        console.log(event);
-    }
-})
 
 app.get("/", function(req,res){
     res.render("landing"); 

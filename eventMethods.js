@@ -123,8 +123,8 @@ function initializeEvent(eventId){
 function finalizeEvent(eventContainer){
 
     async.each(eventContainer.postIdArray,function(id,callback){
-        createPost(id,function(post){
-            eventContainer.newEvent.posts.push(post);
+        initializePost(id,function(post){
+            eventContainer.newEvent.posts.push(post._id);
             callback();
         });
     }, function(err){
@@ -144,7 +144,7 @@ function finalizeEvent(eventContainer){
     });    
 };
 
-function createPost(postId,callback){
+function initializePost(postId,callback){
     request("https://graph.facebook.com/" + postId + "?fields=from,message,link,attachments,created_time,updated_time&access_token=" + Credentials.token, function (err, response, body){
         if(!err && response.statusCode == 200){
             var postJson = JSON.parse(body);
@@ -178,10 +178,17 @@ function createPost(postId,callback){
                 });
             }
             
-            callback(newPost);
+            Post.create(newPost, function(err, newlyCreated){
+                if(err){
+                    console.log("Error with creating Post Object");
+                    console.log("Error:" + err);
+                } else {
+                    callback(newlyCreated);
+                }
+            });
             
         } else {
-            console.log("createPost: Unsuccessful Graph API call");
+            console.log("initializePost: Unsuccessful Graph API call");
             console.log("Error: " + err + "\n" + 
                         "Response: " + response + "\n" +
                         "Response Status Code: " + response.statusCode);
@@ -219,5 +226,5 @@ module.exports = {
     initializeEvent : initializeEvent,
     deleteAllEvents : deleteAllEvents,
     deleteEvent     : deleteEvent,
-    createPost      : createPost,
+    initializePost  : initializePost,
 };

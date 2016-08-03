@@ -5,7 +5,8 @@ var express         = require("express"),
     Event           = require("./models/event"),
     EventMethods    = require("./eventMethods"),
     Team            = require("./models/team"),
-    TeamMethods     = require("./teamMethods");
+    TeamMethods     = require("./teamMethods"),
+    Post            = require("./models/post");
     // Have yet to implement
     // User        = require('./models/user'); 
     
@@ -41,7 +42,7 @@ app.set("view engine", "ejs");
 
 // EventMethods.initializeEvent("1079104932155214");
 // EventMethods.deleteEvent("1079104932155214");
-EventMethods.deleteAllEvents();
+// EventMethods.deleteAllEvents();
 // TeamMethods.initializeTeam(teamDir.samahangModern);
 // TeamMethods.initializeTeam(teamDir.aca);
 // TeamMethods.deleteTeam(teamDir.aca);

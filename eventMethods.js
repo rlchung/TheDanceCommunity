@@ -9,7 +9,7 @@ var mongoose    = require('mongoose'),
     classifier  = new natural.BayesClassifier();
 
 // initializeEvent initializes all values of a given event and adds the event to the DB through helper function finalizeEvent
-function initializeEvent(eventId){
+function initializeEvent(eventId,callback){
     request("https://graph.facebook.com/" + eventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,photos{images},updated_time&access_token=" + Credentials.token, function (err, response, body){
         if (!err && response.statusCode == 200) {
             var eventJson = JSON.parse(body);
@@ -96,7 +96,9 @@ function initializeEvent(eventId){
                         eventContainer.newEvent.cover = coverCheck;
                         
                         // callback needs to be nested in request statement for cover to process
-                        finalizeEvent(eventContainer);
+                        finalizeEvent(eventContainer,function(finalizedEvent){
+                            callback(finalizedEvent);
+                        });
   
                     } else {
                          console.log("Unsuccessful Cover Photo Graph API call");
@@ -106,7 +108,9 @@ function initializeEvent(eventId){
                     }
                 });
             } else {
-                finalizeEvent(eventContainer);
+                finalizeEvent(eventContainer,function(finalizedEvent){
+                    callback(finalizedEvent);
+                });
             }
             
         } else {
@@ -120,7 +124,7 @@ function initializeEvent(eventId){
 
 // finalizeEvent is a helper function that adds post id's to the Event obj and adds finalized event to DB
 // @param eventContainer is a obj containing an Event obj and an array of post id's
-function finalizeEvent(eventContainer){
+function finalizeEvent(eventContainer,callback){
 
     async.each(eventContainer.postIdArray,function(id,callback){
         initializePost(id,function(post){
@@ -136,8 +140,8 @@ function finalizeEvent(eventContainer){
                     console.log("Error with creating Event object");
                     console.log("Error:" + err);
                 } else {
-                    console.log(newlyCreated);
                     console.log("Successfully created " + eventContainer.newEvent.name + " event object");
+                    callback(newlyCreated);
                 }
             })
         };

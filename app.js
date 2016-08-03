@@ -40,13 +40,17 @@ app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
 
-// EventMethods.initializeEvent("1079104932155214");
 // EventMethods.deleteEvent("1079104932155214");
 // EventMethods.deleteAllEvents();
 // TeamMethods.initializeTeam(teamDir.samahangModern);
 // TeamMethods.initializeTeam(teamDir.aca);
 // TeamMethods.deleteTeam(teamDir.aca);
 // TeamMethods.deleteAllTeams();
+// EventMethods.deleteAllEvents();
+// Team.findByFbId(teamDir.samahangModern).exec(function(err,team){
+//     if(err) console.log(err);
+//     console.log(team);
+// });
 
 app.get("/", function(req,res){
     res.render("landing"); 

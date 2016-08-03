@@ -17,7 +17,12 @@ var teamSchema = new mongoose.Schema({
     generalInfo:        String,
     awards:             String,
     // events is an array that contains the "fbId" of events
-    events:             [String]
+    events:             [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref : "Event"
+        }
+    ]
 });
 
 teamSchema.static('findByFbId', function (fbId, callback) {

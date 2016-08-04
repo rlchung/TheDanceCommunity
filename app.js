@@ -6,7 +6,8 @@ var express         = require("express"),
     EventMethods    = require("./eventMethods"),
     Team            = require("./models/team"),
     TeamMethods     = require("./teamMethods"),
-    Post            = require("./models/post");
+    Post            = require("./models/post"),
+    PostMethods     = require("./postMethods");
     // Have yet to implement
     // User        = require('./models/user'); 
     
@@ -45,11 +46,20 @@ app.set("view engine", "ejs");
 // TeamMethods.initializeTeam(teamDir.samahangModern);
 // TeamMethods.initializeTeam(teamDir.aca);
 // TeamMethods.deleteTeam(teamDir.aca);
-// TeamMethods.deleteAllTeams();
-// EventMethods.deleteAllEvents();
 // Team.findByFbId(teamDir.samahangModern).exec(function(err,team){
 //     if(err) console.log(err);
 //     console.log(team);
+// });
+
+// Team.findByFbId(teamDir.aca).exec(function(err,team){
+//     if(err)
+//         console.log(err)
+//     else {
+//         if(team.length === 0)
+//             console.log("team doesn't exist");
+//         else
+//             console.log(team);
+//     }
 // });
 
 app.get("/", function(req,res){

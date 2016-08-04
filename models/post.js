@@ -10,4 +10,8 @@ var postSchema = new mongoose.Schema({
     updated_time:       Date
 });
 
+postSchema.static('findByFbId', function (fbId, callback) {
+  return this.find({ fbId: fbId }, callback);
+});
+
 module.exports = mongoose.model("Post", postSchema);

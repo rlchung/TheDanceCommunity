@@ -15,7 +15,7 @@ function initializeTeam(pageId){
             console.log(err);
         else {
             if(team.length != 0)
-                console.log("Team " + pageId + " already exist in database");
+                console.log(pageId + " team already exist in database");
             else {
                 request("https://graph.facebook.com/" + pageId + "?fields=name,id,cover,emails,link,bio,description,about,personal_info,general_info,awards,events&access_token=" + Credentials.token, function (err, response, body) {
                     if (!err && response.statusCode == 200) {
@@ -114,7 +114,7 @@ function finalizeTeam(teamContainer){
                     console.log("Error:" + err);
                 } else {
                     console.log(newlyCreated);
-                    console.log("Successfully created " + teamContainer.newTeam.name + " team object");
+                    console.log(teamContainer.newTeam.name + " team object created successfully");
                 }
             });
         }
@@ -140,9 +140,17 @@ function deleteTeam(pageId){
             console.log(err);
         // if teamObj exists 
         } if(teamObj){
-            console.log("Removed " + pageId + " successfully");
+            // remove events belonging to team from database
+        
+            async.each(teamObj.events,function(event,callback){
+                EventMethods.deleteEvent(event,function(){
+                    callback();
+                })
+            });
+            console.log(pageId + " events removed successfully");
+            console.log(pageId + " team removed successfully");
         } else {
-            console.log(pageId + " DOES NOT EXIST");
+            console.log(pageId + " TEAM DOES NOT EXIST");
         }
     });
 };

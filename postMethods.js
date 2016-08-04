@@ -86,9 +86,9 @@ function deletePost(postId){
             console.log(err);
         // if postObj exists 
         } if(postObj){
-            console.log("Removed " + postId + " successfully");
+            console.log(postId + "post removed successfully");
         } else {
-            console.log(postId + " DOES NOT EXIST");
+            console.log(postId + " POST DOES NOT EXIST");
         }
     });
 };

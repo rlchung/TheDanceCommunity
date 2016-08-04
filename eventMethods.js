@@ -17,7 +17,7 @@ function initializeEvent(eventId,callback){
             console.log(err);
         else {
             if(event.length != 0)
-                console.log("Event " + eventId + " already exists in database");
+                console.log(eventId + "event already exists in database");
             else {
                 request("https://graph.facebook.com/" + eventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,photos{images},updated_time&access_token=" + Credentials.token, function (err, response, body){
                         if (!err && response.statusCode == 200) {
@@ -139,7 +139,7 @@ function initializeEvent(eventId,callback){
 function finalizeEvent(eventContainer,callback){
 
     async.each(eventContainer.postIdArray,function(id,callback){
-        initializePost(id,function(post){
+        PostMethods.initializePost(id,function(post){
             eventContainer.newEvent.posts.push(post._id);
             callback();
         });
@@ -152,7 +152,7 @@ function finalizeEvent(eventContainer,callback){
                     console.log("Error with creating Event object");
                     console.log("Error:" + err);
                 } else {
-                    console.log("Successfully created " + eventContainer.newEvent.name + " event object");
+                    console.log(eventContainer.newEvent.name + " event object created successfully");
                     callback(newlyCreated);
                 }
             })
@@ -172,15 +172,24 @@ function deleteAllEvents(){
 };
 
 // Deletes a given event from the database
+// @param eventId is _id of the given event
 function deleteEvent(eventId){
-    Event.findOneAndRemove({fbId:eventId},function(err, eventObj){
+    Event.findByIdAndRemove(eventId,function(err, eventObj){
         if(err){
             console.log(err);
         // if eventObj exists 
         } if(eventObj){
-            console.log("Removed " + eventId + " successfully");
+            // remove posts belonging to event from database
+            async.each(eventObj.posts,function(post,callback){
+                Post.findByIdAndRemove(post,function(){
+                    callback();     
+                });
+            });
+         
+            console.log(eventId + " posts removed successfully");
+            console.log(eventId + " event removed successfully");
         } else {
-            console.log(eventId + " DOES NOT EXIST");
+            console.log(eventId + " EVENT DOES NOT EXIST");
         }
     });
 };

@@ -26,13 +26,13 @@ var teamDir = {
 };
 
 var compDir = {
-    bodyRock: 199437836735186,
-    bridge: 361879750609377,
-    fusion: 184822451538010,
-    maxtOut: 237658223056509,
-    preludeNorcal: 537913236272817,
-    ultimateBrawl: 381738788513134,
-    vibe: 122754417784582
+    bodyRock: "199437836735186",
+    bridge: "361879750609377",
+    fusion: "184822451538010",
+    maxtOut: "237658223056509",
+    preludeNorcal: "537913236272817",
+    ultimateBrawl: "381738788513134",
+    vibe: "122754417784582"
 };
 
 mongoose.connect("mongodb://localhost/thedancecommunity");
@@ -41,26 +41,19 @@ app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
 
-// EventMethods.deleteEvent("1079104932155214");
-// EventMethods.deleteAllEvents();
+// EventMethods.deleteEvent('57a2ef66b74ef51f2ddfe9b5');
+// EventMethods.initializeEvent("1079104932155214");
 // TeamMethods.initializeTeam(teamDir.samahangModern);
 // TeamMethods.initializeTeam(teamDir.aca);
-// TeamMethods.deleteTeam(teamDir.aca);
+// TeamMethods.deleteTeam(teamDir.samahangModern);
 // Team.findByFbId(teamDir.samahangModern).exec(function(err,team){
 //     if(err) console.log(err);
 //     console.log(team);
 // });
 
-// Team.findByFbId(teamDir.aca).exec(function(err,team){
-//     if(err)
-//         console.log(err)
-//     else {
-//         if(team.length === 0)
-//             console.log("team doesn't exist");
-//         else
-//             console.log(team);
-//     }
-// });
+// TeamMethods.deleteAllTeams()
+// EventMethods.deleteAllEvents();
+// PostMethods.deleteAllPosts();
 
 app.get("/", function(req,res){
     res.render("landing"); 

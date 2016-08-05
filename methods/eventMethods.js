@@ -1,10 +1,10 @@
 var mongoose    = require('mongoose'),
     request     = require('request'),
-    Event       = require('./models/event'),
-    Team        = require('./models/team'),
-    Post        = require('./models/post'),
-    PostMethods = require('./postMethods'),
-    Credentials = require('./credentials'),
+    Event       = require('../models/event'),
+    Team        = require('../models/team'),
+    Post        = require('../models/post'),
+    PostMethods = require('../methods/postMethods'),
+    Credentials = require('../credentials'),
     natural     = require('natural'),
     async       = require('async'),
     classifier  = new natural.BayesClassifier();
@@ -172,9 +172,9 @@ function deleteAllEvents(){
 };
 
 // Deletes a given event from the database
-// @param eventId is _id of the given event
-function deleteEvent(eventId){
-    Event.findByIdAndRemove(eventId,function(err, eventObj){
+// @param dbEventId is _id of the given event
+function deleteEvent(dbEventId){
+    Event.findByIdAndRemove(dbEventId,function(err, eventObj){
         if(err){
             console.log(err);
         // if eventObj exists 
@@ -186,10 +186,10 @@ function deleteEvent(eventId){
                 });
             });
          
-            console.log(eventId + " posts removed successfully");
-            console.log(eventId + " event removed successfully");
+            console.log(dbEventId + " posts removed successfully");
+            console.log(dbEventId + " event removed successfully");
         } else {
-            console.log(eventId + " EVENT DOES NOT EXIST");
+            console.log(dbEventId + " EVENT DOES NOT EXIST");
         }
     });
 };

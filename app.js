@@ -3,11 +3,11 @@ var express         = require("express"),
     bodyParser      = require("body-parser"),
     mongoose        = require("mongoose"),
     Event           = require("./models/event"),
-    EventMethods    = require("./eventMethods"),
+    EventMethods    = require("./methods/eventMethods"),
     Team            = require("./models/team"),
-    TeamMethods     = require("./teamMethods"),
+    TeamMethods     = require("./methods/teamMethods"),
     Post            = require("./models/post"),
-    PostMethods     = require("./postMethods");
+    PostMethods     = require("./methods/postMethods");
     // Have yet to implement
     // User        = require('./models/user'); 
     
@@ -46,14 +46,14 @@ app.set("view engine", "ejs");
 // TeamMethods.initializeTeam(teamDir.samahangModern);
 // TeamMethods.initializeTeam(teamDir.aca);
 // TeamMethods.deleteTeam(teamDir.samahangModern);
-// Team.findByFbId(teamDir.samahangModern).exec(function(err,team){
+// Team.findByFbId(teamDir.samahangModern).populate('events').exec(function(err,team){
 //     if(err) console.log(err);
-//     console.log(team);
+//     console.log(team[0].events[0]);
 // });
 
-// TeamMethods.deleteAllTeams()
-// EventMethods.deleteAllEvents();
-// PostMethods.deleteAllPosts();
+TeamMethods.deleteAllTeams()
+EventMethods.deleteAllEvents();
+PostMethods.deleteAllPosts();
 
 app.get("/", function(req,res){
     res.render("landing"); 

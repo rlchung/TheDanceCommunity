@@ -6,8 +6,8 @@ var postSchema = new mongoose.Schema({
     message:            String,
     link:               String,
     attachments:        [String],
-    created_time:       Date,
-    updated_time:       Date
+    createdTime:        Date,
+    updatedTime:        Date
 });
 
 postSchema.static('findByFbId', function (fbId, callback) {

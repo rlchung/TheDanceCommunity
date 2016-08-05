@@ -1,7 +1,7 @@
 var mongoose    = require("mongoose"),
     request     = require("request"),
-    Post        = require("./models/post"),
-    Credentials = require("./credentials");
+    Post        = require("../models/post"),
+    Credentials = require("../credentials");
     
 // initializePost initializes a Post object the database
 // @param postId is the fbId of the post we want to instantiate
@@ -12,7 +12,7 @@ function initializePost(postId,callback){
             console.log(err);
         else {
             if(post.length != 0)
-                console.log("Post " + postId + " already exists in database");
+                console.log(postId + " post already exists in database");
             else {
                 request("https://graph.facebook.com/" + postId + "?fields=from,message,link,attachments,created_time,updated_time&access_token=" + Credentials.token, function (err, response, body){
                     if(!err && response.statusCode == 200){
@@ -25,8 +25,8 @@ function initializePost(postId,callback){
                             fbId            = postJson["id"],
                             message         = postJson["message"],
                             link            = postJson["link"],
-                            created_time    = postJson["created_time"],
-                            updated_time    = postJson["updated_time"];
+                            createdTime     = postJson["created_time"],
+                            updatedTime     = postJson["updated_time"];
                             
                         var newPost = new Post({
                             user            : user,
@@ -34,11 +34,12 @@ function initializePost(postId,callback){
                             message         : message,
                             link            : link,
                             attachments     : attachments,
-                            created_time    : created_time,
-                            updated_time    : updated_time
+                            createdTime     : createdTime,
+                            updatedTime     : updatedTime
                         });
                         
                         // separate checks needed for possibly undefined nested properties
+                        // KNOWN BUG: Sub-attachments (Multiple attachments for one post) not accounted for yet
                         if (typeof postJson["attachments"] != 'undefined') { 
                             postJson["attachments"]["data"].forEach(function(object){
                                 for (var content in object["media"]){
@@ -68,6 +69,63 @@ function initializePost(postId,callback){
     })
 };
 
+// updatePost updates a given Post object
+// @param dbPostId is the _id of the given post
+function updatePost(dbPostId){
+    // Check if post exists in DB
+    Post.findById(dbPostId).exec(function(err,post){
+        if(err)
+            console.log(err)
+        else {
+            if(post.length == 0)
+                console.log(dbPostId + " post does not exist in database");
+            else {
+                //Main function logic goes in here
+                request("https://graph.facebook.com/" + post.fbId + "?fields=from,message,attachments,updated_time&access_token=" + Credentials.token, function (err, response, body){
+                    if(!err && response.statusCode == 200){
+                        var currentPostJson = JSON.parse(body);
+                        
+                        // additional undefined checks needed 
+                        var currentAttachments  = [],
+                            currentMessage      = currentPostJson["message"],
+                            currentUpdatedTime  = new Date(currentPostJson["updated_time"]);
+                         
+                        // if updatedTime is the same, don't update   
+                        if(currentUpdatedTime.getTime() === post.updatedTime.getTime()) {
+                            console.log(dbPostId + " post is up-to-date" );
+                        }
+                        else {
+                        // separate checks needed for possibly undefined nested properties
+                        // KNOWN BUG: Sub-attachments (Multiple attachments for one post) not accounted for yet
+                            if (typeof currentPostJson["attachments"] != 'undefined') { 
+                                currentPostJson["attachments"]["data"].forEach(function(object){
+                                    for (var content in object["media"]){
+                                        currentAttachments.push(object["media"][content]["src"]);
+                                    }
+                                });
+                            }
+                            
+                            post.message        = currentMessage;
+                            post.updatedTime    = currentUpdatedTime;
+                            post.attachments    = currentAttachments;
+                            
+                            post.save(function(){
+                                console.log(dbPostId + " post updated!");
+                            })
+                        }
+                        
+                    } else {
+                        console.log("updatePost: Unsuccessful Graph API call");
+                        console.log("Error: " + err + "\n" +
+                                    "Response: " + response + "\n" +
+                                    "Response Status Code: " + response.statusCode);
+                    }
+                });        
+            }
+        }
+    });
+};
+
 // Deletes all events from database
 function deleteAllPosts(){
     Post.remove({},function(err){
@@ -95,6 +153,7 @@ function deletePost(postId){
 
 module.exports = {
     initializePost  : initializePost,
+    updatePost      : updatePost,
     deleteAllPosts  : deleteAllPosts,
     deletePost      : deletePost
 };

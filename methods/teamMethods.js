@@ -1,10 +1,10 @@
 var mongoose        = require("mongoose"),
     request         = require("request"),
     async           = require("async"),
-    Event           = require("./models/event"),
-    Team            = require("./models/team"),
-    Credentials     = require("./credentials"),
-    EventMethods    = require("./eventMethods");
+    Event           = require("../models/event"),
+    Team            = require("../models/team"),
+    Credentials     = require("../credentials"),
+    EventMethods    = require("../methods/eventMethods");
 
 // Creates a Team object and adds to DB
 // pageId : the pageId of the team to be initialized
@@ -141,7 +141,6 @@ function deleteTeam(pageId){
         // if teamObj exists 
         } if(teamObj){
             // remove events belonging to team from database
-        
             async.each(teamObj.events,function(event,callback){
                 EventMethods.deleteEvent(event,function(){
                     callback();

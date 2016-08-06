@@ -3,6 +3,7 @@ var mongoose = require("mongoose");
 var postSchema = new mongoose.Schema({
     user:               String,
     fbId:               String,
+    fbEventId:          String,
     message:            String,
     link:               String,
     attachments:        [String],

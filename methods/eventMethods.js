@@ -10,16 +10,16 @@ var mongoose    = require('mongoose'),
     classifier  = new natural.BayesClassifier();
 
 // initializeEvent initializes all values of a given event and adds the event to the DB through helper function finalizeEvent
-function initializeEvent(eventId,callback){
+function initializeEvent(fbEventId,callback){
     // control flow for checking if event already exists in DB
-    Event.findByFbId(eventId).exec(function(err,event){
-        if(err)
+    Event.findByFbId(fbEventId).exec(function(err,event){
+        if(err){
             console.log(err);
-        else {
+        } else {
             if(event.length != 0)
-                console.log(eventId + "event already exists in database");
+                console.log(fbEventId + "event already exists in database");
             else {
-                request("https://graph.facebook.com/" + eventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,photos{images},updated_time&access_token=" + Credentials.token, function (err, response, body){
+                request("https://graph.facebook.com/" + fbEventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,photos{images},updated_time&access_token=" + Credentials.token, function (err, response, body){
                         if (!err && response.statusCode == 200) {
                             var eventJson = JSON.parse(body);
                             
@@ -44,7 +44,7 @@ function initializeEvent(eventId,callback){
                                     
                             var newEvent = new Event({
                                 name            : name,
-                                fbId            : eventId,
+                                fbId            : fbEventId,
                                 hostName        : hostName,
                                 hostId          : hostId,
                                 description     : description,
@@ -78,16 +78,16 @@ function initializeEvent(eventId,callback){
                             
                             //variables needed for creating posts 
                             
-                            var postIdArray = [];
+                            var fbPostIdArray = [];
                                             
                             eventJson["feed"]["data"].forEach(function(event){
-                                postIdArray.push(event["id"]);
+                                fbPostIdArray.push(event["id"]);
                             });
                                             
-                            // An object containing newEvent and postIdArray
+                            // An object containing newEvent and fbPostIdArray
                             var eventContainer = {
                                 newEvent    : newEvent,
-                                postIdArray : postIdArray
+                                fbPostIdArray : fbPostIdArray
                             };
                             
                             // separate checks needed for possibly undefined nested properties
@@ -131,14 +131,14 @@ function initializeEvent(eventId,callback){
                     });
             }
         }
-    })
+    });
 };
 
 // finalizeEvent is a helper function that adds post id's to the Event obj and adds finalized event to DB
 // @param eventContainer is a obj containing an Event obj and an array of post id's
 function finalizeEvent(eventContainer,callback){
 
-    async.each(eventContainer.postIdArray,function(id,callback){
+    async.each(eventContainer.fbPostIdArray,function(id,callback){
         PostMethods.initializePost(id,function(post){
             eventContainer.newEvent.posts.push(post._id);
             callback();
@@ -159,6 +159,177 @@ function finalizeEvent(eventContainer,callback){
         };
     });    
 };
+
+// updateEvent updates all updateable fields for a given Event object
+// @param dbEventId is the _id of the given Event
+function updateEvent(dbEventId){
+    Event.findById(dbEventId).exec(function(err,event){
+        if(err){
+            console.log(err);
+        } else {
+            if(event.length == 0)
+                console.log(dbEventId + " event does not exist in the database");
+            else {
+                request("https://graph.facebook.com/" + event.fbId + "?fields=name,cover,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,photos{images},updated_time&access_token=" + Credentials.token, function (err, response, body){
+                        if (!err && response.statusCode == 200) {
+                            var currentEventJson = JSON.parse(body);
+                            
+                            // additional undefined tests needed
+                            var currentPlaceCheck;
+                            var currentCoverCheck;
+                            
+                            // current category of updated event
+                            var currentCategory;
+                            
+                            // newEvent variables
+                            var currentName            = currentEventJson["name"],
+                                currentDescription     = currentEventJson["description"],
+                                currentStartTime       = currentEventJson["start_time"],
+                                currentEndTime         = currentEventJson["end_time"],
+                                currentAttendingCount  = currentEventJson["attending_count"],
+                                currentDeclinedCount   = currentEventJson["declined_count"],
+                                currentInterestedCount = currentEventJson["interested_count"],
+                                currentMaybeCount      = currentEventJson["maybe_count"],
+                                currentPhotos          = [],
+                                currentPosts           = [],
+                                currentUpdatedTime     = new Date(currentEventJson["updated_time"]);
+                            
+                            // CURRENT WRONG FOR TESTING PURPOSES
+                            if(currentUpdatedTime.getTime() != event.updatedTime.getTime()){
+                                console.log(dbEventId + " event is up-to-date");
+                            } else {
+                                // main update logic goes here
+                                
+                                // classifies the updated event
+                                natural.BayesClassifier.load('classifier.json',null,function(err,classifier){
+                                if(err){
+                                    console.log(err);
+                                } else {
+                                    currentCategory = classifier.classify(currentName);
+                                }
+                                
+                                // adds photos to 'photos' array, if any
+                                if (typeof currentEventJson["photos"] != 'undefined') {
+                                    currentEventJson["photos"]["data"].forEach(function(object){
+                                        currentPhotos.push(object["images"][0]["source"])
+                                    });
+                                }
+                                
+                                // handles post creation, update, deletion logic
+                                // fbPostIdArray contains the most updated post Id's
+                                var fbPostIdArray = [];
+                                            
+                                currentEventJson["feed"]["data"].forEach(function(event){
+                                    fbPostIdArray.push(event["id"]);
+                                });
+                                
+                                // for each post in fbPostIdArray in event.posts, update posts in event.posts and add dbPostId's to currentPosts
+                                async.each(fbPostIdArray,function(fbPostId,callback){
+                                    Post.findByFbId(fbPostId).exec(function(err,post){
+                                        if(err) {
+                                            console.log(err)
+                                        // if post is not found in existing database, add to database
+                                        } else if (post.length === 0){
+                                            PostMethods.initializePost(fbPostId,function(newPost){
+                                                console.log(newPost._id + " post added to " + dbEventId + " event");
+                                            });
+                                        // if post is found in existing database, update post
+                                        } else {
+                                            PostMethods.updatePost(post[0]._id);
+                                            callback();
+                                        }
+                                    });  
+                                });
+                                
+                                // for posts in event.posts not in fbPostIdArray, delete posts in event.posts
+                                async.each(event.posts,function(dbPostId,callback){
+                                    Post.findById(dbPostId).exec(function(err,post){
+                                        if(err){
+                                            console.log(err);
+                                        } else {
+                                            // if a post in the old event is not found in fbPostIdArray, it is outdated and must be deleted
+                                            if(fbPostIdArray.indexOf(post.fbId) === -1) {
+                                                PostMethods.deletePost(post._id);
+                                                callback();
+                                            }
+                                            console.log(post);
+                                        }
+                                    });
+                                });
+                                
+                                // add all _id's of posts to currentPosts
+                                async.each(fbPostIdArray,function(fbPostId,callback){
+                                    Post.findByFbId(fbPostId).exec(function(err,post){
+                                        if(err){
+                                            console.log(err);
+                                        } else {
+                                            currentPosts.push(post[0]._id);
+                                        }
+                                    }) 
+                                });
+                                
+                                console.log(currentPosts);
+                                
+                                // separate checks needed for possibly undefined nested properties
+                                if (typeof currentEventJson["place"] != 'undefined') { 
+                                    currentPlaceCheck = currentEventJson["place"]["name"];
+                                }
+                                
+                                // if (typeof currentEventJson["cover"] != 'undefined') {
+                                // // coverCheck = eventJson["cover"]["id"];
+                                // request("https://graph.facebook.com/" + currentEventJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(err, response, body){
+                                //     if (!err && response.statusCode == 200) {
+                                //         var coverObj = JSON.parse(body);
+                                //         currentCoverCheck = coverObj["webp_images"][0]["source"];
+                                        
+                                //         // updating all necessary fields
+                                        
+                  
+                                //     } else {
+                                //          console.log("Unsuccessful Cover Photo Graph API call");
+                                //          console.log("Error: " + err + "\n" + 
+                                //             "Response: " + response + "\n" +
+                                //             "Response Status Code: " + response.statusCode);
+                                //     }
+                                // });
+                                // } else {
+                                    
+                                // }
+                            
+                                });
+                            }
+                            
+                        } else {
+                            console.log("Unsuccessful Cover Photo Graph API call");
+                            console.log("Error: " + err + "\n" + 
+                                        "Response: " + response + "\n" +
+                                        "Response Status Code: " + response.statusCode);
+                        }
+                    });
+            }
+        }
+    })
+};
+
+// addPostToEvent adds a given post to the given event's posts array and database
+function addPostToEvent(dbEventId,fbPostId){
+    Event.findById(dbEventId).exec(function(err,event){
+       if(err){
+           console.log(err);
+       } else {
+           if(event.length == 0){
+               console.log(dbEventId + " event does not exist in the database");
+           } else {
+               PostMethods.initializePost(fbPostId,function(post){
+                   event.posts.push(post._id);
+                   event.save(function(){
+                        console.log(fbPostId + " post added to " + dbEventId + " event");    
+                   });
+               });
+           }
+       }
+    });
+}
 
 // Deletes all events from database
 function deleteAllEvents(){
@@ -197,6 +368,8 @@ function deleteEvent(dbEventId){
 module.exports = {
     finalizeEvent   : finalizeEvent,
     initializeEvent : initializeEvent,
+    updateEvent     : updateEvent,
+    addPostToEvent  : addPostToEvent,
     deleteAllEvents : deleteAllEvents,
     deleteEvent     : deleteEvent
 };

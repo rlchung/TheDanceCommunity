@@ -7,20 +7,20 @@ var mongoose        = require("mongoose"),
     EventMethods    = require("../methods/eventMethods");
 
 // Creates a Team object and adds to DB
-// pageId : the pageId of the team to be initialized
-function initializeTeam(pageId){
+// fbPageId : the fbPageId of the team to be initialized
+function initializeTeam(fbPageId){
     // control flow for checking if team already exists in DB
-    Team.findByFbId(pageId).exec(function(err,team){
+    Team.findByFbId(fbPageId).exec(function(err,team){
         if(err)
             console.log(err);
         else {
             if(team.length != 0)
-                console.log(pageId + " team already exist in database");
+                console.log(fbPageId + " team already exist in database");
             else {
-                request("https://graph.facebook.com/" + pageId + "?fields=name,id,cover,emails,link,bio,description,about,personal_info,general_info,awards,events&access_token=" + Credentials.token, function (err, response, body) {
+                request("https://graph.facebook.com/" + fbPageId + "?fields=name,id,cover,emails,link,bio,description,about,personal_info,general_info,awards,events&access_token=" + Credentials.token, function (err, response, body) {
                     if (!err && response.statusCode == 200) {
                         var infoJson = JSON.parse(body);
-                        request("https://graph.facebook.com/" + pageId + "/photos?fields=images&access_token="+ Credentials.token, function (err, response, body){
+                        request("https://graph.facebook.com/" + fbPageId + "/photos?fields=images&access_token="+ Credentials.token, function (err, response, body){
                             if (!err && response.statusCode == 200) {
                                 var profilePicJson = JSON.parse(body);
                                 request("https://graph.facebook.com/" + infoJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(err, response, body){
@@ -58,16 +58,16 @@ function initializeTeam(pageId){
                                         };
                                         
                                         // An array of event fbId's that will be used to initialize Events belonging to Team obj
-                                        var eventIdArray = [];
+                                        var fbEventIdArray = [];
                                         
                                         infoJson["events"]["data"].forEach(function(event){
-                                            eventIdArray.push(event["id"]);
+                                            fbEventIdArray.push(event["id"]);
                                         });
                                         
-                                        // An object containing newTeam and eventIdArray
+                                        // An object containing newTeam and fbEventIdArray
                                         var teamContainer = {
                                             newTeam         : newTeam,
-                                            eventIdArray    : eventIdArray
+                                            fbEventIdArray    : fbEventIdArray
                                         };
                                         
                                         finalizeTeam(teamContainer);
@@ -99,7 +99,7 @@ function initializeTeam(pageId){
 };
 
 function finalizeTeam(teamContainer){
-    async.each(teamContainer.eventIdArray,function(id,callback){
+    async.each(teamContainer.fbEventIdArray,function(id,callback){
         EventMethods.initializeEvent(id,function(event){
             teamContainer.newTeam.events.push(event._id);
             callback();
@@ -134,8 +134,8 @@ function deleteAllTeams(){
 };
 
 // Deletes a given team from the database
-function deleteTeam(pageId){
-    Team.findOneAndRemove({fbId:pageId},function(err, teamObj){
+function deleteTeam(fbPageId){
+    Team.findOneAndRemove({fbId:fbPageId},function(err, teamObj){
         if(err){
             console.log(err);
         // if teamObj exists 
@@ -146,10 +146,10 @@ function deleteTeam(pageId){
                     callback();
                 })
             });
-            console.log(pageId + " events removed successfully");
-            console.log(pageId + " team removed successfully");
+            console.log(fbPageId + " events removed successfully");
+            console.log(fbPageId + " team removed successfully");
         } else {
-            console.log(pageId + " TEAM DOES NOT EXIST");
+            console.log(fbPageId + " TEAM DOES NOT EXIST");
         }
     });
 };

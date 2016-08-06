@@ -1,20 +1,21 @@
 var mongoose    = require("mongoose"),
     request     = require("request"),
     Post        = require("../models/post"),
+    Event       = require("../models/event"),
     Credentials = require("../credentials");
     
 // initializePost initializes a Post object the database
-// @param postId is the fbId of the post we want to instantiate
-function initializePost(postId,callback){
+// @param fbPostId is the fbId of the post we want to instantiate
+function initializePost(fbPostId,callback){
     // control flow for checking if post already exists in DB
-    Post.findByFbId(postId).exec(function(err,post){
+    Post.findByFbId(fbPostId).exec(function(err,post){
         if(err)
             console.log(err);
         else {
             if(post.length != 0)
-                console.log(postId + " post already exists in database");
+                console.log(fbPostId + " post already exists in database");
             else {
-                request("https://graph.facebook.com/" + postId + "?fields=from,message,link,attachments,created_time,updated_time&access_token=" + Credentials.token, function (err, response, body){
+                request("https://graph.facebook.com/" + fbPostId + "?fields=from,target,message,link,attachments,created_time,updated_time&access_token=" + Credentials.token, function (err, response, body){
                     if(!err && response.statusCode == 200){
                         var postJson = JSON.parse(body);
                         
@@ -23,6 +24,7 @@ function initializePost(postId,callback){
                         
                         var user            = postJson["from"]["name"],
                             fbId            = postJson["id"],
+                            fbEventId       = postJson["target"]["id"],
                             message         = postJson["message"],
                             link            = postJson["link"],
                             createdTime     = postJson["created_time"],
@@ -31,6 +33,7 @@ function initializePost(postId,callback){
                         var newPost = new Post({
                             user            : user,
                             fbId            : fbId,
+                            fbEventId       : fbEventId,
                             message         : message,
                             link            : link,
                             attachments     : attachments,
@@ -81,7 +84,7 @@ function updatePost(dbPostId){
                 console.log(dbPostId + " post does not exist in database");
             else {
                 //Main function logic goes in here
-                request("https://graph.facebook.com/" + post.fbId + "?fields=from,message,attachments,updated_time&access_token=" + Credentials.token, function (err, response, body){
+                request("https://graph.facebook.com/" + post.fbId + "?fields=message,attachments,updated_time&access_token=" + Credentials.token, function (err, response, body){
                     if(!err && response.statusCode == 200){
                         var currentPostJson = JSON.parse(body);
                         
@@ -110,7 +113,7 @@ function updatePost(dbPostId){
                             post.attachments    = currentAttachments;
                             
                             post.save(function(){
-                                console.log(dbPostId + " post updated!");
+                                console.log(dbPostId + " post updated");
                             })
                         }
                         
@@ -137,16 +140,34 @@ function deleteAllPosts(){
     });
 };
 
-// Deletes a given Post object from the database
-function deletePost(postId){
-    Post.findOneAndRemove({fbId:postId},function(err, postObj){
+// Deletes a given Post object from the database and from event posts property
+function deletePost(dbPostId){
+    // deletes post from parent event container
+    Post.findById(dbPostId).exec(function(err,post){
+        if(err){
+            console.log(err);
+        } else {
+            Event.findByFbId(post.fbEventId).exec(function(err,event){
+                if(err) {
+                    console.log(err);
+                } else {
+                    var index = event[0].posts.indexOf(dbPostId);
+                    event[0].posts.splice(index, 1);
+                    event[0].save();
+                }
+            });
+        }
+    });
+    // deletes the post object from the database
+    Post.findByIdAndRemove(dbPostId,function(err, postObj){
         if(err){
             console.log(err);
         // if postObj exists 
         } if(postObj){
-            console.log(postId + "post removed successfully");
+            
+            console.log(dbPostId + " post removed successfully");
         } else {
-            console.log(postId + " POST DOES NOT EXIST");
+            console.log(dbPostId + " POST DOES NOT EXIST");
         }
     });
 };

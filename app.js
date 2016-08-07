@@ -45,17 +45,11 @@ app.set("view engine", "ejs");
 // EventMethods.initializeEvent("1079104932155214");
 // TeamMethods.initializeTeam(teamDir.samahangModern);
 // TeamMethods.initializeTeam(teamDir.aca);
-// TeamMethods.deleteTeam(teamDir.samahangModern);
+TeamMethods.deleteTeam(teamDir.samahangModern);
 // Team.findByFbId(teamDir.samahangModern).populate('events').exec(function(err,team){
 //     if(err) console.log(err);
 //     console.log(team[0].events[0]);
 // });
-
-
-// EventMethods.initializeEvent("310526059292316");
-// EventMethods.updateEvent("57a53380fd4691f00ba2bae8");
-
-// PostMethods.deletePost("57a59e5b8d7f28672560f4d2");
 
 // TeamMethods.deleteAllTeams()
 // EventMethods.deleteAllEvents();

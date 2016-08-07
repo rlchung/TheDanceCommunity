@@ -23,6 +23,7 @@ function initializeTeam(fbPageId){
                         request("https://graph.facebook.com/" + fbPageId + "/photos?fields=images&access_token="+ Credentials.token, function (err, response, body){
                             if (!err && response.statusCode == 200) {
                                 var profilePicJson = JSON.parse(body);
+                                // KNOWN BUG: cover id could be undefined and prevent team initializatio
                                 request("https://graph.facebook.com/" + infoJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(err, response, body){
                                     if (!err && response.statusCode == 200) {
                                         var coverPicJson = JSON.parse(body);
@@ -142,7 +143,7 @@ function deleteTeam(fbPageId){
         } if(teamObj){
             // remove events belonging to team from database
             async.each(teamObj.events,function(event,callback){
-                EventMethods.deleteEvent(event,function(){
+                EventMethods.deleteEventfromDatabaseOnly(event,function(){
                     callback();
                 })
             });

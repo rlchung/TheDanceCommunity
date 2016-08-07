@@ -140,7 +140,7 @@ function deleteAllPosts(){
     });
 };
 
-// Deletes a given Post object from the database and from event posts property
+// Deletes a given Post object from the database and from parent Event
 function deletePost(dbPostId){
     // deletes post from parent event container
     Post.findById(dbPostId).exec(function(err,post){

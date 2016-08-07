@@ -342,9 +342,48 @@ function deleteAllEvents(){
     });
 };
 
-// Deletes a given event from the database
+// deleteEventfromDatabaseOnly removes an event from the database only
+function deleteEventfromDatabaseOnly(dbEventId){
+    Event.findByIdAndRemove(dbEventId,function(err, eventObj){
+        if(err){
+            console.log(err);
+        // if eventObj exists 
+        } if(eventObj){
+            // remove posts belonging to event from database
+            async.each(eventObj.posts,function(post,callback){
+                Post.findByIdAndRemove(post,function(){
+                    callback();     
+                });
+            });
+         
+            console.log(dbEventId + " posts removed successfully");
+            console.log(dbEventId + " event removed successfully");
+        } else {
+            console.log(dbEventId + " EVENT DOES NOT EXIST");
+        }
+    });
+};
+
+// Deletes a given event from the database and from parent Team
 // @param dbEventId is _id of the given event
 function deleteEvent(dbEventId){
+    // delete event from parent Team container
+    Event.findById(dbEventId).exec(function(err,event){
+        if(err){
+            console.log(err);
+        } else {
+            Team.findByFbId(event.hostId).exec(function(err,team){
+                if(err) {
+                    console.log(err);
+                } else {
+                    var index = team[0].events.indexOf(dbEventId);
+                    team[0].events.splice(index, 1);
+                    team[0].save();
+                }
+            });
+        }
+    });
+    
     Event.findByIdAndRemove(dbEventId,function(err, eventObj){
         if(err){
             console.log(err);
@@ -366,10 +405,11 @@ function deleteEvent(dbEventId){
 };
 
 module.exports = {
-    finalizeEvent   : finalizeEvent,
-    initializeEvent : initializeEvent,
-    updateEvent     : updateEvent,
-    addPostToEvent  : addPostToEvent,
-    deleteAllEvents : deleteAllEvents,
-    deleteEvent     : deleteEvent
+    finalizeEvent               : finalizeEvent,
+    initializeEvent             : initializeEvent,
+    updateEvent                 : updateEvent,
+    addPostToEvent              : addPostToEvent,
+    deleteAllEvents             : deleteAllEvents,
+    deleteEvent                 : deleteEvent,
+    deleteEventfromDatabaseOnly : deleteEventfromDatabaseOnly
 };

@@ -6,7 +6,7 @@ var mongoose    = require("mongoose"),
     
 // initializePost initializes a Post object the database
 // @param fbPostId is the fbId of the post we want to instantiate
-function initializePost(fbPostId,callback){
+function initializePost(fbPostId){
     // control flow for checking if post already exists in DB
     Post.findByFbId(fbPostId).exec(function(err,post){
         if(err)
@@ -56,7 +56,19 @@ function initializePost(fbPostId,callback){
                                 console.log("Error with creating Post Object");
                                 console.log("Error:" + err);
                             } else {
-                                callback(newlyCreated);
+                                // add the post to the parent event's posts array in database
+                                Event.findByFbId(newlyCreated.fbEventId).exec(function(err,event){
+                                    if(err){
+                                        console.log(err);
+                                    } else {
+                                        if(event.length === 0){
+                                            console.log(newlyCreated.fbEventId + "does not exist in database");
+                                        } else {
+                                            event[0].posts.push(newlyCreated._id);
+                                            event[0].save();
+                                        }
+                                    }
+                                });
                             }
                         });
                         

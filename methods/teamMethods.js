@@ -30,6 +30,7 @@ function initializeTeam(fbPageId){
                                         
                                         var name                = infoJson["name"],
                                             fbId                = infoJson["id"],
+                                            // KNOWN BUG: profile picture could be undefined and prevent initialization
                                             profilePic          = profilePicJson["data"][0]["images"][0]["source"],
                                             coverPic            = coverPicJson["webp_images"][0]["source"],
                                             email               = infoJson["emails"],
@@ -59,16 +60,16 @@ function initializeTeam(fbPageId){
                                         };
                                         
                                         // An array of event fbId's that will be used to initialize Events belonging to Team obj
-                                        var fbEventIdArray = [];
+                                        var fbEventsIdArray = [];
                                         
                                         infoJson["events"]["data"].forEach(function(event){
-                                            fbEventIdArray.push(event["id"]);
+                                            fbEventsIdArray.push(event["id"]);
                                         });
                                         
-                                        // An object containing newTeam and fbEventIdArray
+                                        // An object containing newTeam and fbEventsIdArray
                                         var teamContainer = {
                                             newTeam         : newTeam,
-                                            fbEventIdArray    : fbEventIdArray
+                                            fbEventsIdArray    : fbEventsIdArray
                                         };
                                         
                                         finalizeTeam(teamContainer);
@@ -99,28 +100,32 @@ function initializeTeam(fbPageId){
     });
 };
 
+// NOTE: if console.log(newlyCreated), events will be empty because of asynchronicity
 function finalizeTeam(teamContainer){
-    async.each(teamContainer.fbEventIdArray,function(id,callback){
-        EventMethods.initializeEvent(id,function(event){
-            teamContainer.newTeam.events.push(event._id);
-            callback();
-        });
-    }, function(err){
-        if(err)
-            console.log(err);
-        else {
-            Team.create(teamContainer.newTeam, function(err, newlyCreated){
-                if(err){
-                    console.log("Error with creating Team object");
-                    console.log("Error:" + err);
-                } else {
-                    console.log(newlyCreated);
-                    console.log(teamContainer.newTeam.name + " team object created successfully");
-                }
-            });
+    Team.create(teamContainer.newTeam, function(err, newlyCreated){
+        if(err){
+            console.log("Error with creating Team object");
+            console.log("Error:" + err);
+        } else {
+            finalizeTeamEvents(teamContainer);
+            console.log(newlyCreated.name + " team object created successfully");
+            console.log(newlyCreated);
         }
-    });
+   });
 }
+
+function finalizeTeamEvents(teamContainer){
+    async.each(teamContainer.fbEventsIdArray,function(id,callback){
+        EventMethods.initializeEvent(id);
+        callback()
+    }, function(err){
+        if(err){
+            console.log(err);
+        } else {
+            console.log(teamContainer.newTeam.name + " event objects created successfully");
+        }
+    });  
+};
 
 // Deletes all teams from database
 function deleteAllTeams(){

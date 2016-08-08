@@ -45,11 +45,12 @@ app.set("view engine", "ejs");
 // EventMethods.initializeEvent("1079104932155214");
 // TeamMethods.initializeTeam(teamDir.samahangModern);
 // TeamMethods.initializeTeam(teamDir.aca);
-TeamMethods.deleteTeam(teamDir.samahangModern);
+// TeamMethods.deleteTeam(teamDir.samahangModern);
 // Team.findByFbId(teamDir.samahangModern).populate('events').exec(function(err,team){
 //     if(err) console.log(err);
 //     console.log(team[0].events[0]);
 // });
+
 
 // TeamMethods.deleteAllTeams()
 // EventMethods.deleteAllEvents();

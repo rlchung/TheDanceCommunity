@@ -10,7 +10,7 @@ var mongoose    = require('mongoose'),
     classifier  = new natural.BayesClassifier();
 
 // initializeEvent initializes all values of a given event and adds the event to the DB through helper function finalizeEvent
-function initializeEvent(fbEventId,callback){
+function initializeEvent(fbEventId){
     // control flow for checking if event already exists in DB
     Event.findByFbId(fbEventId).exec(function(err,event){
         if(err){
@@ -78,16 +78,16 @@ function initializeEvent(fbEventId,callback){
                             
                             //variables needed for creating posts 
                             
-                            var fbPostIdArray = [];
+                            var fbPostsIdArray = [];
                                             
                             eventJson["feed"]["data"].forEach(function(event){
-                                fbPostIdArray.push(event["id"]);
+                                fbPostsIdArray.push(event["id"]);
                             });
                                             
-                            // An object containing newEvent and fbPostIdArray
+                            // An object containing newEvent and fbPostsIdArray
                             var eventContainer = {
                                 newEvent    : newEvent,
-                                fbPostIdArray : fbPostIdArray
+                                fbPostsIdArray : fbPostsIdArray
                             };
                             
                             // separate checks needed for possibly undefined nested properties
@@ -105,9 +105,7 @@ function initializeEvent(fbEventId,callback){
                                         eventContainer.newEvent.cover = coverCheck;
                                         
                                         // callback needs to be nested in request statement for cover to process
-                                        finalizeEvent(eventContainer,function(finalizedEvent){
-                                            callback(finalizedEvent);
-                                        });
+                                        finalizeEvent(eventContainer);
                   
                                     } else {
                                          console.log("Unsuccessful Cover Photo Graph API call");
@@ -117,9 +115,7 @@ function initializeEvent(fbEventId,callback){
                                     }
                                 });
                             } else {
-                                finalizeEvent(eventContainer,function(finalizedEvent){
-                                    callback(finalizedEvent);
-                                });
+                                finalizeEvent(eventContainer);
                             }
                             
                         } else {
@@ -134,30 +130,45 @@ function initializeEvent(fbEventId,callback){
     });
 };
 
-// finalizeEvent is a helper function that adds post id's to the Event obj and adds finalized event to DB
+// finalizeEvent is a helper function that adds the event to the database
 // @param eventContainer is a obj containing an Event obj and an array of post id's
-function finalizeEvent(eventContainer,callback){
+function finalizeEvent(eventContainer){
 
-    async.each(eventContainer.fbPostIdArray,function(id,callback){
-        PostMethods.initializePost(id,function(post){
-            eventContainer.newEvent.posts.push(post._id);
-            callback();
-        });
-    }, function(err){
-        if (err)
-            console.log(err);
-        else {
-            Event.create(eventContainer.newEvent, function(err, newlyCreated){
+    Event.create(eventContainer.newEvent, function(err, newlyCreated){
+        if(err){
+            console.log("Error with creating Event object");
+            console.log("Error:" + err);
+        } else {
+            finalizeEventPosts(eventContainer);
+            Team.findByFbId(newlyCreated.hostId).exec(function(err,team){
                 if(err){
-                    console.log("Error with creating Event object");
-                    console.log("Error:" + err);
+                    console.log(err);
                 } else {
-                    console.log(eventContainer.newEvent.name + " event object created successfully");
-                    callback(newlyCreated);
+                    if(team.length === 0){
+                        console.log(newlyCreated.hostId + " does not exist in database");
+                    } else {
+                        team[0].events.push(newlyCreated._id);
+                        team[0].save();
+                    }
                 }
-            })
-        };
-    });    
+            });
+            console.log(eventContainer.newEvent.name + " event object created successfully");
+        }
+    });   
+};
+
+// finalizeEventPosts is a helper function that initializes all posts for initializeEvent
+function finalizeEventPosts(eventContainer){
+    async.each(eventContainer.fbPostsIdArray,function(id,callback){
+        PostMethods.initializePost(id);
+        callback();
+    }, function(err){
+        if(err){
+            console.log(err);
+        } else {
+            console.log(eventContainer.newEvent.name + " post objects created successfully");
+        }
+    });  
 };
 
 // updateEvent updates all updateable fields for a given Event object
@@ -216,59 +227,57 @@ function updateEvent(dbEventId){
                                 }
                                 
                                 // handles post creation, update, deletion logic
-                                // fbPostIdArray contains the most updated post Id's
-                                var fbPostIdArray = [];
+                                // fbPostsIdArray contains the most updated post Id's
+                                var fbPostsIdArray = [];
                                             
                                 currentEventJson["feed"]["data"].forEach(function(event){
-                                    fbPostIdArray.push(event["id"]);
+                                    fbPostsIdArray.push(event["id"]);
                                 });
                                 
-                                // for each post in fbPostIdArray in event.posts, update posts in event.posts and add dbPostId's to currentPosts
-                                async.each(fbPostIdArray,function(fbPostId,callback){
+                                
+                                // for each post in fbPostsIdArray in event.posts, update posts in event.posts and add dbPostId's to currentPosts
+                                async.each(fbPostsIdArray,function(fbPostId,callback){
                                     Post.findByFbId(fbPostId).exec(function(err,post){
                                         if(err) {
                                             console.log(err)
-                                        // if post is not found in existing database, add to database
+                                        // if post is not found in existing database, add to database and currentPosts
                                         } else if (post.length === 0){
                                             PostMethods.initializePost(fbPostId,function(newPost){
                                                 console.log(newPost._id + " post added to " + dbEventId + " event");
                                             });
-                                        // if post is found in existing database, update post
+                                        // if post is found in existing database, update post and add to currentPosts
                                         } else {
                                             PostMethods.updatePost(post[0]._id);
-                                            callback();
                                         }
+                                        callback();
                                     });  
                                 });
                                 
-                                // for posts in event.posts not in fbPostIdArray, delete posts in event.posts
+                                // for posts in event.posts not in fbPostsIdArray, delete posts in event.posts
                                 async.each(event.posts,function(dbPostId,callback){
                                     Post.findById(dbPostId).exec(function(err,post){
                                         if(err){
                                             console.log(err);
                                         } else {
-                                            // if a post in the old event is not found in fbPostIdArray, it is outdated and must be deleted
-                                            if(fbPostIdArray.indexOf(post.fbId) === -1) {
+                                            // if a post in the old event is not found in fbPostsIdArray, it is outdated and must be deleted
+                                            if(fbPostsIdArray.indexOf(post.fbId) === -1) {
                                                 PostMethods.deletePost(post._id);
-                                                callback();
                                             }
-                                            console.log(post);
                                         }
+                                        callback();
                                     });
                                 });
                                 
                                 // add all _id's of posts to currentPosts
-                                async.each(fbPostIdArray,function(fbPostId,callback){
-                                    Post.findByFbId(fbPostId).exec(function(err,post){
-                                        if(err){
-                                            console.log(err);
-                                        } else {
-                                            currentPosts.push(post[0]._id);
-                                        }
-                                    }) 
-                                });
-                                
-                                console.log(currentPosts);
+                                // async.each(fbPostsIdArray,function(fbPostId,callback){
+                                //     Post.findByFbId(fbPostId).exec(function(err,post){
+                                //         if(err){
+                                //             console.log(err);
+                                //         } else {
+                                //             currentPosts.push(post[0]._id);
+                                //         }
+                                //     }) 
+                                // });
                                 
                                 // separate checks needed for possibly undefined nested properties
                                 if (typeof currentEventJson["place"] != 'undefined') { 

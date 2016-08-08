@@ -41,7 +41,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
 
-// EventMethods.deleteEvent('57a2ef66b74ef51f2ddfe9b5');
+
 // EventMethods.initializeEvent("1079104932155214");
 // TeamMethods.initializeTeam(teamDir.samahangModern);
 // TeamMethods.initializeTeam(teamDir.aca);
@@ -51,6 +51,9 @@ app.set("view engine", "ejs");
 //     console.log(team[0].events[0]);
 // });
 
+// TeamMethods.initializeTeam("1084771798235987");
+// EventMethods.deleteEvent("57a83a8c726309451243d0e5");
+PostMethods.deletePost("57a83a8c726309451243d0eb");
 
 // TeamMethods.deleteAllTeams()
 // EventMethods.deleteAllEvents();

@@ -128,7 +128,7 @@ function initializeEvent(fbEventId){
             }
         }
     });
-};
+}
 
 // finalizeEvent is a helper function that adds the event to the database
 // @param eventContainer is a obj containing an Event obj and an array of post id's
@@ -155,7 +155,7 @@ function finalizeEvent(eventContainer){
             console.log(eventContainer.newEvent.name + " event object created successfully");
         }
     });   
-};
+}
 
 // finalizeEventPosts is a helper function that initializes all posts for initializeEvent
 function finalizeEventPosts(eventContainer){
@@ -169,7 +169,7 @@ function finalizeEventPosts(eventContainer){
             console.log(eventContainer.newEvent.name + " post objects created successfully");
         }
     });  
-};
+}
 
 // updateEvent updates all updateable fields for a given Event object
 // @param dbEventId is the _id of the given Event
@@ -202,11 +202,28 @@ function updateEvent(dbEventId){
                                 currentInterestedCount = currentEventJson["interested_count"],
                                 currentMaybeCount      = currentEventJson["maybe_count"],
                                 currentPhotos          = [],
-                                currentPosts           = [],
                                 currentUpdatedTime     = new Date(currentEventJson["updated_time"]);
                             
-                            // CURRENT WRONG FOR TESTING PURPOSES
-                            if(currentUpdatedTime.getTime() != event.updatedTime.getTime()){
+                            var updatedEvent = new Event({
+                                name            : currentName,
+                                description     : currentDescription,
+                                startTime       : currentStartTime,
+                                endTime         : currentEndTime,
+                                attendingCount  : currentAttendingCount,
+                                declinedCount   : currentDeclinedCount,
+                                interestedCount : currentInterestedCount,
+                                maybeCount      : currentMaybeCount,
+                                photos          : currentPhotos,
+                                updatedTime     : currentUpdatedTime,
+                                place           : currentPlaceCheck,
+                                cover           : currentCoverCheck,
+                                category        : currentCategory
+                            });
+                            
+                            // Update all posts before updating event
+                            updateEventPosts(dbEventId);
+                            
+                            if(currentUpdatedTime.getTime() === event.updatedTime.getTime()){
                                 console.log(dbEventId + " event is up-to-date");
                             } else {
                                 // main update logic goes here
@@ -216,94 +233,73 @@ function updateEvent(dbEventId){
                                 if(err){
                                     console.log(err);
                                 } else {
-                                    currentCategory = classifier.classify(currentName);
+                                    updatedEvent.category = classifier.classify(currentName);
                                 }
                                 
                                 // adds photos to 'photos' array, if any
                                 if (typeof currentEventJson["photos"] != 'undefined') {
                                     currentEventJson["photos"]["data"].forEach(function(object){
-                                        currentPhotos.push(object["images"][0]["source"])
+                                        updatedEvent.photos.push(object["images"][0]["source"])
                                     });
                                 }
-                                
-                                // handles post creation, update, deletion logic
-                                // fbPostsIdArray contains the most updated post Id's
-                                var fbPostsIdArray = [];
-                                            
-                                currentEventJson["feed"]["data"].forEach(function(event){
-                                    fbPostsIdArray.push(event["id"]);
-                                });
-                                
-                                
-                                // for each post in fbPostsIdArray in event.posts, update posts in event.posts and add dbPostId's to currentPosts
-                                async.each(fbPostsIdArray,function(fbPostId,callback){
-                                    Post.findByFbId(fbPostId).exec(function(err,post){
-                                        if(err) {
-                                            console.log(err)
-                                        // if post is not found in existing database, add to database and currentPosts
-                                        } else if (post.length === 0){
-                                            PostMethods.initializePost(fbPostId,function(newPost){
-                                                console.log(newPost._id + " post added to " + dbEventId + " event");
-                                            });
-                                        // if post is found in existing database, update post and add to currentPosts
-                                        } else {
-                                            PostMethods.updatePost(post[0]._id);
-                                        }
-                                        callback();
-                                    });  
-                                });
-                                
-                                // for posts in event.posts not in fbPostsIdArray, delete posts in event.posts
-                                async.each(event.posts,function(dbPostId,callback){
-                                    Post.findById(dbPostId).exec(function(err,post){
-                                        if(err){
-                                            console.log(err);
-                                        } else {
-                                            // if a post in the old event is not found in fbPostsIdArray, it is outdated and must be deleted
-                                            if(fbPostsIdArray.indexOf(post.fbId) === -1) {
-                                                PostMethods.deletePost(post._id);
-                                            }
-                                        }
-                                        callback();
-                                    });
-                                });
-                                
-                                // add all _id's of posts to currentPosts
-                                // async.each(fbPostsIdArray,function(fbPostId,callback){
-                                //     Post.findByFbId(fbPostId).exec(function(err,post){
-                                //         if(err){
-                                //             console.log(err);
-                                //         } else {
-                                //             currentPosts.push(post[0]._id);
-                                //         }
-                                //     }) 
-                                // });
                                 
                                 // separate checks needed for possibly undefined nested properties
                                 if (typeof currentEventJson["place"] != 'undefined') { 
-                                    currentPlaceCheck = currentEventJson["place"]["name"];
+                                    updatedEvent.place = currentEventJson["place"]["name"];
                                 }
                                 
-                                // if (typeof currentEventJson["cover"] != 'undefined') {
-                                // // coverCheck = eventJson["cover"]["id"];
-                                // request("https://graph.facebook.com/" + currentEventJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(err, response, body){
-                                //     if (!err && response.statusCode == 200) {
-                                //         var coverObj = JSON.parse(body);
-                                //         currentCoverCheck = coverObj["webp_images"][0]["source"];
-                                        
-                                //         // updating all necessary fields
-                                        
-                  
-                                //     } else {
-                                //          console.log("Unsuccessful Cover Photo Graph API call");
-                                //          console.log("Error: " + err + "\n" + 
-                                //             "Response: " + response + "\n" +
-                                //             "Response Status Code: " + response.statusCode);
-                                //     }
-                                // });
-                                // } else {
+                                if (typeof currentEventJson["cover"] != 'undefined') {
+                                    request("https://graph.facebook.com/" + currentEventJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(err, response, body){
+                                        if (!err && response.statusCode == 200) {
+                                            var coverObj = JSON.parse(body);
+                                            updatedEvent.cover = coverObj["webp_images"][0]["source"];
+                                            
+                                            // updating all necessary fields
+                                            
+                                            event.name              = updatedEvent.name;
+                                            event.description       = updatedEvent.description;
+                                            event.startTime         = updatedEvent.startTime;
+                                            event.endTime           = updatedEvent.endTime;
+                                            event.attendingCount    = updatedEvent.attendingCount;
+                                            event.declinedCount     = updatedEvent.declinedCount;
+                                            event.interestedCount   = updatedEvent.interestedCount;
+                                            event.maybeCount        = updatedEvent.maybeCount;
+                                            event.photos            = updatedEvent.photos;
+                                            event.updatedTime       = updatedEvent.updatedTime;
+                                            event.place             = updatedEvent.place;
+                                            event.cover             = updatedEvent.cover;
+                                            event.category          = updatedEvent.category;
+                                            event.save(function(){
+                                                console.log(dbEventId + " event updated");
+                                            });
+                      
+                                        } else {
+                                             console.log("Unsuccessful Cover Photo Graph API call");
+                                             console.log("Error: " + err + "\n" + 
+                                                "Response: " + response + "\n" +
+                                                "Response Status Code: " + response.statusCode);
+                                        }
+                                    });
+                                } else {
+                                    // updating all necessary fields
                                     
-                                // }
+                                    event.name              = updatedEvent.name;
+                                    event.description       = updatedEvent.description;
+                                    event.startTime         = updatedEvent.startTime;
+                                    event.endTime           = updatedEvent.endTime;
+                                    event.attendingCount    = updatedEvent.attendingCount;
+                                    event.declinedCount     = updatedEvent.declinedCount;
+                                    event.interestedCount   = updatedEvent.interestedCount;
+                                    event.maybeCount        = updatedEvent.maybeCount;
+                                    event.photos            = updatedEvent.photos;
+                                    event.updatedTime       = updatedEvent.updatedTime;
+                                    event.place             = updatedEvent.place;
+                                    event.cover             = updatedEvent.cover;
+                                    event.category          = updatedEvent.category;
+                                    event.save(function(){
+                                        console.log(dbEventId + " event updated");
+                                    });
+                                }
                             
                                 });
                             }
@@ -318,7 +314,78 @@ function updateEvent(dbEventId){
             }
         }
     })
-};
+}
+
+function updateEventPosts(dbEventId){
+    Event.findById(dbEventId).exec(function(err,event){
+        if(err){
+            console.log(err);
+        } else {
+            if(event.length == 0)
+                console.log(dbEventId + " event does not exist in the database");
+            else {
+                request("https://graph.facebook.com/" + event.fbId + "?fields=feed&access_token=" + Credentials.token, function (err, response, body){
+                    if (!err && response.statusCode == 200) {
+                        var currentEventJson = JSON.parse(body);
+                        
+                        // handles post creation, update, deletion logic
+                        // fbPostsIdArray contains the most updated post Id's
+                        var fbPostsIdArray = [];
+                                    
+                        currentEventJson["feed"]["data"].forEach(function(event){
+                            fbPostsIdArray.push(event["id"]);
+                        });
+                        
+                        // for each post in fbPostsIdArray in event.posts, update posts in event.posts and add dbPostId's to currentPosts
+                        async.each(fbPostsIdArray,function(fbPostId,callback){
+                            Post.findByFbId(fbPostId).exec(function(err,post){
+                                if(err) {
+                                    console.log(err)
+                                // if post is not found in existing database, add to database and currentPosts
+                                } else if (post.length === 0){
+                                    PostMethods.initializePost(fbPostId,function(newPost){
+                                        console.log(newPost._id + " post added to " + dbEventId + " event");
+                                    });
+                                // if post is found in existing database, update post and add to currentPosts
+                                } else {
+                                    PostMethods.updatePost(post[0]._id);
+                                }
+                                callback();
+                            });  
+                        });
+                        
+                        // for posts in event.posts not in fbPostsIdArray, delete posts in event.posts
+                        async.each(event.posts,function(dbPostId,callback){
+                            Post.findById(dbPostId).exec(function(err,post){
+                                if(err){
+                                    console.log(err);
+                                } else {
+                                    // if a post in the old event is not found in the database, remove it from old events posts array
+                                    if(post === null){
+                                        event.posts.splice(event.posts.indexOf(dbPostId),1);
+                                        event.save();
+                                    }
+                                    
+                                    // if a post in the old event is not found in fbPostsIdArray, it is outdated and must be deleted
+                                    else if(fbPostsIdArray.indexOf(post.fbId) === -1) {
+                                        PostMethods.deletePost(post._id);
+                                    }
+                                }
+                                callback();
+                            });
+                        });
+                    } else {
+                            console.log("Unsuccessful Event Feed Graph API call");
+                            console.log("Error: " + err + "\n" + 
+                                        "Response: " + response + "\n" +
+                                        "Response Status Code: " + response.statusCode);
+                    }
+                });
+            }
+        }
+    });
+
+}
 
 // addPostToEvent adds a given post to the given event's posts array and database
 function addPostToEvent(dbEventId,fbPostId){
@@ -349,10 +416,10 @@ function deleteAllEvents(){
             console.log("Removed all Event Objects from Database");
         }
     });
-};
+}
 
-// deleteEventfromDatabaseOnly removes an event from the database only
-function deleteEventfromDatabaseOnly(dbEventId){
+// deleteEventFromDatabaseOnly removes an event and associated posts from the database only
+function deleteEventFromDatabaseOnly(dbEventId){
     Event.findByIdAndRemove(dbEventId,function(err, eventObj){
         if(err){
             console.log(err);
@@ -371,7 +438,7 @@ function deleteEventfromDatabaseOnly(dbEventId){
             console.log(dbEventId + " EVENT DOES NOT EXIST");
         }
     });
-};
+}
 
 // Deletes a given event from the database and from parent Team
 // @param dbEventId is _id of the given event
@@ -411,7 +478,7 @@ function deleteEvent(dbEventId){
             console.log(dbEventId + " EVENT DOES NOT EXIST");
         }
     });
-};
+}
 
 module.exports = {
     finalizeEvent               : finalizeEvent,
@@ -420,5 +487,5 @@ module.exports = {
     addPostToEvent              : addPostToEvent,
     deleteAllEvents             : deleteAllEvents,
     deleteEvent                 : deleteEvent,
-    deleteEventfromDatabaseOnly : deleteEventfromDatabaseOnly
+    deleteEventFromDatabaseOnly : deleteEventFromDatabaseOnly
 };

@@ -121,7 +121,7 @@ function finalizeTeam(teamContainer){
 function finalizeTeamEvents(teamContainer){
     async.each(teamContainer.fbEventsIdArray,function(id,callback){
         EventMethods.initializeEvent(id);
-        callback()
+        callback();
     }, function(err){
         if(err){
             console.log(err);
@@ -145,21 +145,23 @@ function deleteAllTeams(){
 
 // Deletes a given team from the database
 function deleteTeam(fbPageId){
+    
     Team.findOneAndRemove({fbId:fbPageId},function(err, teamObj){
         if(err){
             console.log(err);
         // if teamObj exists 
         } if(teamObj){
-            // remove events belonging to team from database
+            // // remove events belonging to team from database
             async.each(teamObj.events,function(event,callback){
-                EventMethods.deleteEventfromDatabaseOnly(event,function(){
+                EventMethods.deleteEventFromDatabaseOnly(event,function(){
                     callback();
-                })
+                });
             });
             console.log(fbPageId + " events removed successfully");
             console.log(fbPageId + " team removed successfully");
         } else {
             console.log(fbPageId + " TEAM DOES NOT EXIST");
+            return;
         }
     });
 };

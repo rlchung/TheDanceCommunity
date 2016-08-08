@@ -82,7 +82,7 @@ function initializePost(fbPostId){
             }
         }
     })
-};
+}
 
 // updatePost updates a given Post object
 // @param dbPostId is the _id of the given post
@@ -139,7 +139,7 @@ function updatePost(dbPostId){
             }
         }
     });
-};
+}
 
 // Deletes all events from database
 function deleteAllPosts(){
@@ -150,7 +150,7 @@ function deleteAllPosts(){
             console.log("Removed all Post Objects from Database");
         }
     });
-};
+}
 
 // Deletes a given Post object from the database and from parent Event
 function deletePost(dbPostId){
@@ -182,7 +182,7 @@ function deletePost(dbPostId){
             console.log(dbPostId + " POST DOES NOT EXIST");
         }
     });
-};
+}
 
 module.exports = {
     initializePost  : initializePost,

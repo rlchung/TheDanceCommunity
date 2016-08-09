@@ -130,7 +130,7 @@ function initializeEvent(fbEventId){
     });
 }
 
-// finalizeEvent is a helper function that adds the event to the database
+// finalizeEvent is a helper function for initializeEvent that adds the event to the database
 // @param eventContainer is a obj containing an Event obj and an array of post id's
 function finalizeEvent(eventContainer){
 
@@ -157,7 +157,7 @@ function finalizeEvent(eventContainer){
     });   
 }
 
-// finalizeEventPosts is a helper function that initializes all posts for initializeEvent
+// finalizeEventPosts is a helper function for finalizeEvent that initializes all posts for initializeEvent
 function finalizeEventPosts(eventContainer){
     async.each(eventContainer.fbPostsIdArray,function(id,callback){
         PostMethods.initializePost(id);
@@ -316,6 +316,8 @@ function updateEvent(dbEventId){
     })
 }
 
+// updateEventPosts is a helper function for updateEvent that updates all posts for the given event
+// posts not in db are added, posts in db are updated, and posts no longer current are removed
 function updateEventPosts(dbEventId){
     Event.findById(dbEventId).exec(function(err,event){
         if(err){
@@ -336,17 +338,16 @@ function updateEventPosts(dbEventId){
                             fbPostsIdArray.push(event["id"]);
                         });
                         
-                        // for each post in fbPostsIdArray in event.posts, update posts in event.posts and add dbPostId's to currentPosts
+                        // for each post in fbPostsIdArray in event.posts, update posts in event.posts
                         async.each(fbPostsIdArray,function(fbPostId,callback){
                             Post.findByFbId(fbPostId).exec(function(err,post){
                                 if(err) {
-                                    console.log(err)
-                                // if post is not found in existing database, add to database and currentPosts
+                                    console.log(err);
+                                // if post is not found in existing database, add to database
                                 } else if (post.length === 0){
-                                    PostMethods.initializePost(fbPostId,function(newPost){
-                                        console.log(newPost._id + " post added to " + dbEventId + " event");
-                                    });
-                                // if post is found in existing database, update post and add to currentPosts
+                                    PostMethods.initializePost(fbPostId);
+                                    console.log(fbPostId + " post added to " + dbEventId + " event");
+                                // if post is found in existing database, update post
                                 } else {
                                     PostMethods.updatePost(post[0]._id);
                                 }
@@ -383,27 +384,6 @@ function updateEventPosts(dbEventId){
                 });
             }
         }
-    });
-
-}
-
-// addPostToEvent adds a given post to the given event's posts array and database
-function addPostToEvent(dbEventId,fbPostId){
-    Event.findById(dbEventId).exec(function(err,event){
-       if(err){
-           console.log(err);
-       } else {
-           if(event.length == 0){
-               console.log(dbEventId + " event does not exist in the database");
-           } else {
-               PostMethods.initializePost(fbPostId,function(post){
-                   event.posts.push(post._id);
-                   event.save(function(){
-                        console.log(fbPostId + " post added to " + dbEventId + " event");    
-                   });
-               });
-           }
-       }
     });
 }
 
@@ -484,7 +464,6 @@ module.exports = {
     finalizeEvent               : finalizeEvent,
     initializeEvent             : initializeEvent,
     updateEvent                 : updateEvent,
-    addPostToEvent              : addPostToEvent,
     deleteAllEvents             : deleteAllEvents,
     deleteEvent                 : deleteEvent,
     deleteEventFromDatabaseOnly : deleteEventFromDatabaseOnly

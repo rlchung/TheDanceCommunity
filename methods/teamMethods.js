@@ -104,6 +104,7 @@ function initializeTeam(fbPageId){
     });
 };
 
+// finalizeTeam is a helper function for initializeTeam that creates and finalizes the Team object
 // NOTE: if console.log(newlyCreated), events will be empty because of asynchronicity
 function finalizeTeam(teamContainer){
     Team.create(teamContainer.newTeam, function(err, newlyCreated){
@@ -118,6 +119,7 @@ function finalizeTeam(teamContainer){
    });
 }
 
+// finalizeTeamEvents is a helper function for finalizeTeam that initializes all given Team events
 function finalizeTeamEvents(teamContainer){
     async.each(teamContainer.fbEventsIdArray,function(id,callback){
         EventMethods.initializeEvent(id);
@@ -129,7 +131,83 @@ function finalizeTeamEvents(teamContainer){
             console.log(teamContainer.newTeam.name + " event objects created successfully");
         }
     });  
-};
+}
+
+function updateTeam(dbPageId){
+    
+}
+
+// updateTeamEvents is a helper function for updateTeam that updates all events for given team
+// events not in db are added, events in db are updated, and events no longer current are removed
+function updateTeamEvents(dbPageId){
+    
+    Team.findById(dbPageId).exec(function(err,team){
+        if(err){
+            console.log(err);
+        } else {
+            if(team.length == 0)
+                console.log(dbPageId + " team does not exist in the database");
+            else {
+                request("https://graph.facebook.com/" + team.fbId + "?fields=events&access_token=" + Credentials.token, function (err, response, body){
+                    if (!err && response.statusCode == 200) {
+                        var currentTeamJson = JSON.parse(body);
+                        
+                        // handles event creation, update, deletion logic
+                        // fbEventsIdArray contains the most updated event Id's
+                        var fbEventsIdArray = [];
+                                    
+                        currentTeamJson["events"]["data"].forEach(function(event){
+                            fbEventsIdArray.push(event["id"]);
+                        });
+                        
+                        // for each event in fbEventsIdArray in team.events, update events in team.events
+                        async.each(fbEventsIdArray,function(fbEventId,callback){
+                            Event.findByFbId(fbEventId).exec(function(err,event){
+                                if(err) {
+                                    console.log(err)
+                                // if event is not found in existing database, add to database
+                                } else if (event.length === 0){
+                                    EventMethods.initializeEvent(fbEventId);
+                                    console.log(fbEventId + " event added to " + dbPageId + " team");
+                                // if event is found in existing database, update event
+                                } else {
+                                    EventMethods.updateEvent(event[0]._id);
+                                }
+                                callback();
+                            });  
+                        });
+                        
+                        // for events in team.events not in fbEventsIdArray, delete events in team.events
+                        async.each(team.events,function(dbEventId,callback){
+                            Event.findById(dbEventId).exec(function(err,event){
+                                if(err){
+                                    console.log(err);
+                                } else {
+                                    // if a event in the old team is not found in the database, remove it from old team events array
+                                    if(event === null){
+                                        team.events.splice(team.events.indexOf(dbEventId),1);
+                                        team.save();
+                                    }
+                                    
+                                    // if a event in the old team is not found in fbEventsIdArray, it is outdated and must be deleted
+                                    else if(fbEventsIdArray.indexOf(event.fbId) === -1) {
+                                        EventMethods.deleteEvent(event._id);
+                                    }
+                                }
+                                callback();
+                            });
+                        });
+                    } else {
+                            console.log("Unsuccessful Team Graph API call");
+                            console.log("Error: " + err + "\n" + 
+                                        "Response: " + response + "\n" +
+                                        "Response Status Code: " + response.statusCode);
+                    }
+                });
+            }
+        }
+    });
+}
 
 // Deletes all teams from database
 function deleteAllTeams(){
@@ -140,8 +218,7 @@ function deleteAllTeams(){
             console.log("Removed all Team Objects from Database");
         }
     });
-    
-};
+}
 
 // Deletes a given team from the database
 function deleteTeam(fbPageId){
@@ -167,7 +244,8 @@ function deleteTeam(fbPageId){
 };
 
 module.exports = {
-    initializeTeam  : initializeTeam,
-    deleteAllTeams  : deleteAllTeams,
-    deleteTeam      : deleteTeam
+    initializeTeam      : initializeTeam,
+    updateTeamEvents    : updateTeamEvents,
+    deleteAllTeams      : deleteAllTeams,
+    deleteTeam          : deleteTeam
 };

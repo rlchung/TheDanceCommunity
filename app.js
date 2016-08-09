@@ -51,9 +51,8 @@ app.set("view engine", "ejs");
 
 // TeamMethods.initializeTeam("1084771798235987");
 
+TeamMethods.updateTeamEvents("57a983513059f7a609d66aaa");
 // EventMethods.initializeEvent("926528734142044");
-
-EventMethods.updateEvent("57a848539c591a2314ee1d26");
 
 // TeamMethods.deleteAllTeams()
 // EventMethods.deleteAllEvents();

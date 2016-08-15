@@ -50,8 +50,9 @@ app.set("view engine", "ejs");
 // });
 
 // TeamMethods.initializeTeam("1084771798235987");
+TeamMethods.updateTeam("57a983513059f7a609d66aaa");
 
-TeamMethods.updateTeamEvents("57a983513059f7a609d66aaa");
+// TeamMethods.updateTeamEvents("57a983513059f7a609d66aaa");
 // EventMethods.initializeEvent("926528734142044");
 
 // TeamMethods.deleteAllTeams()

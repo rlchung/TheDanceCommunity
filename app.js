@@ -7,7 +7,8 @@ var express         = require("express"),
     Team            = require("./models/team"),
     TeamMethods     = require("./methods/teamMethods"),
     Post            = require("./models/post"),
-    PostMethods     = require("./methods/postMethods");
+    PostMethods     = require("./methods/postMethods"),
+    Locality        = require("./locality");
     // Have yet to implement
     // User        = require('./models/user'); 
     
@@ -49,11 +50,6 @@ app.set("view engine", "ejs");
 //     console.log(team[0].events[0]);
 // });
 
-// TeamMethods.initializeTeam("1084771798235987");
-TeamMethods.updateTeam("57a983513059f7a609d66aaa");
-
-// TeamMethods.updateTeamEvents("57a983513059f7a609d66aaa");
-// EventMethods.initializeEvent("926528734142044");
 
 // TeamMethods.deleteAllTeams()
 // EventMethods.deleteAllEvents();
@@ -76,7 +72,9 @@ app.get("/los-angeles", function(req,res){
 app.get("/cities", function(req,res){
     var location = req.query.location; 
     // use res.redirect to process location input and redirect to page
-    res.send("address is="+ location);
+    Locality.getCommunity(location, function(community){
+        res.redirect("/" + community);
+    })
 });
 
 

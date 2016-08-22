@@ -73,7 +73,8 @@ app.get("/cities", function(req,res){
     var location = req.query.location; 
     // use res.redirect to process location input and redirect to page
     Locality.getCommunity(location, function(community){
-        res.redirect("/" + community);
+        //res.redirect("/" + community);
+        res.send(community);
     })
 });
 

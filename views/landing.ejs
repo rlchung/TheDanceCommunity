@@ -21,9 +21,10 @@
     <!--Page Content-->
         <h1>Welcome to The Dance Community</h1>
         <!--Will be a post request-->
-        <form action="/cities" method="GET">
+        <form name="addressForm" id="addressForm" action="/cities" method="GET" onsubmit="geocodeInput()">
             <div class="form-group">
-                <input name="location" id="input" type="text" placeholder="Enter your address to get started" required>
+                <input name="location" id="pac-input" type="text" placeholder="Enter your address to get started" required/>
+                <input name="geocode" id="geocode" type="hidden">
             </div>
             <div class="form-group">
                 <button type="submit">Click</button>
@@ -31,14 +32,12 @@
         </form>
         <!--API script to be loaded first-->
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2h-DBCBSUmKcgfpr2PPX_9vZTugX_iuU&libraries=places"></script>
-        <script>
-            var input = document.getElementById("input");
+        <script type="text/javascript">
+            var input = document.getElementById("pac-input");
             var options = {
                 componentRestrictions: {country: 'US'}  
             };
-            
             var autocomplete = new google.maps.places.Autocomplete(input, options);
-            
         </script>
     </body>
 </html>

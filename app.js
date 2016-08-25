@@ -2,6 +2,7 @@ var express         = require("express"),
     app             = express(),
     bodyParser      = require("body-parser"),
     mongoose        = require("mongoose"),
+    session         = require("express-session"),
     Event           = require("./models/event"),
     EventMethods    = require("./methods/eventMethods"),
     Team            = require("./models/team"),
@@ -42,6 +43,12 @@ app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
 
+app.use(session({
+    secret: 'theyear20xx',
+    resave: false,
+    saveUninitialized: false
+}));
+
 // TeamMethods.initializeTeam(teamDir.samahangModern);
 // TeamMethods.initializeTeam(teamDir.aca);
 // TeamMethods.deleteTeam(teamDir.samahangModern);
@@ -65,17 +72,21 @@ app.get("/local", function(req,res){
     res.render("local");
 });
 
-app.get("/los-angeles", function(req,res){
-    res.render("los-angeles");
+app.get("/cities/los-angeles", function(req,res){
+    console.log(req.session.coords);
+    res.render("cities/los-angeles");
 });
 
 app.get("/cities", function(req,res){
     var location = req.query.location; 
     // use res.redirect to process location input and redirect to page
-    Locality.getCommunity(location, function(community){
-        //res.redirect("/" + community);
-        res.send(community);
-    })
+    Locality.geocodeAddress(location, function(coordinates){
+        //res.redirect("/cities/" + community);
+        Locality.nearestCommunity(coordinates,function(community){
+            req.session.coords = coordinates;
+            res.redirect("/cities/" + community);
+        });
+    });
 });
 
 

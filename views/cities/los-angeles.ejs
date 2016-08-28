@@ -22,9 +22,10 @@
                 js.src = "//connect.facebook.net/en_US/sdk.js";
                 fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
-            
         </script>
         <h1>Los Angeles Page</h1>
+        <h2><%= city%></h2>
+        <h2> Lat: <%= coordinates.lat%>, Lng: <%= coordinates.lng%></h2>
         <!--Successful object dump from Facebook Graph API-->
         <div>
             <script type="text/javascript">

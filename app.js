@@ -72,18 +72,33 @@ app.get("/local", function(req,res){
     res.render("local");
 });
 
-app.get("/cities/los-angeles", function(req,res){
-    console.log(req.session.coords);
-    res.render("cities/los-angeles");
-});
+var cityFunction = function(req,res){
+    res.render("cities/los-angeles", {coordinates: req.session.coordinates, city: req.session.nearbyBaseCity});
+}
+
+// app.get("/cities/los-angeles", function(req,res){
+//     //console.log(req.session.coords);
+//     res.render("cities/los-angeles");
+// });
+
+app.get("/cities/los-angeles", cityFunction);
+app.get("/cities/anaheim", cityFunction);
+app.get("/cities/irvine", cityFunction);
+app.get("/cities/santa-ana", cityFunction);
+app.get("/cities/cerritos", cityFunction);
+app.get("/cities/monterey-park", cityFunction);
+app.get("/cities/walnut", cityFunction);
+app.get("/cities/long-beach", cityFunction);
 
 app.get("/cities", function(req,res){
     var location = req.query.location; 
     // use res.redirect to process location input and redirect to page
-    Locality.geocodeAddress(location, function(coordinates){
+    Locality.geocodeAddress(location, function(inputCoordinates){
         //res.redirect("/cities/" + community);
-        Locality.nearestCommunity(coordinates,function(community){
-            req.session.coords = coordinates;
+        Locality.nearestCommunity(inputCoordinates,function(community){
+            //use cookies to store coordinate values for nearby functionality
+            req.session.coordinates = inputCoordinates;
+            req.session.nearbyBaseCity = community;
             res.redirect("/cities/" + community);
         });
     });
@@ -93,3 +108,4 @@ app.get("/cities", function(req,res){
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("server is running");
 });
+

@@ -4,7 +4,8 @@ var mongoose        = require("mongoose"),
     Event           = require("../models/event"),
     Team            = require("../models/team"),
     Credentials     = require("../credentials"),
-    EventMethods    = require("../methods/eventMethods");
+    EventMethods    = require("../methods/eventMethods"),
+    Directories     = require("../directories");
 
 // Creates a Team object and adds to DB
 // fbTeamId : the fbTeamId of the team to be initialized
@@ -27,6 +28,7 @@ function initializeTeam(fbTeamId){
                                     fbId                = infoJson["id"],
                                     email               = infoJson["emails"],
                                     fbLink              = infoJson["link"],
+                                    location            = Directories.fbIdToLocationDirectory[infoJson["id"]],
                                     bio                 = infoJson["bio"],
                                     longDescription     = infoJson["description"],
                                     shortDescription    = infoJson["about"],
@@ -40,6 +42,7 @@ function initializeTeam(fbTeamId){
                                     fbId                : fbId,
                                     email               : email,
                                     fbLink              : fbLink,
+                                    location            : location,
                                     bio                 : bio,
                                     longDescription     : longDescription,
                                     shortDescription    : shortDescription,

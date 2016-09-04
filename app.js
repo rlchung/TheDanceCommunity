@@ -3,83 +3,65 @@ var express         = require("express"),
     bodyParser      = require("body-parser"),
     mongoose        = require("mongoose"),
     session         = require("express-session"),
+    async           = require("async"),
     Event           = require("./models/event"),
     EventMethods    = require("./methods/eventMethods"),
     Team            = require("./models/team"),
     TeamMethods     = require("./methods/teamMethods"),
     Post            = require("./models/post"),
     PostMethods     = require("./methods/postMethods"),
-    Locality        = require("./locality");
+    seedDB          = require("./seed"),
+    restartData     = require("./restartData"),
+    Locality        = require("./locality"),
+    Directories     = require("./directories");
     // Have yet to implement
     // User        = require('./models/user'); 
-    
-// Contains key-value pairs of given teams and their page_id
-var teamDir = {
-    aca: "75035611936",
-    chaotic3: "124327507658376",
-    foundations: "277137469077279",
-    grv: "141226349256771",
-    hallOfFame: "349717898382614",
-    makerEmpire: "180722678616577",
-    theMob: "435120296549776",
-    nsuModern: "1420546741605580",
-    samahangModern: "545398148962340",
-    vsuModern: "578630488962319"
-};
-
-var compDir = {
-    bodyRock: "199437836735186",
-    bridge: "361879750609377",
-    fusion: "184822451538010",
-    maxtOut: "237658223056509",
-    preludeNorcal: "537913236272817",
-    ultimateBrawl: "381738788513134",
-    vibe: "122754417784582"
-};
 
 mongoose.connect("mongodb://localhost/thedancecommunity");
 // To parse form data
 app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files
 app.set("view engine", "ejs");
-
+app.use(express.static(__dirname + "/public"));
 app.use(session({
     secret: 'theyear20xx',
     resave: false,
     saveUninitialized: false
 }));
 
-// TeamMethods.initializeTeam(teamDir.samahangModern);
-// TeamMethods.initializeTeam(teamDir.aca);
-// TeamMethods.deleteTeam(teamDir.samahangModern);
-// Team.findByFbId(teamDir.samahangModern).populate('events').exec(function(err,team){
+// seedDB();
+
+// Team.findByFbId(Directories.teamFbIdDirectory.aca).exec(function(err,team){
 //     if(err) console.log(err);
-//     console.log(team[0].events[0]);
+//     TeamMethods.updateTeam(team[0]._id);
 // });
-
-
-// TeamMethods.deleteAllTeams()
-// EventMethods.deleteAllEvents();
-// PostMethods.deleteAllPosts();
-
-
+// TeamMethods.deleteTeam(Directories.teamFbIdDirectory.samahangModern);
+// Team.findByFbId(Directories.teamFbIdDirectory.samahangModern).populate('events').exec(function(err,team){
+//     if(err) console.log(err);
+//     else console.log(team[0]);
+// });
 
 app.get("/", function(req,res){
     res.render("landing"); 
 });
 
-app.get("/local", function(req,res){
-    res.render("local");
-});
-
 var cityFunction = function(req,res){
-    res.render("cities/los-angeles", {coordinates: req.session.coordinates, city: req.session.nearbyBaseCity});
+    var formattedNearbyCity0 = req.session.nearby.formattedNearbyCity0;
+    var formattedNearbyCity1 = req.session.nearby.formattedNearbyCity1;
+    var formattedNearbyCity2 = req.session.nearby.formattedNearbyCity2;
+    
+    
+    Team.find({location: {$in:[formattedNearbyCity0, formattedNearbyCity1, formattedNearbyCity2]}}, function(err,teamsFromDB){
+        if(err)console.log(err);
+        else {
+            res.render("cities/local", {
+                coordinates: req.session.coordinates, 
+                nearby: req.session.nearby,
+                teams: teamsFromDB
+            });
+        }
+    })
 }
-
-// app.get("/cities/los-angeles", function(req,res){
-//     //console.log(req.session.coords);
-//     res.render("cities/los-angeles");
-// });
 
 app.get("/cities/los-angeles", cityFunction);
 app.get("/cities/anaheim", cityFunction);
@@ -98,8 +80,8 @@ app.get("/cities", function(req,res){
         Locality.nearestCommunity(inputCoordinates,function(community){
             //use cookies to store coordinate values for nearby functionality
             req.session.coordinates = inputCoordinates;
-            req.session.nearbyBaseCity = community;
-            res.redirect("/cities/" + community);
+            req.session.nearby = community;
+            res.redirect("/cities/" + community.baseCity);
         });
     });
 });

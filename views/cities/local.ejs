@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+    <head>
+        <title>Dance Community Events near <%= nearby.baseCity %> | TheDanceCommunity</title>
+    </head>
+    <body>
+        <h2><%= nearby.baseCity%></h2>
+        <h2> Lat: <%= coordinates.lat%>, Lng: <%= coordinates.lng%></h2>
+        <h2> Nearby teams: </h2>
+        <% teams.forEach(function(team){ %>
+            <p>
+                <%= team.name%>
+            </p>
+        <% }) %>
+    </body>
+</html>

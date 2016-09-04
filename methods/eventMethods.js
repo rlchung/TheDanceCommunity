@@ -119,7 +119,7 @@ function initializeEvent(fbEventId){
                             }
                             
                         } else {
-                            console.log("initializeEvent: Unsuccessful Graph API call");
+                            console.log("initializeEvent: Unsuccessful Graph API call when initializing " + fbEventId);
                             console.log("Error: " + err + "\n" + 
                                         "Response: " + response + "\n" +
                                         "Response Status Code: " + response.statusCode);
@@ -224,7 +224,7 @@ function updateEvent(dbEventId){
                             updateEventPosts(dbEventId);
                             
                             if(currentUpdatedTime.getTime() === event.updatedTime.getTime()){
-                                console.log(dbEventId + " event is up-to-date");
+                                // console.log(dbEventId + " event is up-to-date");
                             } else {
                                 // main update logic goes here
                                 
@@ -269,9 +269,10 @@ function updateEvent(dbEventId){
                                             event.place             = updatedEvent.place;
                                             event.cover             = updatedEvent.cover;
                                             event.category          = updatedEvent.category;
-                                            event.save(function(){
-                                                console.log(dbEventId + " event updated");
-                                            });
+                                            // event.save(function(){
+                                            //     console.log(dbEventId + " event updated");
+                                            // });
+                                            event.save();
                       
                                         } else {
                                              console.log("Unsuccessful Cover Photo Graph API call");
@@ -296,9 +297,10 @@ function updateEvent(dbEventId){
                                     event.place             = updatedEvent.place;
                                     event.cover             = updatedEvent.cover;
                                     event.category          = updatedEvent.category;
-                                    event.save(function(){
-                                        console.log(dbEventId + " event updated");
-                                    });
+                                    // event.save(function(){
+                                    //     console.log(dbEventId + " event updated");
+                                    // });
+                                    event.save();
                                 }
                             
                                 });

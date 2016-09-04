@@ -8,6 +8,7 @@ var teamSchema = new mongoose.Schema({
     coverPic:           String,
     email:              String,
     fbLink:             String,
+    location:           String,
 
     // Biographical information
     bio:                String,

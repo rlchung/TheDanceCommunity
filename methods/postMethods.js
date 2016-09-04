@@ -107,7 +107,7 @@ function updatePost(dbPostId){
                          
                         // if updatedTime is the same, don't update   
                         if(currentUpdatedTime.getTime() === post.updatedTime.getTime()) {
-                            console.log(dbPostId + " post is up-to-date" );
+                            //console.log(dbPostId + " post is up-to-date" );
                         }
                         else {
                         // separate checks needed for possibly undefined nested properties
@@ -124,9 +124,10 @@ function updatePost(dbPostId){
                             post.updatedTime    = currentUpdatedTime;
                             post.attachments    = currentAttachments;
                             
-                            post.save(function(){
-                                console.log(dbPostId + " post updated");
-                            })
+                            // post.save(function(){
+                            //     console.log(dbPostId + " post updated");
+                            // });
+                            post.save();
                         }
                         
                     } else {

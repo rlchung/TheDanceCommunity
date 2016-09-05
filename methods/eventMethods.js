@@ -27,6 +27,7 @@ function initializeEvent(fbEventId){
                         var endDate = new Date(eventJson["end_time"]);
                         
                         if((Date.now() - endDate.getTime()) <= 1209600000){
+                        // if(true){
                              // additional undefined tests needed
                             var placeCheck;
                             var coverCheck;
@@ -314,7 +315,8 @@ function updateEvent(dbEventId){
                                 }
                             }
                         } else {
-                            // return if event is older than 2 weeks
+                            // if event is older than 2 weeks, delete the event object
+                            deleteEvent(dbEventId);
                             return;
                         }
                     } else {
@@ -420,7 +422,7 @@ function deleteEventFromDatabaseOnly(dbEventId){
     });
 }
 
-// Deletes a given event from the database and from parent Team
+// Deletes a given event from the database and from parent Team object
 // @param dbEventId is _id of the given event
 function deleteEvent(dbEventId){
     // delete event from parent Team container
@@ -434,28 +436,28 @@ function deleteEvent(dbEventId){
                 } else {
                     var index = team[0].events.indexOf(dbEventId);
                     team[0].events.splice(index, 1);
-                    team[0].save();
+                    team[0].save(function(){
+                        Event.findByIdAndRemove(dbEventId,function(err, eventObj){
+                            if(err){
+                                console.log(err);
+                            // if eventObj exists 
+                            } if(eventObj){
+                                // remove posts belonging to event from database
+                                async.each(eventObj.posts,function(post,callback){
+                                    Post.findByIdAndRemove(post,function(){
+                                        callback();     
+                                    });
+                                });
+                             
+                                console.log(dbEventId + " posts removed successfully");
+                                console.log(dbEventId + " event removed successfully");
+                            } else {
+                                console.log(dbEventId + " EVENT DOES NOT EXIST");
+                            }
+                        });
+                    });
                 }
             });
-        }
-    });
-    
-    Event.findByIdAndRemove(dbEventId,function(err, eventObj){
-        if(err){
-            console.log(err);
-        // if eventObj exists 
-        } if(eventObj){
-            // remove posts belonging to event from database
-            async.each(eventObj.posts,function(post,callback){
-                Post.findByIdAndRemove(post,function(){
-                    callback();     
-                });
-            });
-         
-            console.log(dbEventId + " posts removed successfully");
-            console.log(dbEventId + " event removed successfully");
-        } else {
-            console.log(dbEventId + " EVENT DOES NOT EXIST");
         }
     });
 }

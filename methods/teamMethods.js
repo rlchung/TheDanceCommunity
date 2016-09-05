@@ -229,6 +229,8 @@ function updateTeam(dbTeamId){
 
 // updateTeamEvents is a helper function for updateTeam that updates all events for given team
 // events not in db are added, events in db are updated, and events no longer current are removed
+// BUG: removing events from team object's eventID array works gradually with multiple calls.
+//      Does not work with one call
 function updateTeamEvents(dbTeamId){
     
     Team.findById(dbTeamId).exec(function(err,team){
@@ -266,19 +268,19 @@ function updateTeamEvents(dbTeamId){
                             });  
                         });
                         
-                        // for events in team.events not in fbEventsIdArray, delete events in team.events
+                        // for events in team.events not in fbEventsIdArray, delete events in team.events (if the team deleted an event)
                         async.each(team.events,function(dbEventId,callback){
                             Event.findById(dbEventId).exec(function(err,event){
                                 if(err){
                                     console.log(err);
                                 } else {
-                                    // if a event in the old team is not found in the database, remove it from old team events array
+                                    // if an event in the team object is not found in the database, remove it from team object's events array
                                     if(event === null){
                                         team.events.splice(team.events.indexOf(dbEventId),1);
                                         team.save();
                                     }
                                     
-                                    // if a event in the old team is not found in fbEventsIdArray, it is outdated and must be deleted
+                                    // if an event in the team object is not found in fbEventsIdArray, it is outdated and must be deleted
                                     else if(fbEventsIdArray.indexOf(event.fbId) === -1) {
                                         EventMethods.deleteEvent(event._id);
                                     }

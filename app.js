@@ -34,15 +34,10 @@ app.use(session({
 
 // TeamMethods.initializeTeam(Directories.teamFbIdDirectory.samahangModern);
 
-// Team.findByFbId(Directories.teamFbIdDirectory.pacModern).exec(function(err,team){
+// Team.findByFbId(Directories.teamFbIdDirectory.barkadaModern).exec(function(err,team){
 //     if(err) console.log(err);
 //     else TeamMethods.updateTeam(team[0]._id);
 // })
-
-// Team.findByFbId(Directories.teamFbIdDirectory.aca).exec(function(err,team){
-//     if(err) console.log(err);
-//     TeamMethods.updateTeam(team[0]._id);
-// });
 
 // Team.findByFbId(Directories.teamFbIdDirectory.samahangModern).populate('events').exec(function(err,team){
 //     if(err) console.log(err);

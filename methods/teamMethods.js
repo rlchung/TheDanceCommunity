@@ -21,77 +21,69 @@ function initializeTeam(fbTeamId){
                 request("https://graph.facebook.com/" + fbTeamId + "?fields=name,id,cover,emails,link,bio,description,about,personal_info,general_info,awards,events&access_token=" + Credentials.token, function (err, response, body) {
                     if (!err && response.statusCode == 200) {
                         var infoJson = JSON.parse(body);
-                        request("https://graph.facebook.com/" + fbTeamId + "/photos?fields=images&access_token="+ Credentials.token, function (err, response, body){
-                            if (!err && response.statusCode == 200) {
-                                var profilePicJson = JSON.parse(body);
-                                var name                = infoJson["name"],
-                                    fbId                = infoJson["id"],
-                                    email               = infoJson["emails"],
-                                    fbLink              = infoJson["link"],
-                                    location            = Directories.fbIdToLocationDirectory[infoJson["id"]],
-                                    bio                 = infoJson["bio"],
-                                    longDescription     = infoJson["description"],
-                                    shortDescription    = infoJson["about"],
-                                    personalInfo        = infoJson["personal_info"],
-                                    generalInfo         = infoJson["general_info"],
-                                    awards              = infoJson["awards"],
-                                    events              = [];
-                                
-                                var newTeam = {
-                                    name                : name,
-                                    fbId                : fbId,
-                                    email               : email,
-                                    fbLink              : fbLink,
-                                    location            : location,
-                                    bio                 : bio,
-                                    longDescription     : longDescription,
-                                    shortDescription    : shortDescription,
-                                    personalInfo        : personalInfo,
-                                    generalInfo         : generalInfo,
-                                    awards              : awards,
-                                    events              : events
-                                };
-                                
-                                if (profilePicJson["data"].length != 0)
-                                    newTeam.profilePic = profilePicJson["data"][0]["images"][0]["source"];
-                                
-                                // An array of event fbId's that will be used to initialize Events belonging to Team obj
-                                var fbEventsIdArray = [];
-                                
-                                infoJson["events"]["data"].forEach(function(event){
-                                    fbEventsIdArray.push(event["id"]);
-                                });
-                                
-                                // An object containing newTeam and fbEventsIdArray
-                                var teamContainer = {
-                                    newTeam             : newTeam,
-                                    fbEventsIdArray     : fbEventsIdArray
-                                };
-                                
-                                // separate check for undefined cover
-                                if (typeof infoJson["cover"] != 'undefined'){
-                                    request("https://graph.facebook.com/" + infoJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(err, response, body){
-                                        if (!err && response.statusCode == 200) {
-                                            var coverPicJson = JSON.parse(body);
-                                            teamContainer.newTeam.coverPic = coverPicJson["webp_images"][0]["source"];
-                                            finalizeTeam(teamContainer);
-                                            
-                                        } else {
-                                            console.log("initializeTeam: Unsuccessful Graph API call to photos");
-                                            console.log( err + "\n" + 
-                                                        "Response: " + response);
-                                        }
-                                    });
-                                } else {
-                                    finalizeTeam(teamContainer);
-                                }
-                                    
-                            } else {
-                                console.log("initializeTeam: Unsuccessful Graph API call to photos");
-                                console.log(err + "\n" + 
-                                            "Response: " + response);
-                            }
+                        var name                = infoJson["name"],
+                            profilePic          = "http://res.cloudinary.com/dce6r25eh/image/facebook/" + fbTeamId + ".jpg",
+                            fbId                = infoJson["id"],
+                            email               = infoJson["emails"],
+                            fbLink              = infoJson["link"],
+                            location            = Directories.fbIdToLocationDirectory[infoJson["id"]],
+                            bio                 = infoJson["bio"],
+                            longDescription     = infoJson["description"],
+                            shortDescription    = infoJson["about"],
+                            personalInfo        = infoJson["personal_info"],
+                            generalInfo         = infoJson["general_info"],
+                            awards              = infoJson["awards"],
+                            events              = [];
+                        
+                        var newTeam = {
+                            name                : name,
+                            profilePic          : profilePic,
+                            fbId                : fbId,
+                            email               : email,
+                            fbLink              : fbLink,
+                            location            : location,
+                            bio                 : bio,
+                            longDescription     : longDescription,
+                            shortDescription    : shortDescription,
+                            personalInfo        : personalInfo,
+                            generalInfo         : generalInfo,
+                            awards              : awards,
+                            events              : events
+                        };
+                        
+                        // if (profilePicJson["data"].length != 0)
+                        //     newTeam.profilePic = profilePicJson["data"][0]["images"][0]["source"];
+                        
+                        // An array of event fbId's that will be used to initialize Events belonging to Team obj
+                        var fbEventsIdArray = [];
+                        
+                        infoJson["events"]["data"].forEach(function(event){
+                            fbEventsIdArray.push(event["id"]);
                         });
+                        
+                        // An object containing newTeam and fbEventsIdArray
+                        var teamContainer = {
+                            newTeam             : newTeam,
+                            fbEventsIdArray     : fbEventsIdArray
+                        };
+                        
+                        // separate check for undefined cover
+                        if (typeof infoJson["cover"] != 'undefined'){
+                            request("https://graph.facebook.com/" + infoJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(err, response, body){
+                                if (!err && response.statusCode == 200) {
+                                    var coverPicJson = JSON.parse(body);
+                                    teamContainer.newTeam.coverPic = coverPicJson["webp_images"][0]["source"];
+                                    finalizeTeam(teamContainer);
+                                    
+                                } else {
+                                    console.log("initializeTeam: Unsuccessful Graph API call to photos");
+                                    console.log( err + "\n" + 
+                                                "Response: " + response);
+                                }
+                            });
+                        } else {
+                            finalizeTeam(teamContainer);
+                        }
                     } else {
                         console.log("initializeTeam: Unsuccessful Graph API call");
                         console.log(err + "\n" + 
@@ -143,79 +135,62 @@ function updateTeam(dbTeamId){
                request("https://graph.facebook.com/" + team.fbId + "?fields=name,cover,emails,link,bio,description,about,personal_info,general_info,awards&access_token=" + Credentials.token, function (err, response, body){
                     if (!err && response.statusCode == 200){
                         var currentTeamJson = JSON.parse(body);
-                        request("https://graph.facebook.com/" + team.fbId + "/photos?fields=images&access_token="+ Credentials.token, function (err, response, body){
-                            if(!err && response.statusCode ==200){
-                                var currentProfilePicJson = JSON.parse(body);
-                                var currentName             = currentTeamJson["name"],
-                                    currentEmail            = currentTeamJson["emails"],
-                                    currentFbLink           = currentTeamJson["link"],
-                                    currentBio              = currentTeamJson["bio"],
-                                    currentLongDescription  = currentTeamJson["description"],
-                                    currentShortDescription = currentTeamJson["about"],
-                                    currentPersonalInfo     = currentTeamJson["personal_info"],
-                                    currentGeneralInfo      = currentTeamJson["general_info"],
-                                    currentAwards           = currentTeamJson["awards"];
-                                
-                                var currentTeam = new Team({
-                                    name                : currentName,
-                                    email               : currentEmail,
-                                    fbLink              : currentFbLink,
-                                    bio                 : currentBio,
-                                    longDescription     : currentLongDescription,
-                                    shortDescription    : currentShortDescription,
-                                    personalInfo        : currentPersonalInfo,
-                                    generalInfo         : currentGeneralInfo,
-                                    awards              : currentAwards,
-                                })
-                                
-                                // separate check for undefined profile pic
-                                if(currentProfilePicJson["data"].length != 0)
-                                    currentTeam.profilePic = currentProfilePicJson["data"][0]["images"][0]["source"];
-                                
-                                // Update all events before updating team
-                                updateTeamEvents(dbTeamId);
-                                 
-                                // separate check for undefined cover
-                                if(typeof currentTeamJson["cover"] != 'undefined'){
-                                    request("https://graph.facebook.com/" + currentTeamJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(err, response, body){
-                                        if(!err && response.statusCode == 200){
-                                            var currentCoverPicJson = JSON.parse(body);
-                                            currentTeam.coverPic = currentCoverPicJson["webp_images"][0]["source"];
-                                            
-                                            // updating all necessary fields
-                                            
-                                            team.name               = currentTeam.name;
-                                            team.profilePic         = currentTeam.profilePic;
-                                            team.coverPic           = currentTeam.coverPic;
-                                            team.email              = currentTeam.email;
-                                            team.fbLink             = currentTeam.fbLink;
-                                            team.bio                = currentTeam.bio;
-                                            team.longDescription    = currentTeam.longDescription;
-                                            team.shortDescription   = currentTeam.shortDescription;
-                                            team.personalInfo       = currentTeam.personalInfo;
-                                            team.generalInfo        = currentTeam.generalInfo;
-                                            team.awards             = currentTeam.awards;
-                                            team.save(function(){
-                                                console.log(dbTeamId + " team updated");
-                                            })
-                                            
-                                        } else {
-                                            console.log("updateTeam: Unsuccessful Graph API call to photos");
-                                            console.log(err + "\n" + 
-                                                        "Response: " + response);
-                                        }
-                                    });
+                        var currentName             = currentTeamJson["name"],
+                            currentEmail            = currentTeamJson["emails"],
+                            currentFbLink           = currentTeamJson["link"],
+                            currentBio              = currentTeamJson["bio"],
+                            currentLongDescription  = currentTeamJson["description"],
+                            currentShortDescription = currentTeamJson["about"],
+                            currentPersonalInfo     = currentTeamJson["personal_info"],
+                            currentGeneralInfo      = currentTeamJson["general_info"],
+                            currentAwards           = currentTeamJson["awards"];
+                        
+                        var currentTeam = new Team({
+                            name                : currentName,
+                            email               : currentEmail,
+                            fbLink              : currentFbLink,
+                            bio                 : currentBio,
+                            longDescription     : currentLongDescription,
+                            shortDescription    : currentShortDescription,
+                            personalInfo        : currentPersonalInfo,
+                            generalInfo         : currentGeneralInfo,
+                            awards              : currentAwards,
+                        });
+                        
+                        // Update all events before updating team
+                        updateTeamEvents(dbTeamId);
+                         
+                        // separate check for undefined cover
+                        if(typeof currentTeamJson["cover"] != 'undefined'){
+                            request("https://graph.facebook.com/" + currentTeamJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(err, response, body){
+                                if(!err && response.statusCode == 200){
+                                    var currentCoverPicJson = JSON.parse(body);
+                                    currentTeam.coverPic = currentCoverPicJson["webp_images"][0]["source"];
+                                    
+                                    // updating all necessary fields
+                                    team.name               = currentTeam.name;
+                                    team.coverPic           = currentTeam.coverPic;
+                                    team.email              = currentTeam.email;
+                                    team.fbLink             = currentTeam.fbLink;
+                                    team.bio                = currentTeam.bio;
+                                    team.longDescription    = currentTeam.longDescription;
+                                    team.shortDescription   = currentTeam.shortDescription;
+                                    team.personalInfo       = currentTeam.personalInfo;
+                                    team.generalInfo        = currentTeam.generalInfo;
+                                    team.awards             = currentTeam.awards;
+                                    team.save(function(){
+                                        console.log(dbTeamId + " team updated");
+                                    })
+                                    
                                 } else {
-                                    console.log(currentTeam);
+                                    console.log("updateTeam: Unsuccessful Graph API call to photos");
+                                    console.log(err + "\n" + 
+                                                "Response: " + response);
                                 }
-        
-                                
-                            } else {
-                                console.log("updateTeam: Unsuccessful Graph API call to photos");
-                                console.log(err + "\n" + 
-                                            "Response: " + response);  
-                            } 
-                        });    
+                            });
+                        } else {
+                            console.log(currentTeam);
+                        }
                     } else{
                         console.log("updateTeam: Unsuccessful Graph API call");
                         console.log(err + "\n" + 
@@ -326,5 +301,5 @@ module.exports = {
     initializeTeam      : initializeTeam,
     updateTeam          : updateTeam,
     updateTeamEvents    : updateTeamEvents,
-    deleteTeam          : deleteTeam
+    deleteTeam          : deleteTeam,
 };

@@ -74,9 +74,8 @@ function initializePost(fbPostId){
                         
                     } else {
                         console.log("initializePost: Unsuccessful Graph API call");
-                        console.log("Error: " + err + "\n" + 
-                                    "Response: " + response + "\n" +
-                                    "Response Status Code: " + response.statusCode);
+                        console.log(err + "\n" + 
+                                    "Response: " + response);
                     } 
                 });
             }
@@ -132,23 +131,11 @@ function updatePost(dbPostId){
                         
                     } else {
                         console.log("updatePost: Unsuccessful Graph API call");
-                        console.log("Error: " + err + "\n" +
-                                    "Response: " + response + "\n" +
-                                    "Response Status Code: " + response.statusCode);
+                        console.log(err + "\n" +
+                                    "Response: " + response);
                     }
                 });        
             }
-        }
-    });
-}
-
-// Deletes all events from database
-function deleteAllPosts(){
-    Post.remove({},function(err){
-        if(err){
-            console.log(err);
-        } else {
-            console.log("Removed all Post Objects from Database");
         }
     });
 }
@@ -188,6 +175,5 @@ function deletePost(dbPostId){
 module.exports = {
     initializePost  : initializePost,
     updatePost      : updatePost,
-    deleteAllPosts  : deleteAllPosts,
     deletePost      : deletePost
 };

@@ -77,10 +77,9 @@ function initializeTeam(fbTeamId){
                                             finalizeTeam(teamContainer);
                                             
                                         } else {
-                                            console.log("Unsuccessful Graph API call to photos");
-                                            console.log("Error: " + err + "\n" + 
-                                                        "Response: " + response + "\n" +
-                                                        "Response Status Code: " + response.statusCode);
+                                            console.log("initializeTeam: Unsuccessful Graph API call to photos");
+                                            console.log( err + "\n" + 
+                                                        "Response: " + response);
                                         }
                                     });
                                 } else {
@@ -88,17 +87,15 @@ function initializeTeam(fbTeamId){
                                 }
                                     
                             } else {
-                                console.log("Unsuccessful Graph API call to photos");
-                                console.log("Error: " + err + "\n" + 
-                                            "Response: " + response + "\n" +
-                                            "Response Status Code: " + response.statusCode);
+                                console.log("initializeTeam: Unsuccessful Graph API call to photos");
+                                console.log(err + "\n" + 
+                                            "Response: " + response);
                             }
                         });
                     } else {
-                        console.log("Unsuccessful Graph API call");
-                        console.log("Error: " + err + "\n" + 
-                                    "Response: " + response + "\n" +
-                                    "Response Status Code: " + response.statusCode);
+                        console.log("initializeTeam: Unsuccessful Graph API call");
+                        console.log(err + "\n" + 
+                                    "Response: " + response);
                     }
                 });        
             }
@@ -203,10 +200,9 @@ function updateTeam(dbTeamId){
                                             })
                                             
                                         } else {
-                                            console.log("Unsuccessful Graph API call to photos");
-                                            console.log("Error: " + err + "\n" + 
-                                                        "Response: " + response + "\n" +
-                                                        "Response Status Code: " + response.statusCode);
+                                            console.log("updateTeam: Unsuccessful Graph API call to photos");
+                                            console.log(err + "\n" + 
+                                                        "Response: " + response);
                                         }
                                     });
                                 } else {
@@ -215,17 +211,15 @@ function updateTeam(dbTeamId){
         
                                 
                             } else {
-                                console.log("Unsuccessful Graph API call to photos");
-                                console.log("Error: " + err + "\n" + 
-                                            "Response: " + response + "\n" +
-                                            "Response Status Code: " + response.statusCode);  
+                                console.log("updateTeam: Unsuccessful Graph API call to photos");
+                                console.log(err + "\n" + 
+                                            "Response: " + response);  
                             } 
                         });    
                     } else{
-                        console.log("Unsuccessful Graph API call");
-                        console.log("Error: " + err + "\n" + 
-                                    "Response: " + response + "\n" +
-                                    "Response Status Code: " + response.statusCode);
+                        console.log("updateTeam: Unsuccessful Graph API call");
+                        console.log(err + "\n" + 
+                                    "Response: " + response);
                     }
                });
            }
@@ -264,7 +258,6 @@ function updateTeamEvents(dbTeamId){
                                 // if event is not found in existing database, add to database
                                 } else if (event.length === 0){
                                     EventMethods.initializeEvent(fbEventId);
-                                    console.log(fbEventId + " event added to " + dbTeamId + " team");
                                 // if event is found in existing database, update event
                                 } else {
                                     EventMethods.updateEvent(event[0]._id);
@@ -294,24 +287,12 @@ function updateTeamEvents(dbTeamId){
                             });
                         });
                     } else {
-                            console.log("Unsuccessful Team Graph API call");
-                            console.log("Error: " + err + "\n" + 
-                                        "Response: " + response + "\n" +
-                                        "Response Status Code: " + response.statusCode);
+                            console.log("updateTeamEvents: Unsuccessful Graph API call");
+                            console.log(err + "\n" + 
+                                        "Response: " + response);
                     }
                 });
             }
-        }
-    });
-}
-
-// Deletes all teams from database
-function deleteAllTeams(){
-    Team.remove({},function(err){
-        if(err){
-            console.log(err);
-        } else {
-            console.log("Removed all Team Objects from Database");
         }
     });
 }
@@ -343,6 +324,5 @@ module.exports = {
     initializeTeam      : initializeTeam,
     updateTeam          : updateTeam,
     updateTeamEvents    : updateTeamEvents,
-    deleteAllTeams      : deleteAllTeams,
     deleteTeam          : deleteTeam
 };

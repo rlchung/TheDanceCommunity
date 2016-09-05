@@ -30,12 +30,20 @@ app.use(session({
 }));
 
 // seedDB();
+// restartData();
+
+// TeamMethods.initializeTeam(Directories.teamFbIdDirectory.samahangModern);
+
+// Team.findByFbId(Directories.teamFbIdDirectory.pacModern).exec(function(err,team){
+//     if(err) console.log(err);
+//     else TeamMethods.updateTeam(team[0]._id);
+// })
 
 // Team.findByFbId(Directories.teamFbIdDirectory.aca).exec(function(err,team){
 //     if(err) console.log(err);
 //     TeamMethods.updateTeam(team[0]._id);
 // });
-// TeamMethods.deleteTeam(Directories.teamFbIdDirectory.samahangModern);
+
 // Team.findByFbId(Directories.teamFbIdDirectory.samahangModern).populate('events').exec(function(err,team){
 //     if(err) console.log(err);
 //     else console.log(team[0]);
@@ -51,8 +59,9 @@ var cityFunction = function(req,res){
     var formattedNearbyCity2 = req.session.nearby.formattedNearbyCity2;
     
     
-    Team.find({location: {$in:[formattedNearbyCity0, formattedNearbyCity1, formattedNearbyCity2]}}, function(err,teamsFromDB){
-        if(err)console.log(err);
+    Team.find({location: {$in:[formattedNearbyCity0, formattedNearbyCity1, formattedNearbyCity2]}}).populate('events').exec(function(err,teamsFromDB){
+        if(err)
+            console.log(err);
         else {
             res.render("cities/local", {
                 coordinates: req.session.coordinates, 
@@ -60,7 +69,7 @@ var cityFunction = function(req,res){
                 teams: teamsFromDB
             });
         }
-    })
+    });
 }
 
 app.get("/cities/los-angeles", cityFunction);
@@ -71,6 +80,7 @@ app.get("/cities/cerritos", cityFunction);
 app.get("/cities/monterey-park", cityFunction);
 app.get("/cities/walnut", cityFunction);
 app.get("/cities/long-beach", cityFunction);
+app.get("/cities/west-covina", cityFunction);
 
 app.get("/cities", function(req,res){
     var location = req.query.location; 

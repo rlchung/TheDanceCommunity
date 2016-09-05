@@ -17,13 +17,17 @@ function initializeEvent(fbEventId){
             console.log(err);
         } else {
             if(event.length != 0)
-                console.log(fbEventId + "event already exists in database");
+                console.log(fbEventId + " event already exists in database");
             else {
                 request("https://graph.facebook.com/" + fbEventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,photos{images},updated_time&access_token=" + Credentials.token, function (err, response, body){
-                        if (!err && response.statusCode == 200) {
-                            var eventJson = JSON.parse(body);
-                            
-                            // additional undefined tests needed
+                    if (!err && response.statusCode == 200) {
+                        var eventJson = JSON.parse(body);
+                        
+                        // If event is older than 2 weeks, don't initialize
+                        var endDate = new Date(eventJson["end_time"]);
+                        
+                        if((Date.now() - endDate.getTime()) <= 1209600000){
+                             // additional undefined tests needed
                             var placeCheck;
                             var coverCheck;
                             
@@ -109,22 +113,23 @@ function initializeEvent(fbEventId){
                   
                                     } else {
                                          console.log("Unsuccessful Cover Photo Graph API call");
-                                         console.log("Error: " + err + "\n" + 
-                                            "Response: " + response + "\n" +
-                                            "Response Status Code: " + response.statusCode);
+                                         console.log(err + "\n" + 
+                                            "Response: " + response + "\n");
                                     }
                                 });
                             } else {
                                 finalizeEvent(eventContainer);
                             }
-                            
                         } else {
-                            console.log("initializeEvent: Unsuccessful Graph API call when initializing " + fbEventId);
-                            console.log("Error: " + err + "\n" + 
-                                        "Response: " + response + "\n" +
-                                        "Response Status Code: " + response.statusCode);
+                            // return if event is older than 2 weeks
+                            return;
                         }
-                    });
+                    } else {
+                        console.log("initializeEvent: Unsuccessful Graph API call when initializing " + fbEventId);
+                        console.log(err + "\n" + 
+                                    "Response: " + response);
+                    }
+                });
             }
         }
     });
@@ -149,10 +154,10 @@ function finalizeEvent(eventContainer){
                     } else {
                         team[0].events.push(newlyCreated._id);
                         team[0].save();
+                        console.log(newlyCreated._id + " event added to " + newlyCreated.hostId + " team" );
                     }
                 }
             });
-            console.log(eventContainer.newEvent.name + " event object created successfully");
         }
     });   
 }
@@ -182,8 +187,13 @@ function updateEvent(dbEventId){
                 console.log(dbEventId + " event does not exist in the database");
             else {
                 request("https://graph.facebook.com/" + event.fbId + "?fields=name,cover,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,feed,photos{images},updated_time&access_token=" + Credentials.token, function (err, response, body){
-                        if (!err && response.statusCode == 200) {
-                            var currentEventJson = JSON.parse(body);
+                    if (!err && response.statusCode == 200) {
+                        var currentEventJson = JSON.parse(body);
+                        
+                        // If event is older than 2 weeks, don't initialize
+                        var endDate = new Date(currentEventJson["end_time"]);
+                        
+                        if((Date.now() - endDate.getTime()) <= 1209600000){
                             
                             // additional undefined tests needed
                             var currentPlaceCheck;
@@ -230,11 +240,12 @@ function updateEvent(dbEventId){
                                 
                                 // classifies the updated event
                                 natural.BayesClassifier.load('classifier.json',null,function(err,classifier){
-                                if(err){
-                                    console.log(err);
-                                } else {
-                                    updatedEvent.category = classifier.classify(currentName);
-                                }
+                                    if(err){
+                                        console.log(err);
+                                    } else {
+                                        updatedEvent.category = classifier.classify(currentName);
+                                    }
+                                });
                                 
                                 // adds photos to 'photos' array, if any
                                 if (typeof currentEventJson["photos"] != 'undefined') {
@@ -277,8 +288,7 @@ function updateEvent(dbEventId){
                                         } else {
                                              console.log("Unsuccessful Cover Photo Graph API call");
                                              console.log("Error: " + err + "\n" + 
-                                                "Response: " + response + "\n" +
-                                                "Response Status Code: " + response.statusCode);
+                                                         "Response: " + response);
                                         }
                                     });
                                 } else {
@@ -302,17 +312,17 @@ function updateEvent(dbEventId){
                                     // });
                                     event.save();
                                 }
-                            
-                                });
                             }
-                            
                         } else {
-                            console.log("Unsuccessful Cover Photo Graph API call");
-                            console.log("Error: " + err + "\n" + 
-                                        "Response: " + response + "\n" +
-                                        "Response Status Code: " + response.statusCode);
+                            // return if event is older than 2 weeks
+                            return;
                         }
-                    });
+                    } else {
+                        console.log("Unsuccessful Cover Photo Graph API call");
+                        console.log(err + "\n" + 
+                                    "Response: " + response);
+                    }
+                });
             }
         }
     })
@@ -379,23 +389,11 @@ function updateEventPosts(dbEventId){
                         });
                     } else {
                             console.log("Unsuccessful Event Feed Graph API call");
-                            console.log("Error: " + err + "\n" + 
-                                        "Response: " + response + "\n" +
-                                        "Response Status Code: " + response.statusCode);
+                            console.log(err + "\n" + 
+                                        "Response: " + response);
                     }
                 });
             }
-        }
-    });
-}
-
-// Deletes all events from database
-function deleteAllEvents(){
-    Event.remove({},function(err){
-        if(err){
-            console.log(err);
-        } else {
-            console.log("Removed all Event Objects from Database");
         }
     });
 }
@@ -466,7 +464,6 @@ module.exports = {
     finalizeEvent               : finalizeEvent,
     initializeEvent             : initializeEvent,
     updateEvent                 : updateEvent,
-    deleteAllEvents             : deleteAllEvents,
     deleteEvent                 : deleteEvent,
     deleteEventFromDatabaseOnly : deleteEventFromDatabaseOnly
 };

@@ -4,22 +4,29 @@
         <title>Dance Community Events near <%= nearby.baseCity %> | TheDanceCommunity</title>
     </head>
     <body>
-        <h2><%= nearby.baseCity%></h2>
+        <h2>Filter</h2>
+        <div id="filters" class="button-group">
+            <button class="button is-checked" data-filter="*">Show All</button>
+            <button class="button" data-filter=".losAngeles">Los Angeles</button>
+            <button class="button" data-filter=".westCovina">West Covina</button>
+            <button class="button" data-filter=".longBeach">Long Beach</button>
+        </div>
         <h2> Nearby teams: </h2>
-        
         <div class="content">
             <div class="container">
                 <section class="featured">
-                    <ul class="grid">
+                    <div class="grid">
                         <% teams.forEach(function(team){ %>
-                            <li>
-                                <img src= "<%= team.profilePic%>">
-                            </li>
+                            <div class="grid-item <%= team.location %>">
+                                <img src= "<%= team.profilePic%>" width=300 height=300 />
+                            </div>
                         <% }) %>
                     </ul>
                 </section>
             </div>
         </div>
-            
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.min.js"></script>
+        <script src="../../resources/local.js"></script>
     </body>
 </html>

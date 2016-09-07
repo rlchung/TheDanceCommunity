@@ -32,9 +32,10 @@ app.use(session({
 // seedDB();
 // restartData();
 
-TeamMethods.initializeTeam(Directories.teamFbIdDirectory.barkadaModern);
+// TeamMethods.initializeTeam(Directories.teamFbIdDirectory.barkadaModern);
+// TeamMethods.initializeTeam(Directories.teamFbIdDirectory.samahangModern);
 
-// Team.findByFbId(Directories.teamFbIdDirectory.barkadaModern).exec(function(err,team){
+// Team.findByFbId(Directories.teamFbIdDirectory.samahangModern).exec(function(err,team){
 //     if(err) console.log(err);
 //     else TeamMethods.updateTeam(team[0]._id);
 // })

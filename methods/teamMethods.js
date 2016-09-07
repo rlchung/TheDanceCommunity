@@ -22,7 +22,7 @@ function initializeTeam(fbTeamId){
                     if (!err && response.statusCode == 200) {
                         var infoJson = JSON.parse(body);
                         var name                = infoJson["name"],
-                            profilePic          = "http://res.cloudinary.com/dce6r25eh/image/facebook/" + fbTeamId + ".jpg",
+                            profilePic          = "https://res.cloudinary.com/dce6r25eh/image/facebook/" + fbTeamId + ".jpg",
                             fbId                = infoJson["id"],
                             email               = infoJson["emails"],
                             fbLink              = infoJson["link"],

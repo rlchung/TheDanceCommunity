@@ -1,3 +1,15 @@
+/*NAVBAR*/
+
+.navbar {
+    padding: 0;
+    border: 0;
+    background-color: #36454f;
+}
+
+.navbar a {
+    color: white;
+}
+
 .content {
     text-align: center;
     position: absolute;
@@ -10,6 +22,24 @@
 .hero {
     height: 770px;
     margin: 0 auto;
+    min-width: 780px;
+    max-width: 1366px;
+    background-image: url("https://scontent.xx.fbcdn.net/t31.0-8/13458611_616330075185516_7401409463503550716_o.jpg.webp");
+    background-repeat: no-repeat;
+    background-position: left center;
+    color: #fff;
+    position: relative;
+    opacity: .9;
+}
+
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.4;
 }
 
 .hero .container {
@@ -25,6 +55,7 @@
 }
 
 input {
+    color: black;
     letter-spacing: .5px;
 }
 
@@ -49,4 +80,109 @@ input {
     font-size:24px;
     border: 1px solid #323232;
     vertical-align: bottom;
+}
+
+footer {
+    margin-top: 100px;
+    padding:40px 0 20px;
+    background-color: #36454f;
+    vertical-align: top;
+    text-align: left;
+    border-top: 3px solid #ecf0f1;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 20px;
+    color: #fff;
+}
+
+/*CITIES*/
+
+section.cities {
+    width: 780px;
+    margin: 0 auto;
+    padding-top: 50px;
+}
+
+h3 {
+    font-weight: 300;
+    font-style: normal;
+    font-size: 40px;
+    letter-spacing: 0;
+}
+
+.localities {
+    list-style-type: none;
+    margin-top: 30px;
+    margin-bottom: 70px;
+    text-align: left;
+}
+
+section.cities ul.localities>li {
+    border-bottom: 1px solid #ecf0f1;
+    padding: 10px 0;
+}
+
+section.cities ul.localities h6 {
+    text-align: left;
+    float: left;
+    white-space: nowrap;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 12px;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    min-width: 174px;
+    width: 174px;
+    margin-top: 8px;
+}
+
+section.cities ul.cities {
+    list-style-type: none;
+    padding-left: 50px;
+    overflow: hidden;
+}
+
+ul {
+    margin-bottom: 0;
+}
+
+section.cities ul.cities li {
+    padding: 3px 0;
+    width: 24%;
+    display: inline-block;
+}
+
+/*FOOTER*/
+
+footer .container {
+    position: relative;
+    max-width: 1080px;
+}
+
+.container {
+    min-width: 320px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+footer ul.nav{
+    margin: 0 130px 2px 280px;
+}
+
+footer ul.nav>li {
+    margin: 0 0 5px;
+    width: 30%;
+    display: inline-block;
+}
+
+.nav {
+    padding-left: 0;
+    list-style: none;
+}
+
+.nav>li {
+    position: relative;
+    display: block;
 }

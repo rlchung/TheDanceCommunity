@@ -84,10 +84,12 @@ function initializeEvent(fbEventId){
                             //variables needed for creating posts 
                             
                             var fbPostsIdArray = [];
-                                            
-                            eventJson["feed"]["data"].forEach(function(event){
-                                fbPostsIdArray.push(event["id"]);
-                            });
+                            
+                            if (typeof eventJson["feed"] != 'undefined'){              
+                                eventJson["feed"]["data"].forEach(function(event){
+                                    fbPostsIdArray.push(event["id"]);
+                                });
+                            }
                                             
                             // An object containing newEvent and fbPostsIdArray
                             var eventContainer = {
@@ -343,52 +345,59 @@ function updateEventPosts(dbEventId){
                 request("https://graph.facebook.com/" + event.fbId + "?fields=feed&access_token=" + Credentials.token, function (err, response, body){
                     if (!err && response.statusCode == 200) {
                         var currentEventJson = JSON.parse(body);
-                        
-                        // handles post creation, update, deletion logic
-                        // fbPostsIdArray contains the most updated post Id's
-                        var fbPostsIdArray = [];
-                                    
-                        currentEventJson["feed"]["data"].forEach(function(event){
-                            fbPostsIdArray.push(event["id"]);
-                        });
-                        
-                        // for each post in fbPostsIdArray in event.posts, update posts in event.posts
-                        async.each(fbPostsIdArray,function(fbPostId,callback){
-                            Post.findByFbId(fbPostId).exec(function(err,post){
-                                if(err) {
-                                    console.log(err);
-                                // if post is not found in existing database, add to database
-                                } else if (post.length === 0){
-                                    PostMethods.initializePost(fbPostId);
-                                    console.log(fbPostId + " post added to " + dbEventId + " event");
-                                // if post is found in existing database, update post
-                                } else {
-                                    PostMethods.updatePost(post[0]._id);
-                                }
-                                callback();
-                            });  
-                        });
-                        
-                        // for posts in event.posts not in fbPostsIdArray, delete posts in event.posts
-                        async.each(event.posts,function(dbPostId,callback){
-                            Post.findById(dbPostId).exec(function(err,post){
-                                if(err){
-                                    console.log(err);
-                                } else {
-                                    // if a post in the old event is not found in the database, remove it from old events posts array
-                                    if(post === null){
-                                        event.posts.splice(event.posts.indexOf(dbPostId),1);
-                                        event.save();
-                                    }
-                                    
-                                    // if a post in the old event is not found in fbPostsIdArray, it is outdated and must be deleted
-                                    else if(fbPostsIdArray.indexOf(post.fbId) === -1) {
-                                        PostMethods.deletePost(post._id);
-                                    }
-                                }
-                                callback();
+                        if (typeof currentEventJson["feed"] != 'undefined'){
+                            // handles post creation, update, deletion logic
+                            // fbPostsIdArray contains the most updated post Id's
+                            var fbPostsIdArray = [];
+                                        
+                            currentEventJson["feed"]["data"].forEach(function(event){
+                                fbPostsIdArray.push(event["id"]);
                             });
-                        });
+                            
+                            // for each post in fbPostsIdArray in event.posts, update posts in event.posts
+                            async.each(fbPostsIdArray,function(fbPostId,callback){
+                                Post.findByFbId(fbPostId).exec(function(err,post){
+                                    if(err) {
+                                        console.log(err);
+                                    // if post is not found in existing database, add to database
+                                    } else if (post.length === 0){
+                                        PostMethods.initializePost(fbPostId);
+                                        console.log(fbPostId + " post added to " + dbEventId + " event");
+                                    // if post is found in existing database, update post
+                                    } else {
+                                        PostMethods.updatePost(post[0]._id);
+                                    }
+                                    callback();
+                                });  
+                            });
+                            
+                            // for posts in event.posts not in fbPostsIdArray, delete posts in event.posts
+                            async.each(event.posts,function(dbPostId,callback){
+                                Post.findById(dbPostId).exec(function(err,post){
+                                    if(err){
+                                        console.log(err);
+                                    } else {
+                                        // if a post in the old event is not found in the database, remove it from old events posts array
+                                        if(post === null){
+                                            event.posts.splice(event.posts.indexOf(dbPostId),1);
+                                            event.save();
+                                        }
+                                        
+                                        // if a post in the old event is not found in fbPostsIdArray, it is outdated and must be deleted
+                                        else if(fbPostsIdArray.indexOf(post.fbId) === -1) {
+                                            PostMethods.deletePost(post._id);
+                                        }
+                                    }
+                                    callback();
+                                });
+                            });
+                        } else {
+                            // if there exists posts in outdated event when there should be any, delete them all
+                            // Needs to be tested
+                            async.each(event.posts,function(dbPostId,callback){
+                                PostMethods.deletePost(dbPostId);
+                            })    
+                        }
                     } else {
                             console.log("Unsuccessful Event Feed Graph API call");
                             console.log(err + "\n" + 

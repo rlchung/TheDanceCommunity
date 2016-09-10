@@ -4,11 +4,72 @@
   box-sizing: border-box;
 }
 
+@-ms-viewport{
+  width: device-width;
+}
+
+/*NAVBAR*/
+
+.navbar {
+    padding: 0;
+    border: 0;
+    background-color: #36454f;
+    position: relative;
+}
+
+.container {
+    width: 100%;
+    min-width: 300px;
+    max-width: 780px;
+    padding: 10px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.navbar-right {
+    float: right;
+}
+
+.navbar-brand {
+    float: left;
+}
+
+.navbar a {
+    color: white;
+}
+
 .grid-item {
     position: relative;
     float: left;
-    width: 300px;
-    height: 300px;
+    width: 30%;
     margin: 5px;
+    margin: 1%;
 }
 
+img {
+    width: 100%;
+}
+
+/*CONTENT*/
+
+.teams {
+  width: 100%;
+  border-bottom: 1px solid #ecf0f1;
+  padding-bottom: 3%;
+}
+
+/*FOOTER*/
+
+footer {
+    margin-top: 100px;
+    margin-bottom: 0;
+    padding:40px 0 20px;
+    background-color: #36454f;
+    vertical-align: top;
+    text-align: left;
+    border-top: 3px solid #ecf0f1;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 20px;
+    color: #fff;
+}

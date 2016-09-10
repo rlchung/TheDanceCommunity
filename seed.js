@@ -3,12 +3,12 @@ var mongoose    = require("mongoose"),
     Directories = require("./directories");
     
 function seedDB(){
-    // TeamMethods.initializeTeam(Directories.teamFbIdDirectory.aca);
-    // TeamMethods.initializeTeam(Directories.teamFbIdDirectory.chaotic3);
+    TeamMethods.initializeTeam(Directories.teamFbIdDirectory.aca);
+    TeamMethods.initializeTeam(Directories.teamFbIdDirectory.chaotic3);
     // TeamMethods.initializeTeam(Directories.teamFbIdDirectory.hallOfFame);
     // TeamMethods.initializeTeam(Directories.teamFbIdDirectory.makerEmpire);
     // TeamMethods.initializeTeam(Directories.teamFbIdDirectory.theMob);
-    // TeamMethods.initializeTeam(Directories.teamFbIdDirectory.nsuModern);
+    TeamMethods.initializeTeam(Directories.teamFbIdDirectory.nsuModern);
     TeamMethods.initializeTeam(Directories.teamFbIdDirectory.samahangModern);
     // TeamMethods.initializeTeam(Directories.teamFbIdDirectory.vsuModern);
     

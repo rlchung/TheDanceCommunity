@@ -362,7 +362,7 @@ function updateEventPosts(dbEventId){
                                     // if post is not found in existing database, add to database
                                     } else if (post.length === 0){
                                         PostMethods.initializePost(fbPostId);
-                                        console.log(fbPostId + " post added to " + dbEventId + " event");
+                                        //console.log(fbPostId + " post added to " + dbEventId + " event");
                                     // if post is found in existing database, update post
                                     } else {
                                         PostMethods.updatePost(post[0]._id);

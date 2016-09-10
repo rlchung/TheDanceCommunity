@@ -164,8 +164,7 @@ function deletePost(dbPostId){
             console.log(err);
         // if postObj exists 
         } if(postObj){
-            
-            console.log(dbPostId + " post removed successfully");
+            //console.log(dbPostId + " post removed successfully");
         } else {
             console.log(dbPostId + " POST DOES NOT EXIST");
         }

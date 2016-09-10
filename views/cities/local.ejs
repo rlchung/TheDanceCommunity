@@ -22,7 +22,8 @@
         </nav>
         
         <section class="toolbar">
-            <h2>Filter</h2>
+            <h2>Events near <%=location%></h2>
+            <h5>Filters</h5>
             <div id="filters" class="button-group">
                 <button class="button is-checked" data-filter="*">All Events</button>
                 <button class="button" data-filter=".audition">Auditions</button>
@@ -38,9 +39,12 @@
                     <div class="team-grid">
                         <% teams.forEach(function(team){ %>
                             <div class="grid-item <%= team.location %>">
-                                <a href="#">
-                                    <img class="teamThumbnail" src= "<%= team.profilePic%>"/>
-                                </a>
+                                <img class="teamThumbnail" src= "<%= team.profilePic%>"/>
+                                <div class="hover-text">
+                                    <a href="#"> 
+                                        <div class="overlay"><%=team.name%></div>
+                                    </a>
+                                </div>
                             </div>
                         <% }) %>
                     </div>
@@ -49,11 +53,14 @@
                     <div class="event-grid">
                         <% teams.forEach(function(team){ %>
                             <% team.events.forEach(function(event){ %>
-                                <div class="grid-item <%= event.category %>" >
+                            <div class="grid-item <%= event.category %>" >
+                                <img class="eventThumbnail" src= "<%= event.cover %>" >
+                                <div class="hover-text">
                                     <a href="#">
-                                        <img src= "<%= event.cover %>"/> 
+                                        <div class="overlay"><%=event.name%></div>
                                     </a>
                                 </div>
+                            </div>
                             <% }) %>
                         <% }) %>
                     </div>

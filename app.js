@@ -57,10 +57,21 @@ var cityFunction = function(req,res){
         if(err)
             console.log(err);
         else {
-            res.render("cities/local", {
-                coordinates: req.session.coordinates, 
-                nearby: req.session.nearby,
-                teams: teamsFromDB
+            // update each team
+            async.each(teamsFromDB, function(team, callback){
+                // TeamMethods.updateTeam(team._id);
+                callback();
+            }, function(err){
+                if(err){
+                    console.log("Failed to update teams");
+                } else {
+                    res.render("cities/local", {
+                        coordinates: req.session.coordinates, 
+                        nearby: req.session.nearby,
+                        location: req.session.userLocation,
+                        teams: teamsFromDB
+                    });    
+                }
             });
         }
     });
@@ -84,6 +95,7 @@ app.get("/cities", function(req,res){
         Locality.nearestCommunity(inputCoordinates,function(community){
             //use cookies to store coordinate values for nearby functionality
             req.session.coordinates = inputCoordinates;
+            req.session.userLocation = location;
             req.session.nearby = community;
             res.redirect("/cities/" + community.baseCity);
         });

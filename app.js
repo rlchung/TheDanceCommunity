@@ -13,7 +13,9 @@ var express         = require("express"),
     seedDB          = require("./seed"),
     restartData     = require("./restartData"),
     Locality        = require("./locality"),
-    Directories     = require("./directories");
+    Directories     = require("./directories"),
+    natural         = require("natural"),
+    classifier      = new natural.BayesClassifier();
     // Have yet to implement
     // User        = require('./models/user'); 
 
@@ -32,12 +34,10 @@ app.use(session({
 // seedDB();
 // restartData();
 
-
-
-Team.findByFbId(Directories.teamFbIdDirectory.samahangModern).exec(function(err,team){
-    if(err) console.log(err);
-    else TeamMethods.updateTeam(team[0]._id);
-})
+// Team.findByFbId(Directories.teamFbIdDirectory.samahangModern).exec(function(err,team){
+//     if(err) console.log(err);
+//     else TeamMethods.updateTeam(team[0]._id);
+// })
 
 // Team.findByFbId(Directories.teamFbIdDirectory.samahangModern).populate('events').exec(function(err,team){
 //     if(err) console.log(err);
@@ -52,7 +52,6 @@ var cityFunction = function(req,res){
     var formattedNearbyCity0 = req.session.nearby.formattedNearbyCity0;
     var formattedNearbyCity1 = req.session.nearby.formattedNearbyCity1;
     var formattedNearbyCity2 = req.session.nearby.formattedNearbyCity2;
-    
     
     Team.find({location: {$in:[formattedNearbyCity0, formattedNearbyCity1, formattedNearbyCity2]}}).populate('events').exec(function(err,teamsFromDB){
         if(err)

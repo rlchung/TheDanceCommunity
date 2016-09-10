@@ -24,31 +24,35 @@
         <section class="toolbar">
             <h2>Filter</h2>
             <div id="filters" class="button-group">
-                <button class="button is-checked" data-filter="*">Show All</button>
-                <button class="button" data-filter=".losAngeles">Los Angeles</button>
-                <button class="button" data-filter=".westCovina">West Covina</button>
-                <button class="button" data-filter=".longBeach">Long Beach</button>
+                <button class="button is-checked" data-filter="*">All Events</button>
+                <button class="button" data-filter=".audition">Auditions</button>
+                <button class="button" data-filter=".workshop">Workshops</button>
+                <button class="button" data-filter=".other">Other</button>
             </div>
         </section>
         
         <div class="content">
-            <h2> Nearby teams: </h2>
+            <h2> Teams around your area </h2>
             <div class="container">
                 <section class="teams">
-                    <div class="grid">
+                    <div class="team-grid">
                         <% teams.forEach(function(team){ %>
                             <div class="grid-item <%= team.location %>">
-                                <img class="teamThumbnail" src= "<%= team.profilePic%>"/>
+                                <a href="#">
+                                    <img class="teamThumbnail" src= "<%= team.profilePic%>"/>
+                                </a>
                             </div>
                         <% }) %>
                     </div>
                 </section>
                 <section class="events">
-                    <div class="grid">
+                    <div class="event-grid">
                         <% teams.forEach(function(team){ %>
                             <% team.events.forEach(function(event){ %>
-                                <div class="grid-item">
-                                    <img src= "<%= event.cover %>"/>    
+                                <div class="grid-item <%= event.category %>" >
+                                    <a href="#">
+                                        <img src= "<%= event.cover %>"/> 
+                                    </a>
                                 </div>
                             <% }) %>
                         <% }) %>

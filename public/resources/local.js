@@ -1,9 +1,12 @@
 /* global $*/
 
 // init Isotope
-var $grid = $('.grid').isotope({
+var $eventGrid = $('.event-grid').isotope({
   itemSelector: '.grid-item',
-  layoutMode: 'fitRows',
+  layoutMode: 'masonry',
+  masonry: {
+    columnWidth: 15
+  },
   getSortData: {
     category: '[data-category]',
     weight: function( itemElem ) {
@@ -17,7 +20,7 @@ var $grid = $('.grid').isotope({
 $('#filters').on( 'click', 'button', function() {
   var filterValue = $( this ).attr('data-filter');
   // use filterFn if matches value
-  $grid.isotope({ filter: filterValue });
+  $eventGrid.isotope({ filter: filterValue });
 });
 
 // change is-checked class on buttons

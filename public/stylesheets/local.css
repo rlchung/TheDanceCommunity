@@ -20,7 +20,7 @@
 .container {
     width: 100%;
     min-width: 300px;
-    max-width: 780px;
+    max-width: 900px;
     padding: 10px;
     margin-right: auto;
     margin-left: auto;
@@ -38,6 +38,10 @@
     color: white;
 }
 
+.content h2 {
+    text-align: center;
+}
+
 .grid-item {
     position: relative;
     float: left;
@@ -53,9 +57,17 @@ img {
 /*CONTENT*/
 
 .teams {
-  width: 100%;
-  border-bottom: 1px solid #ecf0f1;
-  padding-bottom: 3%;
+    width: 100%;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.events {
+    width: 100%;
+    padding-top: 20px;
+}
+
+.content section {
+    min-height: 43em;
 }
 
 /*FOOTER*/

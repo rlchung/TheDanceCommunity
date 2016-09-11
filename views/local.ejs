@@ -42,7 +42,7 @@
                                 <img class="teamThumbnail" src= "<%= team.profilePic%>"/>
                                 <div class="hover-text">
                                     <a href="#"> 
-                                        <div class="overlay"><%=team.name%></div>
+                                        <div><%=team.name%></div>
                                     </a>
                                 </div>
                             </div>
@@ -56,8 +56,8 @@
                             <div class="grid-item <%= event.category %>" >
                                 <img class="eventThumbnail" src= "<%= event.cover %>" >
                                 <div class="hover-text">
-                                    <a href="#">
-                                        <div class="overlay"><%=event.name%></div>
+                                    <a href="/cities/<%=nearby.baseCity%>/<%=team._id%>/<%=event._id%>">
+                                        <div><%=event.name%></div>
                                     </a>
                                 </div>
                             </div>

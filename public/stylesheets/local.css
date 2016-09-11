@@ -54,20 +54,20 @@ img {
     width: 100%;
 }
 
+/*Hover thumbnail for team profiles*/
+
 .hover-text {
     background: rgba(0,0,0,0.7);
     bottom: 0;
     height: 100%;
     left: 0;
-    opacity: 0;
+    opacity: 0.8;
     position: absolute;
     right: 0;
     top: 0;
-    transition: opacity;
+    transition: opacity .3s ease-in-out;
     width: 100%;
 }
-
-/*Hover thumbnail for team profiles*/
 
 .hover-text a {
     display: table;
@@ -80,15 +80,12 @@ img {
     display: table-cell;
     vertical-align: middle;
     text-align: center;
+    font-size: 1.1em;
     color: white;
 }
 
 .grid-item img {
     vertical-align: top;
-}
-
-.hover-text {
-    transition: opacity .3s ease-in-out;
 }
 
 .grid-item:hover .hover-text {

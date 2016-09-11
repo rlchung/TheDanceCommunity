@@ -48,6 +48,19 @@ app.get("/", function(req,res){
     res.render("landing"); 
 });
 
+// event routes
+app.get("/cities/:baseCity/:teamId/:eventId", function(req,res){
+    Event.findById(req.params.eventId).populate("comments").exec(function(err,foundEvent){
+        if(err){
+            console.log(err);
+        } else {
+            console.log(foundEvent);
+            res.render("events/show",{event:foundEvent});
+        }
+    })
+})
+
+// index to cities routes
 var cityFunction = function(req,res){
     var formattedNearbyCity0 = req.session.nearby.formattedNearbyCity0;
     var formattedNearbyCity1 = req.session.nearby.formattedNearbyCity1;
@@ -65,7 +78,7 @@ var cityFunction = function(req,res){
                 if(err){
                     console.log("Failed to update teams");
                 } else {
-                    res.render("cities/local", {
+                    res.render("local", {
                         coordinates: req.session.coordinates, 
                         nearby: req.session.nearby,
                         location: req.session.userLocation,

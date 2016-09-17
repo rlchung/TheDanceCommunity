@@ -5,7 +5,6 @@ var teamSchema = new mongoose.Schema({
     name:               String,
     fbId:               String,
     profilePic:         String,
-    coverPic:           String,
     email:              String,
     fbLink:             String,
     location:           String,

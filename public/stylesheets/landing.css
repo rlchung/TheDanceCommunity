@@ -2,30 +2,43 @@
   width: device-width;
 }
 
+html, body {
+    height 100%;
+    font-family: 'Open Sans', sans-serif;
+    font-size:14px;
+    background-color: #f8f8f8;
+}
+
 /*NAVBAR*/
 
 .navbar {
     padding: 0;
     border: 0;
-    background-color: #36454f;
+    margin: 0;
+    background-color: black;
     position: relative;
 }
 
-.container {
-    width: 100%;
-    min-width: 300px;
-    max-width: 780px;
-    padding: 10px;
-    margin-right: auto;
-    margin-left: auto;
-}
-
-.navbar-right {
-    float: right;
+.brand-centered {
+    position: absolute;
+    left: 50%;
+    margin-left: -50px !important;
+    display: block;
 }
 
 .navbar-brand {
-    float: left;
+    padding: 10% 10%;
+}
+
+
+.navbar-brand>img {
+    height: 100%;
+    width: auto;
+}
+
+.navbar-text {
+    float: right;
+    padding-right: 3%;
 }
 
 .navbar a {
@@ -34,24 +47,26 @@
 
 .content {
     text-align: center;
-    position: absolute;
+    /*position: absolute;*/
     top: 0;
     left: 0;
     right: 0;
     height: 100%;
+    min-width: 1366px;
+    margin: 0 auto;
+    background-color: #fff200;
 }
+
+/*HERO*/
 
 .hero {
     height: 770px;
     margin: 0 auto;
     min-width: 780px;
     max-width: 1366px;
-    background-image: url("https://scontent.xx.fbcdn.net/t31.0-8/13458611_616330075185516_7401409463503550716_o.jpg.webp");
-    background-repeat: no-repeat;
-    background-position: left center;
+    background-color: black;
     color: #fff;
     position: relative;
-    opacity: .9;
 }
 
 #overlay {
@@ -60,8 +75,11 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: black;
-    opacity: 0.4;
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: 100% 100%;
+    background-image: url("http://res.cloudinary.com/dce6r25eh/image/upload/v1474082619/13458611_616330075185516_7401409463503550716_o_wzdixd.jpg");
+    opacity: 0.5;
 }
 
 .hero .container {
@@ -77,21 +95,23 @@
 }
 
 input {
-    color: black;
+    color: white;
     letter-spacing: .5px;
 }
 
 .input-append {
+    padding-top: 5%;
     font-size: 0;
 }
 
 #pac-input {
-    padding-left: 50px;
+    background-color: transparent;
+    padding-left: 1em;
     padding-right: 50px;
     width: 405px;
     height: 50px;
     font-size:24px;
-    border: 1px solid #323232;
+    border: 1px solid #fff200;
     vertical-align:bottom;
 }
 
@@ -100,7 +120,9 @@ input {
     padding: 0;
     height: 50px;
     font-size:24px;
-    border: 1px solid #323232;
+    border: 1px solid #fff200;
+    background-color: #fff200;
+    color: black;
     vertical-align: bottom;
 }
 
@@ -109,26 +131,38 @@ input {
 section.cities {
     width: 780px;
     margin: 0 auto;
-    padding-top: 50px;
+    padding-top:5%;
+    padding-bottom:5%;
+    background-image: url("http://res.cloudinary.com/dce6r25eh/image/upload/v1474080491/TDC_bg_pattern_wpv403.png");
+    background-position:top;
+    background-repeat:no-repeat;
+    background-size:75%;
 }
 
 h3 {
     font-weight: 300;
     font-style: normal;
-    font-size: 40px;
-    letter-spacing: 0;
+    letter-spacing: 0.5em;
+    margin: 0 auto;
+    background-color:black;
+    color: #fff200;
+    padding: 5%;
 }
 
 .localities {
     list-style-type: none;
-    margin-top: 30px;
-    margin-bottom: 70px;
+    padding: 2% 5%;
     text-align: left;
+    margin: 0 auto;
+    background-color:black;
 }
 
 section.cities ul.localities>li {
-    border-bottom: 1px solid #ecf0f1;
-    padding: 10px 0;
+    padding: 1em 0;
+}
+
+section.cities ul.localities>li:not(:last-child) {
+    border-bottom: 1px solid gray;
 }
 
 section.cities ul.localities h6 {
@@ -137,8 +171,7 @@ section.cities ul.localities h6 {
     white-space: nowrap;
     font-weight: 600;
     font-style: normal;
-    font-size: 12px;
-    color: #7f8c8d;
+    color: white;
     text-transform: uppercase;
     letter-spacing: 1px;
     min-width: 174px;
@@ -157,47 +190,49 @@ ul {
 }
 
 section.cities ul.cities li {
-    padding: 3px 0;
-    width: 24%;
+    padding: 0.5em 1em;
+    width: 30%;
     display: inline-block;
+}
+
+section.cities ul.cities li>a{
+    display:inline;
+    color:#8d8d8d;
+    width:100%;
+    height:100%;
+    padding:0;
 }
 
 /*FOOTER*/
 
 footer {
-    margin-top: 100px;
-    margin-bottom: 0;
-    padding:40px 0 20px;
-    background-color: #36454f;
+    background-color: black;
     vertical-align: top;
     text-align: left;
-    border-top: 3px solid #ecf0f1;
     font-style: normal;
     font-size: 12px;
     line-height: 20px;
     color: #fff;
-}
-
-footer .container {
-    position: relative;
-    max-width: 1080px;
-}
-
-.container {
-    min-width: 320px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 10px;
-}
-
-footer ul.nav{
-    margin: 0 130px 2px 280px;
+    text-align: center;
 }
 
 footer ul.nav>li {
     margin: 0 0 5px;
-    width: 30%;
-    display: inline-block;
+    padding: 0 5%;
+    display: inline;
+}
+
+footer ul.nav>li>a {
+    display:inline;
+    color: #fff;
+    width:100%;
+    height:100%;
+    padding: 0;
+}
+
+footer ul.nav>li>a:hover {
+    background-color: transparent;
+    text-decoration: none;
 }
 
 .nav {
@@ -205,7 +240,93 @@ footer ul.nav>li {
     list-style: none;
 }
 
-.nav>li {
-    position: relative;
-    display: block;
+footer .container {
+    padding-top: 1.6%;
+    padding-bottom: 1.6%;
+}
+
+footer .copyright {
+    padding-top:1.5%;
+    padding-bottom:1%;
+    border-top: 1px solid gray;
+    text-align: center;
+}
+
+#footer-TDC {
+    color: #fff200;
+}
+
+/*flexbox footer*/
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+}
+
+/*MEDIA SCREEN*/
+@media only screen and (max-width: 1366px){
+    
+    section.hero {
+        min-width: 320px;
+        width: 100%;
+        height: 700px;
+    }
+    
+    #pac-input {
+        width:70%;
+    }
+    
+    #overlay {
+        background-size: initial;
+    }
+    
+    section.cities {
+        min-width:320px;
+    }
+    
+    section.cities ul.localities h6 {
+        float: none;
+        padding: 0 20px;
+        text-align: left;
+    }
+    
+    section.cities ul.cities {
+        display: block;
+        padding: 0 20px;
+        text-align: left;
+    }
+    
+    section.cities ul.cities li {
+        width: 30%;
+    }
+    
+    .content {
+        margin: initial;
+        min-width:100%;
+    }
+}
+
+@media only screen and (max-width: 780px){
+    footer ul.nav>li {
+        padding: 0 4%;
+        display: inherit;
+    }
+    
+    section.cities {
+        width: 100%;
+    }
+    
+    footer .copyright {
+        padding-top:4%;
+    }
+}
+
+@media only screen and (max-width: 480px){
+    section.cities ul.cities li {
+        width: 49%;
+    }
 }

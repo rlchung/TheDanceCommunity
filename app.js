@@ -50,7 +50,7 @@ app.get("/", function(req,res){
 
 // event routes
 app.get("/cities/:baseCity/:teamId/:eventId", function(req,res){
-    Event.findById(req.params.eventId).populate("comments").exec(function(err,foundEvent){
+    Event.findById(req.params.eventId).populate("posts").exec(function(err,foundEvent){
         if(err){
             console.log(err);
         } else {

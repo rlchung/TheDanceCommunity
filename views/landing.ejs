@@ -4,19 +4,20 @@
         <meta name=viewport content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <link rel="stylesheet" href="../stylesheets/landing.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
     </head>
     <body>
     <!--Navbar-->
         <nav class="navbar navbar-static-top">
-          <div class="container">
+          <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-              <a class="navbar-brand" href="/">TDC</a>
+            <div class="brand-centered">
+              <a class="navbar-brand" href="/"><img src="http://res.cloudinary.com/dce6r25eh/image/upload/v1474080491/TDC_logo_ekj0qw.png" alt="TDC"></a>
             </div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">Login</a></li>
-                </ul>
+            <div>
+                <p class="navbar-text navbar-right">
+                    <a href="#" class="navbar-link"></a>
+                </p>
             </div>
           </div>
         </nav>
@@ -25,11 +26,12 @@
             <section class="hero">
                 <div id= "overlay"></div>
                 <div class="container">
-                    <h1>Welcome to The Dance Community</h1>
+                    <h1>WELCOME TO<br>THE DANCE COMMUNITY</h1>
+                    <h6>Find Urban Dance Community Events, Auditions, and Workshops in Your Area</h6>
                     <!--Will be a post request-->
                     <form name="addressForm" id="addressForm" action="/cities" method="GET" onsubmit="geocodeInput()">
                         <div class="input-append">
-                            <input name="location" id="pac-input" type="text" placeholder="Enter your address" required/>
+                            <input name="location" id="pac-input" type="text" placeholder="ENTER YOUR LOCATION" required/>
                             <button class="btn" type="submit">
                                 <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                             </button>
@@ -38,51 +40,48 @@
                 </div>
             </section>
             <section class="cities">
-                <h3>Find us in the following areas.</h3>
+                <h3>BROWSE BY AREA</h3>
                 <ul class="localities">
                     <li>
-                        <h6>Southern California</h6>
+                        <h6>SOUTHERN CALIFORNIA</h6>
                         <ul class="cities">
-                            <li>Los Angeles</li>
-                            <li>Anaheim</li>
-                            <li>Irvine</li>
-                            <li>Santa Ana</li>
-                            <li>Monterey Park</li>
-                            <li>Walnut</li>
-                            <li>Rancho Cucamonga</li>
-                            <li>Long Beach</li>
-                            <li>West Covina</li>
-                            <li>Riverside</li>
-                            <li>San Diego</li>
+                            <li><a href="#">LOS ANGELES</a></li>
+                            <li><a href="#">ANAHEIM</a></li>
+                            <li><a href="#">IRVINE</a></li>
+                            <li><a href="#">SANTA ANA</a></li>
+                            <li><a href="#">MONTEREY PARK</a></li>
+                            <li><a href="#">WALNUT</a></li>
+                            <li><a href="#">RANCHO CUCAMONGA</a></li>
+                            <li><a href="#">LONG BEACH</a></li>
+                            <li><a href="#">WEST COVINA</a></li>
                         </ul>
                     </li>
                     <li>
-                        <h6>Northern California</h6>
+                        <h6>NORTHERN CALIFORNIA</h6>
                         <ul class="cities">
-                            <li>Berkeley</li>
-                            <li>Suisin City</li>
-                            <li>Daly City</li>
+                            <li><a href="#">BERKELEY</a></li>
+                            <li><a href="#">SUISIN CITY</a></li>
+                            <li><a href="#">DALY CITY</a></li>
                         </ul>
                     </li>
                 </ul>
             </section>
-                
-            </section>
-            <footer>
-                <div class="container">
-                    <ul class="nav">
-                        <li>Dance Teams</li>
-                        <li>About</li>
-                        <li>Link3</li>
-                        <li>Link4</li>
-                        <li>Link5</li>
-                        <li>Link6</li>
-                        <li>Link7</li>
-                        <li>Link8</li>
-                    </ul>
-                </div>
-            </footer>
         </div>
+        
+        <footer>
+            <div class="container">
+                <ul class="nav">
+                    <li><a href="/">HOME</a></li>
+                    <li><a href="#">TEAM DIRECTORY</a></li>
+                    <li><a href="#">ABOUT</a></li>
+                    <li><a href="#">CONTACT</a></li>
+                    <li><a href="#">FACEBOOK</a></li>
+                </ul>
+            </div>
+            <div class="copyright">
+                <p> &copy; 2016 <span id="footer-TDC">THE DANCE COMMUNITY.</span> ALL RIGHTS RESERVED</p>
+            </div>
+        </footer>
         <!--API script to be loaded first-->
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2h-DBCBSUmKcgfpr2PPX_9vZTugX_iuU&libraries=places"></script>
         <script type="text/javascript">

@@ -34,6 +34,8 @@ app.use(session({
 // seedDB();
 // restartData();
 
+// EventMethods.initializeEvent("1079104932155214");
+
 // Team.findByFbId(Directories.teamFbIdDirectory.samahangModern).exec(function(err,team){
 //     if(err) console.log(err);
 //     else TeamMethods.updateTeam(team[0]._id);

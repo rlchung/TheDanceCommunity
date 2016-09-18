@@ -10,7 +10,7 @@ function seedDB(){
     // TeamMethods.initializeTeam(Directories.teamFbIdDirectory.theMob);
     TeamMethods.initializeTeam(Directories.teamFbIdDirectory.nsuModern);
     TeamMethods.initializeTeam(Directories.teamFbIdDirectory.samahangModern);
-    // TeamMethods.initializeTeam(Directories.teamFbIdDirectory.vsuModern);
+    TeamMethods.initializeTeam(Directories.teamFbIdDirectory.vsuModern);
     
     TeamMethods.initializeTeam(Directories.teamFbIdDirectory.pacModern);
     

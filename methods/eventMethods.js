@@ -31,14 +31,15 @@ function initializeEvent(fbEventId){
                              // additional undefined tests needed
                             var placeCheck;
                             var coverCheck;
+                            var coverFallbackCheck;
                             
                             // newEvent variables
                             var name            = eventJson["name"],
                                 hostName        = eventJson["owner"]["name"],
                                 hostId          = eventJson["owner"]["id"],
                                 description     = eventJson["description"],
-                                startTime       = eventJson["start_time"],
-                                endTime         = eventJson["end_time"],
+                                startTime       = new Date(eventJson["start_time"]),
+                                endTime         = new Date(eventJson["end_time"]),
                                 attendingCount  = eventJson["attending_count"],
                                 declinedCount   = eventJson["declined_count"],
                                 interestedCount = eventJson["interested_count"],
@@ -77,7 +78,7 @@ function initializeEvent(fbEventId){
                             // adds photos to 'photos' array, if any
                             if (typeof eventJson["photos"] != 'undefined') {
                                 eventJson["photos"]["data"].forEach(function(object){
-                                    newEvent.photos.push(object["images"][0]["source"])
+                                    newEvent.photos.push(object["images"][0]["source"]);
                                 });
                             }
                             
@@ -90,18 +91,23 @@ function initializeEvent(fbEventId){
                                     fbPostsIdArray.push(event["id"]);
                                 });
                             }
-                                            
-                            // An object containing newEvent and fbPostsIdArray
-                            var eventContainer = {
-                                newEvent    : newEvent,
-                                fbPostsIdArray : fbPostsIdArray
-                            };
-                            
+                                     
                             // separate checks needed for possibly undefined nested properties
                             if (typeof eventJson["place"] != 'undefined') { 
                                 placeCheck = eventJson["place"]["name"];
-                                eventContainer.newEvent.place = placeCheck;
+                                newEvent.place = placeCheck;
                             }
+                            
+                            if (typeof eventJson["cover"] != 'undefined') {
+                                coverFallbackCheck = eventJson["cover"]["source"];
+                                newEvent.coverFallback = coverFallbackCheck;
+                            }
+                                            
+                            // An object containing newEvent and fbPostsIdArray
+                            var eventContainer = {
+                                newEvent        : newEvent,
+                                fbPostsIdArray  : fbPostsIdArray
+                            };
                             
                             if (typeof eventJson["cover"] != 'undefined') {
                                 // coverCheck = eventJson["cover"]["id"];
@@ -109,6 +115,7 @@ function initializeEvent(fbEventId){
                                     if (!err && response.statusCode == 200) {
                                         var coverObj = JSON.parse(body);
                                         coverCheck = coverObj["webp_images"][0]["source"];
+                                        // console.log(coverObj["webp_images"]);
                                         eventContainer.newEvent.cover = coverCheck;
                                         
                                         // callback needs to be nested in request statement for cover to process
@@ -201,6 +208,7 @@ function updateEvent(dbEventId){
                             // additional undefined tests needed
                             var currentPlaceCheck;
                             var currentCoverCheck;
+                            var currentCoverFallbackCheck;
                             
                             // current category of updated event
                             var currentCategory;
@@ -208,8 +216,8 @@ function updateEvent(dbEventId){
                             // newEvent variables
                             var currentName            = currentEventJson["name"],
                                 currentDescription     = currentEventJson["description"],
-                                currentStartTime       = currentEventJson["start_time"],
-                                currentEndTime         = currentEventJson["end_time"],
+                                currentStartTime       = new Date(currentEventJson["start_time"]),
+                                currentEndTime         = new Date(currentEventJson["end_time"]),
                                 currentAttendingCount  = currentEventJson["attending_count"],
                                 currentDeclinedCount   = currentEventJson["declined_count"],
                                 currentInterestedCount = currentEventJson["interested_count"],
@@ -230,6 +238,7 @@ function updateEvent(dbEventId){
                                 updatedTime     : currentUpdatedTime,
                                 place           : currentPlaceCheck,
                                 cover           : currentCoverCheck,
+                                coverFallback   : currentCoverFallbackCheck,
                                 category        : currentCategory
                             });
                             
@@ -263,6 +272,10 @@ function updateEvent(dbEventId){
                                 }
                                 
                                 if (typeof currentEventJson["cover"] != 'undefined') {
+                                    updatedEvent.coverFallback = currentEventJson["cover"]["source"];
+                                }
+                                
+                                if (typeof currentEventJson["cover"] != 'undefined') {
                                     request("https://graph.facebook.com/" + currentEventJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(err, response, body){
                                         if (!err && response.statusCode == 200) {
                                             var coverObj = JSON.parse(body);
@@ -282,6 +295,7 @@ function updateEvent(dbEventId){
                                             event.updatedTime       = updatedEvent.updatedTime;
                                             event.place             = updatedEvent.place;
                                             event.cover             = updatedEvent.cover;
+                                            event.coverFallback     = updatedEvent.coverFallback;
                                             event.category          = updatedEvent.category;
                                             // event.save(function(){
                                             //     console.log(dbEventId + " event updated");
@@ -309,6 +323,7 @@ function updateEvent(dbEventId){
                                     event.updatedTime       = updatedEvent.updatedTime;
                                     event.place             = updatedEvent.place;
                                     event.cover             = updatedEvent.cover;
+                                    event.coverFallback     = updatedEvent.coverFallback;
                                     event.category          = updatedEvent.category;
                                     // event.save(function(){
                                     //     console.log(dbEventId + " event updated");

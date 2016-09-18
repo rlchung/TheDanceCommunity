@@ -1,12 +1,17 @@
+*, *:before, *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 @-ms-viewport{
   width: device-width;
 }
 
 html, body {
-    height 100%;
-    font-family: 'Open Sans', sans-serif;
     font-size:14px;
     background-color: #f8f8f8;
+    font-family: 'Open Sans', sans-serif;
 }
 
 /*NAVBAR*/
@@ -22,7 +27,7 @@ html, body {
 .brand-centered {
     position: absolute;
     left: 50%;
-    margin-left: -50px !important;
+    margin-left: -15px !important;
     display: block;
 }
 
@@ -42,7 +47,17 @@ html, body {
 }
 
 .navbar a {
-    color: white;
+    color: #fff;
+}
+
+h1 {
+    letter-spacing: 1px;
+    font-weight: 300;
+}
+
+h6 {
+    letter-spacing: 1px;
+    font-weight: 300;
 }
 
 .content {
@@ -57,9 +72,9 @@ html, body {
     background-color: #fff200;
 }
 
-/*HERO*/
+/*LANDING-HERO*/
 
-.hero {
+.top {
     height: 770px;
     margin: 0 auto;
     min-width: 780px;
@@ -78,14 +93,14 @@ html, body {
     background-repeat: no-repeat;
     background-position: top center;
     background-size: 100% 100%;
-    background-image: url("http://res.cloudinary.com/dce6r25eh/image/upload/v1474082619/13458611_616330075185516_7401409463503550716_o_wzdixd.jpg");
+    background-image: url("https://res.cloudinary.com/dce6r25eh/image/upload/v1474082619/13458611_616330075185516_7401409463503550716_o_wzdixd.jpg");
     opacity: 0.5;
 }
 
 .hero .container {
     position: absolute;
     text-align: center;
-    top: 45%;
+    top: 40%;
     left: 0;
     right: 0;
     height: auto;
@@ -95,7 +110,7 @@ html, body {
 }
 
 input {
-    color: white;
+    color: #fff;
     letter-spacing: .5px;
 }
 
@@ -105,6 +120,7 @@ input {
 }
 
 #pac-input {
+    border-radius: 0;
     background-color: transparent;
     padding-left: 1em;
     padding-right: 50px;
@@ -115,28 +131,31 @@ input {
     vertical-align:bottom;
 }
 
-.btn {
+.input-append .btn {
     width: 55px;
     padding: 0;
     height: 50px;
     font-size:24px;
     border: 1px solid #fff200;
+    border-radius: 0;
     background-color: #fff200;
     color: black;
     vertical-align: bottom;
 }
 
-/*CITIES*/
+/*LANDING-CITIES*/
 
-section.cities {
-    width: 780px;
+.main-content {
     margin: 0 auto;
-    padding-top:5%;
-    padding-bottom:5%;
-    background-image: url("http://res.cloudinary.com/dce6r25eh/image/upload/v1474080491/TDC_bg_pattern_wpv403.png");
+    padding: 5% 6%;
+    background-image: url("https://res.cloudinary.com/dce6r25eh/image/upload/v1474080491/TDC_bg_pattern_wpv403.png");
     background-position:top;
     background-repeat:no-repeat;
-    background-size:75%;
+    background-size:40%;
+}
+
+.main-content.cities {
+    width: 1336px;
 }
 
 h3 {
@@ -171,9 +190,8 @@ section.cities ul.localities h6 {
     white-space: nowrap;
     font-weight: 600;
     font-style: normal;
-    color: white;
+    color: #fff;
     text-transform: uppercase;
-    letter-spacing: 1px;
     min-width: 174px;
     width: 174px;
     margin-top: 8px;
@@ -183,10 +201,6 @@ section.cities ul.cities {
     list-style-type: none;
     padding-left: 50px;
     overflow: hidden;
-}
-
-ul {
-    margin-bottom: 0;
 }
 
 section.cities ul.cities li {
@@ -217,7 +231,7 @@ footer {
 }
 
 footer ul.nav>li {
-    margin: 0 0 5px;
+    margin: 5% 0;
     padding: 0 5%;
     display: inline;
 }
@@ -235,7 +249,7 @@ footer ul.nav>li>a:hover {
     text-decoration: none;
 }
 
-.nav {
+footer .nav {
     padding-left: 0;
     list-style: none;
 }
@@ -267,10 +281,189 @@ body {
     flex: 1;
 }
 
+/*LOCAL CSS*/
+
+/*FILTERS*/
+.btn-group {
+    display: inline-flex;
+}
+
+.btn-group.btn-group-lg button {
+    background-color: #f8f8f8;
+    border-radius: 0;
+    padding: 4%;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.btn-group.btn-group-lg button:focus {
+    outline: none;
+}
+
+.btn-default.btn-responsive.is-checked {
+    transition: background-color 0.3s ease-out;
+    background-color: #a6a6a6;
+}
+
+/*TEAM CONTENT*/
+.container {
+    width: 100%;
+    min-width: 300px;
+    max-width: 900px;
+    padding: 10px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.teams div h2{
+    font-weight: 300;
+    letter-spacing: 1px;
+    margin: 0 auto;
+    max-width: 35%;
+    padding: 1%;
+    
+}
+
+#team-box {
+    background-color: black;
+    vertical-align: top;
+    text-align: left;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 20px;
+    color: #fff;
+    text-align: center;
+    padding: 2%;
+    margin: 1.77%;
+}
+
+#team-box ul.nav>li {
+    margin: 0 0 5px;
+    display: inline;
+}
+
+#team-box ul.nav>li:not(:first-child){
+    padding-left: 1%;
+    border-left: 1px solid gray;
+}
+
+#team-box ul.nav>li:not(:last-child){
+    padding-right: 1%;
+    border-right: 1px solid gray;
+}
+
+#team-box ul.nav>li>a {
+    color: #fff;
+    display:inline;
+    height:100%;
+    letter-spacing:1px;
+    padding: 0;
+    width:100%;
+}
+
+#team-box ul.nav>li>a:hover {
+    background-color: transparent;
+    text-decoration: none;
+}
+
+#team-box .nav {
+    padding-left: 0;
+    list-style: none;
+}
+
+#team-box .container {
+    padding-top: 1.6%;
+    padding-bottom: 1.6%;
+}
+
+.content h2 {
+    background-color: #f8f8f8;
+    text-align: center;
+}
+
+.grid-item {
+    position: relative;
+    box-shadow: 0 0 0 0.3em #fff;
+    display: inline-block;
+    width: 46%;
+    margin: 1.77%;
+}
+
+img {
+    width: 100%;
+}
+
+/*Hover thumbnail for team profiles*/
+
+.hover-text {
+    background: rgba(0,0,0,0.8);
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    opacity: 0.9;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: opacity .3s ease-in-out;
+    width: 100%;
+}
+
+.hover-text a {
+    display: table;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+}
+
+#grid-text {
+    display: table-cell;
+    padding: 0 1%;
+}
+
+.hover-text a div {
+    display: block;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 1.0em;
+    font-weight: 300;
+    letter-spacing: 1px;
+    color: #fff;
+}
+
+#team-name {
+    color: #8d8d8d;
+    font-size: 0.9em;
+    padding-top: 1%;
+}
+
+#team-name span {
+    color: #fff200;
+}
+
+#start-date {
+    padding-top: 5%;
+    font-size: 0.85em;
+}
+
+.grid-item img {
+    vertical-align: top;
+}
+
+.grid-item:hover .hover-text {
+    opacity: 1;
+}
+
+/*CONTENT*/
+
+.events {
+    width: 100%;
+    padding-top: 2%;
+}
+
 /*MEDIA SCREEN*/
 @media only screen and (max-width: 1366px){
     
-    section.hero {
+    section.top {
         min-width: 320px;
         width: 100%;
         height: 700px;
@@ -284,7 +477,7 @@ body {
         background-size: initial;
     }
     
-    section.cities {
+    .main-content.cities {
         min-width:320px;
     }
     
@@ -311,22 +504,71 @@ body {
 }
 
 @media only screen and (max-width: 780px){
+    .teams div h2 {
+        font-size: 1.5em;
+        margin: 3%;
+        max-width: 100%;
+        padding: 4%;
+    }
+    
     footer ul.nav>li {
-        padding: 0 4%;
         display: inherit;
     }
     
-    section.cities {
+    .brand-centered {
+        left: 49%;
+    }
+    
+    .main-content.cities {
         width: 100%;
     }
     
     footer .copyright {
         padding-top:4%;
     }
+    
+    .btn-group {
+        width:100%;
+    }
+    
+    .btn-responsive {
+        flex-grow:1;
+        font-size: 90% !important;
+    }
+    
+    .grid-item {
+        width: 100%;
+        margin: 2% 0;
+    }
+    
+    #team-box {
+        margin: 0;
+    }
 }
 
 @media only screen and (max-width: 480px){
+    .hero .container {
+        top: 30%;
+    }
+    
+    #team-box ul.nav>li:not(:first-child){
+        display: inherit;
+        margin-bottom: 5%;
+        border-left: 0;
+    }
+
+    #team-box ul.nav>li:not(:last-child){
+        margin-top: 7%;
+        display: inherit;
+        border-right: 0;
+    }
+    
     section.cities ul.cities li {
         width: 49%;
+    }
+    
+    .brand-centered {
+        margin-left: 0;
+        left: 45%;
     }
 }

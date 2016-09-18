@@ -5,13 +5,14 @@ var eventSchema = new mongoose.Schema({
     name:               String,
     fbId:               String,
     cover:              String,
+    coverFallback:      String,
     hostName:           String,
     hostId:             String,
     // general event information
     description:        String,
     place:              String,
-    startTime:          String,
-    endTime:            String,
+    startTime:          Date,
+    endTime:            Date,
     //To categorize which section to display it in (Audition, Workshop, General)
     category:           String,
     // Attendance information

@@ -12,6 +12,7 @@ html, body {
     font-size:14px;
     background-color: #f8f8f8;
     font-family: 'Open Sans', sans-serif;
+    letter-spacing: 1.5px;
 }
 
 /*NAVBAR*/
@@ -51,18 +52,15 @@ html, body {
 }
 
 h1 {
-    letter-spacing: 1px;
     font-weight: 300;
 }
 
 h6 {
-    letter-spacing: 1px;
     font-weight: 300;
 }
 
 .content {
     text-align: center;
-    /*position: absolute;*/
     top: 0;
     left: 0;
     right: 0;
@@ -111,7 +109,6 @@ h6 {
 
 input {
     color: #fff;
-    letter-spacing: .5px;
 }
 
 .input-append {
@@ -291,7 +288,9 @@ body {
 
 /*FILTERS*/
 .btn-group {
-    display: inline-flex;
+    display:flex;
+    margin: 0 auto;
+    width:50%;
 }
 
 .btn-group.btn-group-lg button {
@@ -299,7 +298,7 @@ body {
     border-radius: 0;
     padding: 4%;
     font-weight: 300;
-    letter-spacing: 1px;
+    flex-grow:1;
 }
 
 .btn-group.btn-group-lg button:focus {
@@ -322,7 +321,6 @@ body {
 
 .teams div h2{
     font-weight: 300;
-    letter-spacing: 1px;
     margin: 0 auto;
     max-width: 35%;
     padding: 1%;
@@ -361,7 +359,6 @@ body {
     color: #fff;
     display:inline;
     height:100%;
-    letter-spacing:1px;
     padding: 0;
     width:100%;
 }
@@ -431,7 +428,6 @@ img {
     text-align: center;
     font-size: 1.0em;
     font-weight: 300;
-    letter-spacing: 1px;
     color: #fff;
 }
 
@@ -485,7 +481,6 @@ object {
     background-color: black;
     font-weight: 300;
     line-height: 200%;
-    letter-spacing: 1px;
     margin-top: 3%;
     margin-right: auto;
     margin-left: auto;
@@ -503,8 +498,12 @@ object {
     font-weight: 400;
 }
 
-.morecontent span {
+.morecontent span{
     display: none;
+}
+
+.morelink {
+    display: inline-block;
 }
 
 .event-info ul.nav>li:not(:last-child) {
@@ -535,6 +534,21 @@ object {
     padding-top: 1%;
     padding-bottom: 0;
 }
+
+/*#event-posts ul.nav>li{*/
+/*    padding-bottom: 5.5%;*/
+/*    padding-top: 0;*/
+/*    border: none;*/
+/*}*/
+
+/*#event-posts ul.nav>li:last-child{*/
+/*    padding-bottom: 0;*/
+/*}*/
+
+/*.user-name {*/
+/*    display: inline-block;*/
+/*    color: #fff200;*/
+/*}*/
 
 /*MEDIA SCREEN*/
 @media only screen and (max-width: 1366px){

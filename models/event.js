@@ -20,15 +20,6 @@ var eventSchema = new mongoose.Schema({
     declinedCount:      Number,
     interestedCount:    Number,
     maybeCount:         Number,
-    // Posted Media
-    posts: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Post"
-        }
-    ],
-    
-    photos:             [String],
     // Updating purposes
     updatedTime:        Date,
 });

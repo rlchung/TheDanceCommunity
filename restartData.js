@@ -15,11 +15,6 @@ function restartData(){
         if(err) console.log(err);
         else console.log("removed all events");
     });
-    
-    Post.remove({},function(err){
-        if(err) console.log(err);
-        else console.log("removed all posts");
-    });
 }
 
 module.exports = restartData;

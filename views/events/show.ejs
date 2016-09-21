@@ -1,27 +1,40 @@
-<!DOCTYPE html>
-    <head>
-        <Title><%=event.name%></Title>
-        <meta name=viewport content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    </head>
-    <body>
-        <!--Navbar-->
-        <nav class="navbar navbar-static-top">
-          <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-              <a class="navbar-brand" href="/">TDC</a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">Login</a></li>
-                </ul>
-            </div>
-          </div>
-        </nav>
-        
-        <h1><%=event.name%></h1>
-        <p><%=event.description%></p>
-        
-    </body>
-</html>
+<% include ../partials/header %>
+    <div class="content">
+        <section class="main-content">
+            <section class="event-show event-hero">
+                <object data="<%=event.cover%>" type="image/webp">
+                    <img src="<%=event.coverFallback%>">
+                </object>
+            </section>
+            <section class="event-show event-info">
+                <div class="container">
+                    <ul class="nav">
+                        <li id="event-name"><%=event.name.toUpperCase()%></li>
+                        <li id="event-description">
+                            <span class="more">
+                                <%=event.description%>
+                            </span>
+                        </li>
+                        <li class="event-times-place">
+                            <ul class="nav">
+                                <li id="times">
+                                    <span class="glyphicon glyphicon-time"></span><%=event.startTime.toDateString().toUpperCase()%> - <%=event.endTime.toDateString().toUpperCase()%>
+                                </li>
+                                <li id="place">
+                                    <span class="glyphicon glyphicon-map-marker"></span><%=event.place.toUpperCase()%>
+                                </li>
+                            </ul>
+                        </li>
+                        <li id="event-posts">
+                            <ul class="nav">
+                                <li><%= event.posts[0].message%> - <%=event.posts[0].user%></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </section>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../resources/js/showLess.js"></script>
+<% include ../partials/footer %>

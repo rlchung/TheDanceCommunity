@@ -1,60 +1,52 @@
 <% include partials/header %>
-    
-    <!--Page Content-->
-        <div class="content">
-            <section class="top hero">
-                <div id= "overlay"></div>
-                <div class="container">
-                    <h1>WELCOME TO<br>THE DANCE COMMUNITY</h1>
-                    <h6>Find Urban Dance Community Events, Auditions, and Workshops in Your Area</h6>
-                    <!--Will be a post request-->
-                    <form name="addressForm" id="addressForm" action="/cities" method="GET" onsubmit="geocodeInput()">
-                        <div class="input-append">
-                            <input name="location" id="pac-input" type="text" placeholder="ENTER YOUR LOCATION" required/>
-                            <button class="btn" type="submit">
-                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </section>
-            <section class="main-content cities">
-                <h3>BROWSE BY AREA</h3>
-                <ul class="localities">
-                    <li>
-                        <h6>SOUTHERN CALIFORNIA</h6>
-                        <ul class="cities">
-                            <li><a href="#">LOS ANGELES</a></li>
-                            <li><a href="#">ANAHEIM</a></li>
-                            <li><a href="#">IRVINE</a></li>
-                            <li><a href="#">SANTA ANA</a></li>
-                            <li><a href="#">MONTEREY PARK</a></li>
-                            <li><a href="#">WALNUT</a></li>
-                            <li><a href="#">RANCHO CUCAMONGA</a></li>
-                            <li><a href="#">LONG BEACH</a></li>
-                            <li><a href="#">WEST COVINA</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <h6>NORTHERN CALIFORNIA</h6>
-                        <ul class="cities">
-                            <li><a href="#">BERKELEY</a></li>
-                            <li><a href="#">SUISIN CITY</a></li>
-                            <li><a href="#">DALY CITY</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </section>
-        </div>
-    
-        <!--API script to be loaded first-->
-        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2h-DBCBSUmKcgfpr2PPX_9vZTugX_iuU&libraries=places"></script>
-        <script type="text/javascript">
-            var input = document.getElementById("pac-input");
-            var options = {
-                componentRestrictions: {country: 'US'}  
-            };
-            var autocomplete = new google.maps.places.Autocomplete(input, options);
-        </script>
+<!--Page Content-->
+    <div class="content">
+        <section class="top hero">
+            <div id= "overlay"></div>
+            <div class="container">
+                <h1>WELCOME TO<br>THE DANCE COMMUNITY</h1>
+                <h6>Find Urban Dance Community Events, Auditions, and Workshops in Your Area</h6>
+                <!--Will be a post request-->
+                <form name="addressForm" id="addressForm" action="/cities" method="GET" onsubmit="geocodeInput()">
+                    <div class="input-append">
+                        <input name="location" id="pac-input" type="text" placeholder="ENTER YOUR LOCATION" required/>
+                        <button class="btn" type="submit">
+                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <section class="main-content cities">
+            <h3>BROWSE BY AREA</h3>
+            <ul class="localities">
+                <li>
+                    <h6>SOUTHERN CALIFORNIA</h6>
+                    <ul class="cities">
+                        <li><a href="/cities/los-angeles">LOS ANGELES</a></li>
+                        <li><a href="#">ANAHEIM</a></li>
+                        <li><a href="#">IRVINE</a></li>
+                        <li><a href="#">SANTA ANA</a></li>
+                        <li><a href="#">MONTEREY PARK</a></li>
+                        <li><a href="#">WALNUT</a></li>
+                        <li><a href="#">RANCHO CUCAMONGA</a></li>
+                        <li><a href="#">LONG BEACH</a></li>
+                        <li><a href="#">WEST COVINA</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <h6>NORTHERN CALIFORNIA</h6>
+                    <ul class="cities">
+                        <li><a href="#">BERKELEY</a></li>
+                        <li><a href="#">SUISIN CITY</a></li>
+                        <li><a href="#">DALY CITY</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+    </div>
 
+    <!--API script to be loaded first-->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2h-DBCBSUmKcgfpr2PPX_9vZTugX_iuU&libraries=places"></script>
+    <script type="text/javascript" src="../../resources/js/maps.js"></script>
 <% include partials/footer %>

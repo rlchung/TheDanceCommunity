@@ -115,7 +115,7 @@ input {
 }
 
 .input-append {
-    padding-top: 5%;
+    padding-top: 4%;
     font-size: 0;
 }
 
@@ -147,11 +147,16 @@ input {
 
 .main-content {
     margin: 0 auto;
+    max-width: 1366px;
     padding: 5% 6%;
     background-image: url("https://res.cloudinary.com/dce6r25eh/image/upload/v1474080491/TDC_bg_pattern_wpv403.png");
     background-position:top;
     background-repeat:no-repeat;
     background-size:40%;
+}
+
+.main-content section {
+    width: 100%;
 }
 
 .main-content.cities {
@@ -166,6 +171,7 @@ h3 {
     background-color:black;
     color: #fff200;
     padding: 5%;
+    padding-bottom:1%;
 }
 
 .localities {
@@ -308,7 +314,6 @@ body {
 /*TEAM CONTENT*/
 .container {
     width: 100%;
-    min-width: 300px;
     max-width: 900px;
     padding: 10px;
     margin-right: auto;
@@ -460,6 +465,77 @@ img {
     padding-top: 2%;
 }
 
+/*EVENT SHOW PAGE*/
+.main-content .event-show {
+    width: 80%;
+}
+
+.event-hero {
+    margin: 0 auto;
+    padding: 0;
+}
+
+object {
+    width: 100%;
+    box-shadow: 0 0 0 0.3em #fff;
+}
+
+.event-info {
+    color: #fff;
+    background-color: black;
+    font-weight: 300;
+    line-height: 200%;
+    letter-spacing: 1px;
+    margin-top: 3%;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 3%;
+}
+
+.event-info .container {
+    width: 90%;
+    overflow: hidden;
+}
+
+.event-info #event-name {
+    color: #fff200;
+    font-size: 2em;
+    font-weight: 400;
+}
+
+.morecontent span {
+    display: none;
+}
+
+.event-info ul.nav>li:not(:last-child) {
+    padding-top:5.5%;
+}
+
+.event-info ul.nav>li:not(:first-child) {
+    padding-top:5.5%;
+    padding-bottom:5.5%;
+}
+
+.event-info ul.nav>li:not(:first-child):not(:last-child) {
+    border-bottom: 1px solid gray;
+}
+
+.event-times-place span {
+    color: #fff200;
+    font-size: 1.5em;
+    padding: 1%;
+}
+
+.event-times-place ul.nav>li:first-child {
+    padding-top: 0;
+    padding-bottom: 1%;
+}
+
+.event-times-place ul.nav>li:last-child {
+    padding-top: 1%;
+    padding-bottom: 0;
+}
+
 /*MEDIA SCREEN*/
 @media only screen and (max-width: 1366px){
     
@@ -479,6 +555,7 @@ img {
     
     .main-content.cities {
         min-width:320px;
+        width: 100%;
     }
     
     section.cities ul.localities h6 {
@@ -551,16 +628,25 @@ img {
         top: 30%;
     }
     
+    #team-box .nav {
+        padding: 1% 15%;
+    }
+    
     #team-box ul.nav>li:not(:first-child){
         display: inherit;
-        margin-bottom: 5%;
+        margin-bottom: 2.5%;
+        border-top: 1px solid gray;
         border-left: 0;
+        padding-top: 3.5%;
+        padding-right: 0;
     }
 
     #team-box ul.nav>li:not(:last-child){
-        margin-top: 7%;
         display: inherit;
         border-right: 0;
+        padding-top: 3.5%;
+        padding-bottom: 1%;
+        padding-right: 0;
     }
     
     section.cities ul.cities li {

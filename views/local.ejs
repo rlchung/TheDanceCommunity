@@ -1,72 +1,69 @@
 <% include partials/header %>
-
-        <section class="toolbar">
-            <div class="text-center">
-                <div id="filters" class="btn-group btn-group-lg" role="group">
-                    <button type="button" class="btn btn-default btn-responsive is-checked" data-filter="*">All Events</button>
-                    <button type="button" class="btn btn-default btn-responsive" data-filter=".audition">Auditions</button>
-                    <button type="button" class="btn btn-default btn-responsive" data-filter=".workshop">Workshops</button>
-                    <button type="button" class="btn btn-default btn-responsive" data-filter=".other">Other</button>
+    <section class="toolbar">
+        <div class="text-center">
+            <div id="filters" class="btn-group btn-group-lg" role="group">
+                <button type="button" class="btn btn-default btn-responsive is-checked" data-filter="*">All Events</button>
+                <button type="button" class="btn btn-default btn-responsive" data-filter=".audition">Auditions</button>
+                <button type="button" class="btn btn-default btn-responsive" data-filter=".workshop">Workshops</button>
+                <button type="button" class="btn btn-default btn-responsive" data-filter=".other">Other</button>
+            </div>
+        </div>
+    </section>
+    <div class="content">
+        <section class="main-content">
+            <section class="teams">
+                <div>
+                    <h2> Teams around your area </h2>
+                </div>
+                <div class="container">
+                    <div id="team-box">
+                        <ul class="nav">
+                            <% teams.forEach(function(team,index){ %>
+                                <% if(index<4){%>
+                                    <li>
+                                        <a href="#">
+                                            <%=team.name.toUpperCase()%>
+                                        </a>
+                                    </li>
+                                <% } %>
+                            <% }) %>
+                            <% if(teams.length>4){%>
+                                <li>
+                                    <a href="#">
+                                        VIEW ALL
+                                    </a>
+                                </li>
+                            <% }%>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            <section class="events">
+            <div class="container">
+                <div class="event-grid">
+                    <% teams.forEach(function(team){ %>
+                        <% team.events.forEach(function(event){ %>
+                        <div class="grid-item <%= event.category %>" >
+                            <img class="eventThumbnail" src="<%= event.coverFallback %>" alt="TDC">
+                            <div class="hover-text">
+                                <a href="/cities/<%=nearby.baseCity%>/<%=team._id%>/<%=event._id%>">
+                                    <div id="grid-text">
+                                        <div id="event-name"><%=event.name.toUpperCase()%></div>
+                                        <div id="team-name">HOSTED BY <span><%=event.hostName.toUpperCase()%></span></div>
+                                        <div id="start-date"><%=event.startTime.toDateString()%></div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <% }) %>
+                    <% }) %>
                 </div>
             </div>
         </section>
-        
-        <div class="content">
-            <section class="main-content">
-                <section class="local teams">
-                    <div>
-                        <h2> Teams around your area </h2>
-                    </div>
-                    <div class="container">
-                        <div id="team-box">
-                            <ul class="nav">
-                                <% teams.forEach(function(team,index){ %>
-                                    <% if(index<4){%>
-                                        <li>
-                                            <a href="#">
-                                                <%=team.name.toUpperCase()%>
-                                            </a>
-                                        </li>
-                                    <% } %>
-                                <% }) %>
-                                <% if(teams.length>4){%>
-                                    <li>
-                                        <a href="#">
-                                            VIEW ALL
-                                        </a>
-                                    </li>
-                                <% }%>
-                            </ul>
-                        </div>
-                    </div>
-                </section>
-                <section class="local events">
-                <div class="container">
-                    <div class="event-grid">
-                        <% teams.forEach(function(team){ %>
-                            <% team.events.forEach(function(event){ %>
-                            <div class="grid-item <%= event.category %>" >
-                                <img class="eventThumbnail" src="<%= event.coverFallback %>" alt="TDC">
-                                <div class="hover-text">
-                                    <a href="/cities/<%=nearby.baseCity%>/<%=team._id%>/<%=event._id%>">
-                                        <div id="grid-text">
-                                            <div id="event-name"><%=event.name.toUpperCase()%></div>
-                                            <div id="team-name">HOSTED BY <span><%=event.hostName.toUpperCase()%></span></div>
-                                            <div id="start-date"><%=event.startTime.toDateString()%></div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <% }) %>
-                        <% }) %>
-                    </div>
-                </div>
-            </section>
-            </section>
-        </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-        <script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.min.js"></script>
-        <script src="https://npmcdn.com/imagesloaded@4.1/imagesloaded.pkgd.min.js"></script>
-        <script src="../../resources/local.js"></script>
-
+        </section>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.min.js"></script>
+    <script src="https://npmcdn.com/imagesloaded@4.1/imagesloaded.pkgd.min.js"></script>
+    <script src="../../resources/js/local.js"></script>
 <% include partials/footer %>

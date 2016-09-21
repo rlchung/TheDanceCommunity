@@ -39,8 +39,6 @@ function nearestCommunity(coordinates,callback){
     callback(results);
 };
 
-
-
 module.exports = {
     geocodeAddress      : geocodeAddress,
     nearestCommunity    : nearestCommunity

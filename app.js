@@ -41,11 +41,6 @@ app.use(session({
 //     else TeamMethods.updateTeam(team[0]._id);
 // })
 
-// Team.findByFbId(Directories.teamFbIdDirectory.samahangModern).populate('events').exec(function(err,team){
-//     if(err) console.log(err);
-//     else console.log(team[0]);
-// });
-
 app.get("/", function(req,res){
     res.render("landing"); 
 });
@@ -56,17 +51,17 @@ app.get("/cities/:baseCity/:teamId/:eventId", function(req,res){
         if(err){
             console.log(err);
         } else {
-            console.log(foundEvent);
             res.render("events/show",{event:foundEvent});
         }
     })
 })
 
-// index to cities routes
+// index to cities routes version 1
 var cityFunction = function(req,res){
     var formattedNearbyCity0 = req.session.nearby.formattedNearbyCity0;
     var formattedNearbyCity1 = req.session.nearby.formattedNearbyCity1;
     var formattedNearbyCity2 = req.session.nearby.formattedNearbyCity2;
+
     
     Team.find({location: {$in:[formattedNearbyCity0, formattedNearbyCity1, formattedNearbyCity2]}}).populate('events').exec(function(err,teamsFromDB){
         if(err)
@@ -80,8 +75,8 @@ var cityFunction = function(req,res){
                 if(err){
                     console.log("Failed to update teams");
                 } else {
+                    console.log(teamsFromDB);
                     res.render("local", {
-                        coordinates: req.session.coordinates, 
                         nearby: req.session.nearby,
                         location: req.session.userLocation,
                         teams: teamsFromDB
@@ -92,15 +87,75 @@ var cityFunction = function(req,res){
     });
 }
 
-app.get("/cities/los-angeles", cityFunction);
-app.get("/cities/anaheim", cityFunction);
-app.get("/cities/irvine", cityFunction);
-app.get("/cities/santa-ana", cityFunction);
-app.get("/cities/cerritos", cityFunction);
-app.get("/cities/monterey-park", cityFunction);
-app.get("/cities/walnut", cityFunction);
-app.get("/cities/long-beach", cityFunction);
-app.get("/cities/west-covina", cityFunction);
+// index to cities routes version 2 
+var cityFunction2 = function(req,res){
+    
+    var formattedNearbyCity0;
+    var formattedNearbyCity1;
+    var formattedNearbyCity2;
+    
+    if(typeof req.session.nearby == 'undefined'){
+        Locality.geocodeAddress(req.params.baseCity,function(coordinates){
+            Locality.nearestCommunity(coordinates,function(community){
+                req.session.nearby = community;
+                formattedNearbyCity0 = community.formattedNearbyCity0;
+                formattedNearbyCity1 = community.formattedNearbyCity1;
+                formattedNearbyCity2 = community.formattedNearbyCity2;
+                Team.find({location: {$in:[formattedNearbyCity0, formattedNearbyCity1, formattedNearbyCity2]}}).populate('events').exec(function(err,teamsFromDB){
+                    if(err)
+                        console.log(err);
+                    else {
+                        // update each team
+                        async.each(teamsFromDB, function(team, callback){
+                            // TeamMethods.updateTeam(team._id);
+                            callback();
+                        }, function(err){
+                            if(err){
+                                console.log("Failed to update teams");
+                            } else {
+                                res.render("local", {
+                                    nearby: req.session.nearby,
+                                    location: req.session.userLocation,
+                                    teams: teamsFromDB
+                                });    
+                            }
+                        });
+                    }
+                });
+            });
+            
+        });
+    } else {
+        formattedNearbyCity0 = req.session.nearby.formattedNearbyCity0;
+        formattedNearbyCity1 = req.session.nearby.formattedNearbyCity1;
+        formattedNearbyCity2 = req.session.nearby.formattedNearbyCity2;
+    
+    
+        Team.find({location: {$in:[formattedNearbyCity0, formattedNearbyCity1, formattedNearbyCity2]}}).populate('events').exec(function(err,teamsFromDB){
+            if(err)
+                console.log(err);
+            else {
+                // update each team
+                async.each(teamsFromDB, function(team, callback){
+                    // TeamMethods.updateTeam(team._id);
+                    callback();
+                }, function(err){
+                    if(err){
+                        console.log("Failed to update teams");
+                    } else {
+                        res.render("local", {
+                            nearby: req.session.nearby,
+                            location: req.session.userLocation,
+                            teams: teamsFromDB
+                        });    
+                    }
+                });
+            }
+        });
+    }
+}
+
+app.get("/cities/:baseCity", cityFunction2);
 
 app.get("/cities", function(req,res){
     var location = req.query.location; 
@@ -108,15 +163,13 @@ app.get("/cities", function(req,res){
     Locality.geocodeAddress(location, function(inputCoordinates){
         //res.redirect("/cities/" + community);
         Locality.nearestCommunity(inputCoordinates,function(community){
-            //use cookies to store coordinate values for nearby functionality
-            req.session.coordinates = inputCoordinates;
+            //use cookies to store values for nearby functionality
             req.session.userLocation = location;
             req.session.nearby = community;
             res.redirect("/cities/" + community.baseCity);
         });
     });
 });
-
 
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("server is running");

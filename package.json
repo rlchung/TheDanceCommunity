@@ -25,6 +25,7 @@
     "express-session": "^1.14.1",
     "geolib": "^2.0.21",
     "lodash": "^4.15.0",
+    "moment": "^2.15.1",
     "mongoose": "^4.5.2",
     "natural": "^0.4.0",
     "readmore-js": "^2.1.0",

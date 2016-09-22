@@ -1,3 +1,4 @@
+// markup html with class=".more" to apply showLess to section
 $(document).ready(function() {
     // Configure/customize these variables.
     var showChar = 210;  // How many characters are shown by default

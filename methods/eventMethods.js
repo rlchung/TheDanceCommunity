@@ -4,6 +4,7 @@ var mongoose    = require('mongoose'),
     Team        = require('../models/team'),
     Credentials = require('../credentials'),
     natural     = require('natural'),
+    moment      = require('moment'),
     async       = require('async'),
     classifier  = new natural.BayesClassifier();
 
@@ -43,6 +44,7 @@ function initializeEvent(fbEventId){
                                 interestedCount = eventJson["interested_count"],
                                 maybeCount      = eventJson["maybe_count"],
                                 updatedTime     = eventJson["updated_time"];
+
                                     
                             var newEvent = new Event({
                                 name            : name,
@@ -50,8 +52,9 @@ function initializeEvent(fbEventId){
                                 hostName        : hostName,
                                 hostId          : hostId,
                                 description     : description,
-                                startTime       : startTime,
-                                endTime         : endTime,
+                                // to account for UTC to PST
+                                startTime       : moment(startTime.toISOString(), moment.ISO_8601).subtract(7,'hours').toDate(),
+                                endTime         : moment(endTime.toISOString(), moment.ISO_8601).subtract(7,'hours').toDate(),
                                 attendingCount  : attendingCount,
                                 declinedCount   : declinedCount,
                                 interestedCount : interestedCount,
@@ -135,20 +138,6 @@ function finalizeEvent(newEvent){
         }
     });   
 }
-
-// // finalizeEventPosts is a helper function for finalizeEvent that initializes all posts for initializeEvent
-// function finalizeEventPosts(eventContainer){
-//     async.each(eventContainer.fbPostsIdArray,function(id,callback){
-//         PostMethods.initializePost(id);
-//         callback();
-//     }, function(err){
-//         if(err){
-//             console.log(err);
-//         } else {
-//             console.log(eventContainer.newEvent.name + " post objects created successfully");
-//         }
-//     });  
-// }
 
 // updateEvent updates all updateable fields for a given Event object
 // @param dbEventId is the _id of the given Event
@@ -289,6 +278,66 @@ function updateEvent(dbEventId){
     })
 }
 
+// deleteEventFromDatabaseOnly removes an event and associated posts from the database only
+function deleteEventFromDatabaseOnly(dbEventId){
+    Event.findByIdAndRemove(dbEventId,function(err, eventObj){
+        if(err){
+            console.log(err);
+        // if eventObj exists 
+        } if(eventObj){
+            console.log(dbEventId + " event removed successfully");
+        } else {
+            console.log(dbEventId + " EVENT DOES NOT EXIST");
+        }
+    });
+}
+
+// Deletes a given event from the database and from parent Team object
+// @param dbEventId is _id of the given event
+function deleteEvent(dbEventId){
+    // delete event from parent Team container
+    Event.findById(dbEventId).exec(function(err,event){
+        if(err){
+            console.log(err);
+        } else {
+            Team.findByFbId(event.hostId).exec(function(err,team){
+                if(err) {
+                    console.log(err);
+                } else {
+                    var index = team[0].events.indexOf(dbEventId);
+                    team[0].events.splice(index, 1);
+                    team[0].save(function(){
+                        Event.findByIdAndRemove(dbEventId,function(err, eventObj){
+                            if(err){
+                                console.log(err);
+                            // if eventObj exists 
+                            } if(eventObj){
+                                console.log(dbEventId + " event removed successfully");
+                            } else {
+                                console.log(dbEventId + " EVENT DOES NOT EXIST");
+                            }
+                        });
+                    });
+                }
+            });
+        }
+    });
+}
+
+// // finalizeEventPosts is a helper function for finalizeEvent that initializes all posts for initializeEvent
+// function finalizeEventPosts(eventContainer){
+//     async.each(eventContainer.fbPostsIdArray,function(id,callback){
+//         PostMethods.initializePost(id);
+//         callback();
+//     }, function(err){
+//         if(err){
+//             console.log(err);
+//         } else {
+//             console.log(eventContainer.newEvent.name + " post objects created successfully");
+//         }
+//     });  
+// }
+
 // // updateEventPosts is a helper function for updateEvent that updates all posts for the given event
 // // posts not in db are added, posts in db are updated, and posts no longer current are removed
 // function updateEventPosts(dbEventId){
@@ -365,52 +414,6 @@ function updateEvent(dbEventId){
 //         }
 //     });
 // }
-
-// deleteEventFromDatabaseOnly removes an event and associated posts from the database only
-function deleteEventFromDatabaseOnly(dbEventId){
-    Event.findByIdAndRemove(dbEventId,function(err, eventObj){
-        if(err){
-            console.log(err);
-        // if eventObj exists 
-        } if(eventObj){
-            console.log(dbEventId + " event removed successfully");
-        } else {
-            console.log(dbEventId + " EVENT DOES NOT EXIST");
-        }
-    });
-}
-
-// Deletes a given event from the database and from parent Team object
-// @param dbEventId is _id of the given event
-function deleteEvent(dbEventId){
-    // delete event from parent Team container
-    Event.findById(dbEventId).exec(function(err,event){
-        if(err){
-            console.log(err);
-        } else {
-            Team.findByFbId(event.hostId).exec(function(err,team){
-                if(err) {
-                    console.log(err);
-                } else {
-                    var index = team[0].events.indexOf(dbEventId);
-                    team[0].events.splice(index, 1);
-                    team[0].save(function(){
-                        Event.findByIdAndRemove(dbEventId,function(err, eventObj){
-                            if(err){
-                                console.log(err);
-                            // if eventObj exists 
-                            } if(eventObj){
-                                console.log(dbEventId + " event removed successfully");
-                            } else {
-                                console.log(dbEventId + " EVENT DOES NOT EXIST");
-                            }
-                        });
-                    });
-                }
-            });
-        }
-    });
-}
 
 module.exports = {
     finalizeEvent               : finalizeEvent,

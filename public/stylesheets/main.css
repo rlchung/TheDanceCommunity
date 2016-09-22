@@ -296,7 +296,7 @@ body {
 .btn-group.btn-group-lg button {
     background-color: #f8f8f8;
     border-radius: 0;
-    padding: 4%;
+    padding: 1%;
     font-weight: 300;
     flex-grow:1;
 }
@@ -410,6 +410,11 @@ img {
     width: 100%;
 }
 
+.expired #team-name span,
+.expired #grid-text>div {
+    color: gray;
+}
+
 .hover-text a {
     display: table;
     height: 100%;
@@ -463,17 +468,35 @@ img {
 
 /*EVENT SHOW PAGE*/
 .main-content .event-show {
-    width: 80%;
+    width: 85%;
 }
 
 .event-hero {
     margin: 0 auto;
-    padding: 0;
+    padding: 0.3em;
 }
 
-object {
-    width: 100%;
+object,
+object > img{
     box-shadow: 0 0 0 0.3em #fff;
+    width: 100%;
+}
+
+#expired-hero {
+    background-color:black;
+    background-image: url("http://i.imgur.com/l6tJRxn.jpg");
+    background-position: top center;
+    background-size: 100% 100%;
+    padding: 20%;
+}
+
+#expired-hero section span {
+    width:100%;
+    height:100%;
+    color: #8d8d8d;
+    font-size:250%;
+    font-style: italic;
+    font-weight: 300;
 }
 
 .event-info {
@@ -492,7 +515,7 @@ object {
     overflow: hidden;
 }
 
-.event-info #event-name {
+.event-name {
     color: #fff200;
     font-size: 2em;
     font-weight: 400;
@@ -504,6 +527,15 @@ object {
 
 .morelink {
     display: inline-block;
+}
+
+.event-description a:last-child {
+    color: #fff200;
+}
+
+.event-description a:last-child:hover {
+    background-color: black;
+    text-decoration:underline;
 }
 
 .event-info ul.nav>li:not(:last-child) {
@@ -534,21 +566,6 @@ object {
     padding-top: 1%;
     padding-bottom: 0;
 }
-
-/*#event-posts ul.nav>li{*/
-/*    padding-bottom: 5.5%;*/
-/*    padding-top: 0;*/
-/*    border: none;*/
-/*}*/
-
-/*#event-posts ul.nav>li:last-child{*/
-/*    padding-bottom: 0;*/
-/*}*/
-
-/*.user-name {*/
-/*    display: inline-block;*/
-/*    color: #fff200;*/
-/*}*/
 
 /*MEDIA SCREEN*/
 @media only screen and (max-width: 1366px){
@@ -592,6 +609,10 @@ object {
         margin: initial;
         min-width:100%;
     }
+    
+    #expired-hero {
+        background-size: initial;
+    }
 }
 
 @media only screen and (max-width: 780px){
@@ -634,6 +655,10 @@ object {
     
     #team-box {
         margin: 0;
+    }
+    
+    .main-content .event-show {
+        width: 100%;
     }
 }
 

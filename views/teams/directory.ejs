@@ -1,0 +1,34 @@
+<% include ../partials/header %>
+    <section class="toolbar">
+        <div class="text-center">
+            <div id="sorts" class="btn-group btn-group-lg" role="group">
+                <button type="button" class="btn btn-default btn-responsive is-checked" data-sort-by"original-order">Original Order</button>
+                <button type="button" class="btn btn-default btn-responsive" data-sort-by="name">Alphabetical</button>
+            </div>
+        </div>
+    </section>
+    <div class="content">
+        <section class="main-content">
+            <div class="container">
+                <div class="grid team-grid">
+                    <% teams.forEach(function(team){ %>
+                        <div class="grid-item">
+                            <img class="teamThumbnail" src="<%=team.profilePic%>" alt="<%=team.name%>">
+                            <div class="hover-text">
+                                <a href="/teams/<%=team._id%>">
+                                    <div id="grid-text">
+                                        <div class="team-block-info name"><%=team.name%></div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.min.js"></script>
+    <script src="https://npmcdn.com/imagesloaded@4.1/imagesloaded.pkgd.min.js"></script>
+    <script src="resources/js/sort.js"></script>
+<% include ../partials/footer %>

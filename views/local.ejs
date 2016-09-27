@@ -6,7 +6,7 @@
                 <button type="button" class="btn btn-default btn-responsive" data-filter=".not-expired">Upcoming<br>Ongoing</button>
                 <button type="button" class="btn btn-default btn-responsive" data-filter=".audition">Audition</button>
                 <button type="button" class="btn btn-default btn-responsive" data-filter=".workshop">Workshop</button>
-                <button type="button" class="btn btn-default btn-responsive" data-filter=".other">Other</button>
+                <button type="button" class="btn btn-default btn-responsive" data-filter=".other">Misc</button>
             </div>
         </div>
     </section>
@@ -40,48 +40,48 @@
                 </div>
             </section>
             <section class="events">
-            <div class="container">
-                <div class="event-grid">
-                    <% teams.forEach(function(team){ %>
-                        <% team.events.forEach(function(event){ %>
-                            <!--if event is expired-->
-                            <% if ((event.endTime.getTime() - Date.now()) >= 0){%>
-                                <div class="grid-item <%= event.category %> not-expired" >
-                                    <img class="eventThumbnail" src="<%= event.coverFallback %>" alt="TDC">
-                                    <div class="hover-text">
-                                        <a href="/cities/<%=nearby.baseCity%>/<%=team._id%>/<%=event._id%>">
-                                            <div id="grid-text">
-                                                <div id="event-name"><%=event.name.toUpperCase()%></div>
-                                                <div id="team-name">HOSTED BY <span><%=event.hostName.toUpperCase()%></span></div>
-                                                <div id="start-date"><%=event.startTime.toDateString()%></div>
-                                            </div>
-                                        </a>
+                <div class="container">
+                    <div class="grid">
+                        <% teams.forEach(function(team){ %>
+                            <% team.events.forEach(function(event){ %>
+                                <!--if event is expired-->
+                                <% if ((event.endTime.getTime() - Date.now()) >= 0){%>
+                                    <div class="grid-item <%= event.category %> not-expired" >
+                                        <img class="eventThumbnail" src="<%= event.coverFallback %>" alt="TDC">
+                                        <div class="hover-text">
+                                            <a href="/teams/<%=team._id%>/<%=event._id%>">
+                                                <div id="grid-text">
+                                                    <div id="event-name"><%=event.name.toUpperCase()%></div>
+                                                    <div id="team-name">HOSTED BY <span><%=event.hostName.toUpperCase()%></span></div>
+                                                    <div id="start-date"><%=event.startTime.toDateString()%></div>
+                                                </div>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                            <!---if event is not-expired-->
-                            <% } else { %>
-                                <div class="grid-item <%= event.category %> expired" >
-                                    <img class="eventThumbnail" src="<%= event.coverFallback %>" alt="TDC">
-                                    <div class="hover-text">
-                                        <a href="/cities/<%=nearby.baseCity%>/<%=team._id%>/<%=event._id%>">
-                                            <div id="grid-text">
-                                                <div id="event-name"><%=event.name.toUpperCase()%></div>
-                                                <div id="team-name">HOSTED BY <span><%=event.hostName.toUpperCase()%></span></div>
-                                                <div id="start-date"><%=event.startTime.toDateString()%></div>
-                                            </div>
-                                        </a>
+                                <!---if event is not-expired-->
+                                <% } else { %>
+                                    <div class="grid-item <%= event.category %> expired" >
+                                        <img class="eventThumbnail" src="<%= event.coverFallback %>" alt="TDC">
+                                        <div class="hover-text">
+                                            <a href="/teams/<%=team._id%>/<%=event._id%>">
+                                                <div id="grid-text">
+                                                    <div id="event-name"><%=event.name.toUpperCase()%></div>
+                                                    <div id="team-name">HOSTED BY <span><%=event.hostName.toUpperCase()%></span></div>
+                                                    <div id="start-date"><%=event.startTime.toDateString()%></div>
+                                                </div>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                            <% } %>
+                                <% } %>
+                            <% }) %>
                         <% }) %>
-                    <% }) %>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
         </section>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://unpkg.com/isotope-layout@3.0/dist/isotope.pkgd.min.js"></script>
     <script src="https://npmcdn.com/imagesloaded@4.1/imagesloaded.pkgd.min.js"></script>
-    <script src="../../resources/js/local.js"></script>
+    <script src="../resources/js/sort.js"></script>
 <% include partials/footer %>

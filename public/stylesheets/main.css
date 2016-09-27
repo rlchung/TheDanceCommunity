@@ -117,15 +117,16 @@ input {
 }
 
 #pac-input {
-    border-radius: 0;
     background-color: transparent;
+    border: 1px solid #fff200;
+    border-radius: 0;
+    font-size:24px;
+    height: 50px;
+    letter-spacing: 0;
     padding-left: 1em;
     padding-right: 50px;
-    width: 405px;
-    height: 50px;
-    font-size:24px;
-    border: 1px solid #fff200;
     vertical-align:bottom;
+    width: 405px;
 }
 
 .input-append .btn {
@@ -428,12 +429,12 @@ img {
 }
 
 .hover-text a div {
+    color:#fff;
     display: block;
-    vertical-align: middle;
-    text-align: center;
     font-size: 1.0em;
     font-weight: 300;
-    color: #fff;
+    text-align: center;
+    vertical-align: middle;
 }
 
 #team-name {
@@ -534,8 +535,17 @@ object > img{
 }
 
 .event-description a:last-child:hover {
-    background-color: black;
+    background-color: transparent;
     text-decoration:underline;
+}
+
+.event-description a:not(:first-child):not(:last-child):hover {
+    background-color: transparent;
+    text-decoration:underline;
+}
+
+#description {
+    text-align: justify;
 }
 
 .event-info ul.nav>li:not(:last-child) {
@@ -565,6 +575,13 @@ object > img{
 .event-times-place ul.nav>li:last-child {
     padding-top: 1%;
     padding-bottom: 0;
+}
+
+/*TEAM DIRECTORY SHOW PAGE*/
+.hover-text a div .team-block-info {
+    color: #fff200;
+    font-size: 220%;
+    letter-spacing: 0.2em;
 }
 
 /*MEDIA SCREEN*/
@@ -659,6 +676,10 @@ object > img{
     
     .main-content .event-show {
         width: 100%;
+    }
+    
+    #sorts.btn-group.btn-group-lg button {
+        padding: 4%;
     }
 }
 

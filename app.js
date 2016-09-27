@@ -41,9 +41,32 @@ app.get("/", function(req,res){
     res.render("landing"); 
 });
 
-// event routes
-app.get("/cities/:baseCity/:teamId/:eventId", function(req,res){
-    Event.findById(req.params.eventId).populate("posts").exec(function(err,foundEvent){
+// team routes
+
+app.get("/teams", function(req,res){
+    Team.find({},function(err,teamsFromDB){
+        if(err){
+            console.log(err);
+        } else {
+            res.render("teams/directory",{teams:teamsFromDB});
+        }
+    });
+});
+
+app.get("/teams/:teamId", function(req,res){
+    Team.findById(req.params.teamId, function(err,foundTeam){
+        if(err){
+            console.log(err);
+        } else {
+            res.render("teams/show",{team:foundTeam});
+        }
+    });
+});
+
+// event route
+
+app.get("/teams/:teamId/:eventId", function(req,res){
+    Event.findById(req.params.eventId, function(err,foundEvent){
         if(err){
             console.log(err);
         } else {

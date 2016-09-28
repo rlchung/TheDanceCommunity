@@ -14,7 +14,7 @@
         <section class="main-content">
             <section class="teams">
                 <div>
-                    <h2> Teams around your area </h2>
+                    <h2>TEAMS NEAR YOUR AREA</h2>
                 </div>
                 <div class="container">
                     <div id="team-box">
@@ -22,7 +22,7 @@
                             <% teams.forEach(function(team,index){ %>
                                 <% if(index<4){%>
                                     <li>
-                                        <a href="#">
+                                        <a href="/teams/<%=team._id%>">
                                             <%=team.name.toUpperCase()%>
                                         </a>
                                     </li>
@@ -30,7 +30,7 @@
                             <% }) %>
                             <% if(teams.length>4){%>
                                 <li>
-                                    <a href="#">
+                                    <a href="/teams">
                                         VIEW ALL
                                     </a>
                                 </li>

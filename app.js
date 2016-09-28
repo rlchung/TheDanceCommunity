@@ -54,7 +54,7 @@ app.get("/teams", function(req,res){
 });
 
 app.get("/teams/:teamId", function(req,res){
-    Team.findById(req.params.teamId, function(err,foundTeam){
+    Team.findById(req.params.teamId).populate("events").exec(function(err,foundTeam){
         if(err){
             console.log(err);
         } else {

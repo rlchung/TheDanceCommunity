@@ -161,7 +161,7 @@ input {
     width: 1336px;
 }
 
-h3 {
+.cities h3 {
     font-weight: 300;
     font-style: normal;
     letter-spacing: 0.5em;
@@ -320,12 +320,13 @@ body {
     margin-left: auto;
 }
 
-.teams div h2{
+h2{
+    background-color: #f8f8f8;
     font-weight: 300;
     margin: 0 auto;
     max-width: 35%;
     padding: 1%;
-    
+    text-align: center;
 }
 
 #team-box {
@@ -377,11 +378,6 @@ body {
 #team-box .container {
     padding-top: 1.6%;
     padding-bottom: 1.6%;
-}
-
-.content h2 {
-    background-color: #f8f8f8;
-    text-align: center;
 }
 
 .grid-item {
@@ -468,13 +464,12 @@ img {
 }
 
 /*EVENT SHOW PAGE*/
-.main-content .event-show {
+.main-content .show {
     width: 85%;
 }
 
 .event-hero {
     margin: 0 auto;
-    padding: 0.3em;
 }
 
 object,
@@ -488,6 +483,7 @@ object > img{
     background-image: url("http://i.imgur.com/l6tJRxn.jpg");
     background-position: top center;
     background-size: 100% 100%;
+    box-shadow: 0 0 0 0.3em #fff;
     padding: 20%;
 }
 
@@ -584,6 +580,73 @@ object > img{
     letter-spacing: 0.2em;
 }
 
+/*TEAM SHOW PAGE*/
+/*.show {*/
+/*    margin: 0 auto;*/
+/*}*/
+
+.team-info {
+    color: #fff;
+    background-color: black;
+    font-weight: 300;
+    line-height: 200%;
+    margin-top: 3%;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 3%;
+}
+
+.team-info .container {
+    display: table-cell;
+    overflow: hidden;
+    width: 50%;
+}
+
+#team-profile {
+    padding:5%;
+}
+
+#team-profile img {
+    box-shadow: 0 0 0 0.3em #fff;
+}
+
+#team-description {
+    text-align: left;
+}
+
+#team-description h3 {
+    background-color: transparent;
+    color: #fff200;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+}
+
+#team-description article {
+    overflow: hidden;
+}
+
+#team-description article>span{
+    display: list-item;
+}
+
+#team-description article>span:not(:first-child){
+    border-top: 1px solid gray;
+    border-left: 0;
+    padding-top: 4.5%;
+    padding-right: 0;
+}
+
+#team-description article>span:not(:last-child){
+    border-right: 0;
+    padding-bottom: 4.5%;
+    padding-right: 0;
+}
+
+.team-events {
+    margin: 0 auto;
+    padding-top: 4em;
+}
+
 /*MEDIA SCREEN*/
 @media only screen and (max-width: 1366px){
     
@@ -633,7 +696,7 @@ object > img{
 }
 
 @media only screen and (max-width: 780px){
-    .teams div h2 {
+    h2 {
         font-size: 1.5em;
         margin: 3%;
         max-width: 100%;
@@ -667,15 +730,16 @@ object > img{
     
     .grid-item {
         width: 100%;
-        margin: 2% 0;
+        margin: 3% 0;
     }
     
     #team-box {
         margin: 0;
     }
     
-    .main-content .event-show {
+    .main-content .show {
         width: 100%;
+        padding: 7%;
     }
     
     #sorts.btn-group.btn-group-lg button {
@@ -717,4 +781,15 @@ object > img{
         margin-left: 0;
         left: 45%;
     }
+    
+    #team-description {
+        text-align:center;
+    }
+    
+    .team-info .container {
+        display: table-row;
+        width:100%;
+    }
+    
+
 }

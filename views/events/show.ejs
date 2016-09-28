@@ -2,19 +2,18 @@
     <div class="content">
         <section class="main-content">
             <% if ((event.endTime.getTime() - Date.now()) >= 0){%>
-            <section class="event-show event-hero">
+            <section class="show event-hero">
                 <object data="<%=event.cover%>" type="image/webp" style = "background">
                     <img src="<%=event.coverFallback%>">
                 </object>
             <% } else {%>
-            <section id="expired-hero" class="event-show event-hero">
+            <section id="expired-hero" class="show event-hero">
                 <section>
                     <span>THIS EVENT HAS ENDED :(</span>
                 </section>
             <% } %>
-                
             </section>
-            <section class="event-show event-info">
+            <section class="show event-info">
                 <div class="container">
                     <ul class="nav">
                         <li class="event-name"><%=event.name.toUpperCase()%></li>
@@ -42,7 +41,6 @@
         </section>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <!--<script type="text/javascript" src="../../../resources/js/showLess.js"></script>-->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Readmore.js/2.2.0/readmore.min.js"></script>
     <script>
         $('article').readmore({embedCSS: false});

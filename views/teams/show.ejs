@@ -1,5 +1,83 @@
 <% include ../partials/header %>
-    <div>
-        <%=team.name%>
+    <div class="content">
+        <section class="main-content">
+            <section class="show team-info">
+                <div id="team-profile" class="container">
+                    <img src="<%=team.profilePic%>" alt="<%=team.name%>">
+                </div>
+                <div id="team-description" class="container">
+                    <h3><%=team.name%></h3>
+                    <div class="social-media-bar">
+                        
+                    </div>
+                    <article>
+                        <% if(typeof team.shortDescription != 'undefined'){%>
+                            <span><%=team.shortDescription%></span>
+                        <% } %>
+                        <% if(typeof team.longDescription != 'undefined'){%> 
+                            <span><%=team.longDescription%></span>
+                        <% } %>
+                        <% if(typeof team.personalInfo != 'undefined'){%>
+                            <span><%=team.personalInfo%></span>
+                        <% } %>
+                        <% if(typeof team.generalInfo != 'undefined'){%>
+                            <span><%=team.generalInfo%></span>
+                        <% } %>
+                        <% if(typeof team.bio != 'undefined'){%>
+                            <span><%=team.bio%></span>
+                        <% } %>
+                        <% if(typeof team.awards != 'undefined'){%>
+                            <span><%=team.awards%></span>
+                        <% } %>
+                    </article>
+                </div>
+            </section>
+            <section class="show team-events">
+                <div>
+                    <h2>HOSTED EVENTS</h2>
+                </div>
+                <section class="events">
+                    <div class="container">
+                        <div class="grid">
+                            <% team.events.forEach(function(event){ %>
+                                <% if ((event.endTime.getTime() - Date.now()) >= 0){%>
+                                    <div class="grid-item <%= event.category %> not-expired" >
+                                        <img class="eventThumbnail" src="<%= event.coverFallback %>" alt="TDC">
+                                        <div class="hover-text">
+                                            <a href="/teams/<%=team._id%>/<%=event._id%>">
+                                                <div id="grid-text">
+                                                    <div id="event-name"><%=event.name.toUpperCase()%></div>
+                                                    <div id="team-name">HOSTED BY <span><%=event.hostName.toUpperCase()%></span></div>
+                                                    <div id="start-date"><%=event.startTime.toDateString()%></div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                <!---if event is not-expired-->
+                                <% } else { %>
+                                    <div class="grid-item <%= event.category %> expired" >
+                                        <img class="eventThumbnail" src="<%= event.coverFallback %>" alt="TDC">
+                                        <div class="hover-text">
+                                            <a href="/teams/<%=team._id%>/<%=event._id%>">
+                                                <div id="grid-text">
+                                                    <div id="event-name"><%=event.name.toUpperCase()%></div>
+                                                    <div id="team-name">HOSTED BY <span><%=event.hostName.toUpperCase()%></span></div>
+                                                    <div id="start-date"><%=event.startTime.toDateString()%></div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </section>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Readmore.js/2.2.0/readmore.min.js"></script>
+    <script>
+        $('article').readmore({embedCSS: false});
+    </script>
 <% include ../partials/footer %>

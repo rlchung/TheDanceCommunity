@@ -72,12 +72,12 @@ function initializeEvent(fbEventId){
                             });
                                      
                             // separate checks needed for possibly undefined nested properties
-                            if (typeof eventJson["place"] != 'undefined') { 
+                            if(typeof eventJson["place"] != 'undefined'){ 
                                 placeCheck = eventJson["place"]["name"];
                                 newEvent.place = placeCheck;
                             }
                             
-                            if (typeof eventJson["cover"] != 'undefined') {
+                            if(typeof eventJson["cover"] != 'undefined'){
                                 // coverFallback instantiation
                                 coverFallbackCheck = eventJson["cover"]["source"];
                                 newEvent.coverFallback = coverFallbackCheck;

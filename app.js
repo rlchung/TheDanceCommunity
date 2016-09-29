@@ -4,6 +4,7 @@ var express         = require("express"),
     mongoose        = require("mongoose"),
     session         = require("express-session"),
     async           = require("async"),
+    cloudinary      = require("cloudinary"),
     Event           = require("./models/event"),
     EventMethods    = require("./methods/eventMethods"),
     Team            = require("./models/team"),
@@ -12,6 +13,7 @@ var express         = require("express"),
     restartData     = require("./restartData"),
     Locality        = require("./locality"),
     Directories     = require("./directories"),
+    Credentials     = require("./credentials"),
     natural         = require("natural"),
     classifier      = new natural.BayesClassifier();
     // Have yet to implement
@@ -31,6 +33,12 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
+
+cloudinary.config({
+    cloud_name: Credentials.cloud_name,
+    api_key: Credentials.cloud_api_key,
+    api_secret: Credentials.cloud_api_secret
+});
 
 // seedDB();
 // restartData();

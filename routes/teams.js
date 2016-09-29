@@ -1,6 +1,8 @@
 var express = require("express"),
+    async   = require("async"),
     Team    = require("../models/team"),
     Event   = require("../models/event"),
+    TeamMethods = require("../methods/teamMethods"),
     router  = express.Router();
 
 router.get("/teams", function(req,res){
@@ -8,7 +10,18 @@ router.get("/teams", function(req,res){
         if(err){
             console.log(err);
         } else {
-            res.render("teams/directory",{teams:teamsFromDB});
+            // update each team
+            async.each(teamsFromDB, function(team, callback){
+                TeamMethods.updateTeam(team._id);
+                callback();
+            }, function(err){
+                if(err){
+                    console.log("Failed to update teams");
+                    res.render("teams/directory",{teams:teamsFromDB});
+                } else {
+                    res.render("teams/directory",{teams:teamsFromDB});
+                }
+            });
         }
     });
 });

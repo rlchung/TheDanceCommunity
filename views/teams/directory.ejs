@@ -9,10 +9,10 @@
     </section>
     <div class="content">
         <section class="main-content">
-            <div class="container">
+            <div class="container directory-container">
                 <div class="grid team-grid">
                     <% teams.forEach(function(team){ %>
-                        <div class="grid-item">
+                        <div class="grid-item directory-grid-item">
                             <img class="gridThumbnail" src="<%=team.profilePic%>" alt="<%=team.name.toUpperCase()%>">
                             <div class="hover-text">
                                 <a href="/teams/<%=team._id%>">

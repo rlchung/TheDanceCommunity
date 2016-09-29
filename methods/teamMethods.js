@@ -1,6 +1,7 @@
 var mongoose        = require("mongoose"),
     request         = require("request"),
     async           = require("async"),
+    cloudinary      = require("cloudinary"),
     Event           = require("../models/event"),
     Team            = require("../models/team"),
     Credentials     = require("../credentials"),
@@ -54,9 +55,11 @@ function initializeTeam(fbTeamId){
                         // An array of event fbId's that will be used to initialize Events belonging to Team obj
                         var fbEventsIdArray = [];
                         
-                        infoJson["events"]["data"].forEach(function(event){
-                            fbEventsIdArray.push(event["id"]);
-                        });
+                        if(typeof infoJson["events"] != 'undefined'){
+                            infoJson["events"]["data"].forEach(function(event){
+                                fbEventsIdArray.push(event["id"]);
+                            });
+                        }
                         
                         // An object containing newTeam and fbEventsIdArray
                         var teamContainer = {
@@ -94,18 +97,23 @@ function finalizeTeam(teamContainer){
 
 // finalizeTeamEvents is a helper function for finalizeTeam that initializes all given Team events
 function finalizeTeamEvents(teamContainer){
-    async.each(teamContainer.fbEventsIdArray,function(id,callback){
-        EventMethods.initializeEvent(id);
-        callback();
-    }, function(err){
-        if(err){
-            console.log(err);
-        } else {
-            console.log(teamContainer.newTeam.name + " event objects created successfully");
-        }
-    });  
+    if(teamContainer.fbEventsIdArray.length == 0){
+        console.log(teamContainer.newTeam.name + " does not have any events");
+    } else {
+        async.each(teamContainer.fbEventsIdArray,function(id,callback){
+            EventMethods.initializeEvent(id);
+            callback();
+        }, function(err){
+            if(err){
+                console.log(err);
+            } else {
+                console.log(teamContainer.newTeam.name + " event objects created successfully");
+            }
+        });
+    }
 }
 
+// updateTeam updates a given team's information
 function updateTeam(dbTeamId){
     Team.findById(dbTeamId).exec(function(err,team){
        if(err){
@@ -143,6 +151,9 @@ function updateTeam(dbTeamId){
                         // Update all events before updating team
                         updateTeamEvents(dbTeamId);
                         
+                        // Updates team's profile picture
+                        updateProfilePicture(dbTeamId);
+                        
                         // updating all necessary fields
                         team.name               = currentTeam.name;
                         team.email              = currentTeam.email;
@@ -154,9 +165,7 @@ function updateTeam(dbTeamId){
                         team.generalInfo        = currentTeam.generalInfo;
                         team.awards             = currentTeam.awards;
                         
-                        team.save(function(){
-                            console.log(dbTeamId + " team updated");
-                        });
+                        team.save();
                         
                     } else{
                         console.log("updateTeam: Unsuccessful Graph API call");
@@ -164,6 +173,24 @@ function updateTeam(dbTeamId){
                                     "Response: " + response);
                     }
                });
+           }
+       }
+    });
+}
+
+// updateProfilePicture is a helper function for updateTeam that updates the team's profile picture
+function updateProfilePicture(dbTeamId){
+    Team.findById(dbTeamId).exec(function(err,team){
+       if(err){
+           console.log(err);
+       } else {
+           if(team.length == 0){
+               console.log(dbTeamId + " team does not exist in the database");
+           } else {
+                cloudinary.uploader.explicit(team.fbId, function(result){
+                    team.profilePic = result.secure_url;
+                    team.save();
+                }, { type: "facebook" });
            }
        }
     });
@@ -183,53 +210,59 @@ function updateTeamEvents(dbTeamId){
                 console.log(dbTeamId + " team does not exist in the database");
             else {
                 request("https://graph.facebook.com/" + team.fbId + "?fields=events&access_token=" + Credentials.token, function (err, response, body){
-                    if (!err && response.statusCode == 200) {
+                    if(!err && response.statusCode == 200) {
                         var currentTeamJson = JSON.parse(body);
                         
                         // handles event creation, update, deletion logic
                         // fbEventsIdArray contains the most updated event Id's
                         var fbEventsIdArray = [];
-                                    
-                        currentTeamJson["events"]["data"].forEach(function(event){
-                            fbEventsIdArray.push(event["id"]);
-                        });
+                                
+                        // if team doesn't have any events yet, return
+                        if(typeof currentTeamJson["events"] == 'undefined' && team.events.length == 0){
+                            return;
+                        } else {
                         
-                        // for each event in fbEventsIdArray in team.events, update events in team.events
-                        async.each(fbEventsIdArray,function(fbEventId,callback){
-                            Event.findByFbId(fbEventId).exec(function(err,event){
-                                if(err) {
-                                    console.log(err)
-                                // if event is not found in existing database, add to database
-                                } else if (event.length === 0){
-                                    EventMethods.initializeEvent(fbEventId);
-                                // if event is found in existing database, update event
-                                } else {
-                                    EventMethods.updateEvent(event[0]._id);
-                                }
-                                callback();
-                            });  
-                        });
-                        
-                        // for events in team.events not in fbEventsIdArray, delete events in team.events (if the team deleted an event)
-                        async.each(team.events,function(dbEventId,callback){
-                            Event.findById(dbEventId).exec(function(err,event){
-                                if(err){
-                                    console.log(err);
-                                } else {
-                                    // if an event in the team object is not found in the database, remove it from team object's events array
-                                    if(event === null){
-                                        team.events.splice(team.events.indexOf(dbEventId),1);
-                                        team.save();
-                                    }
-                                    
-                                    // if an event in the team object is not found in fbEventsIdArray, it is outdated and must be deleted
-                                    else if(fbEventsIdArray.indexOf(event.fbId) === -1) {
-                                        EventMethods.deleteEvent(event._id);
-                                    }
-                                }
-                                callback();
+                            currentTeamJson["events"]["data"].forEach(function(event){
+                                fbEventsIdArray.push(event["id"]);
                             });
-                        });
+                            
+                            // for each event in fbEventsIdArray in team.events, update events in team.events
+                            async.each(fbEventsIdArray,function(fbEventId,callback){
+                                Event.findByFbId(fbEventId).exec(function(err,event){
+                                    if(err) {
+                                        console.log(err)
+                                    // if event is not found in existing database, add to database
+                                    } else if (event.length === 0){
+                                        EventMethods.initializeEvent(fbEventId);
+                                    // if event is found in existing database, update event
+                                    } else {
+                                        EventMethods.updateEvent(event[0]._id);
+                                    }
+                                    callback();
+                                });  
+                            });
+                            
+                            // for events in team.events not in fbEventsIdArray, delete events in team.events (if the team deleted an event)
+                            async.each(team.events,function(dbEventId,callback){
+                                Event.findById(dbEventId).exec(function(err,event){
+                                    if(err){
+                                        console.log(err);
+                                    } else {
+                                        // if an event in the team object is not found in the database, remove it from team object's events array
+                                        if(event === null){
+                                            team.events.splice(team.events.indexOf(dbEventId),1);
+                                            team.save();
+                                        }
+                                        
+                                        // if an event in the team object is not found in fbEventsIdArray, it is outdated and must be deleted
+                                        else if(fbEventsIdArray.indexOf(event.fbId) === -1) {
+                                            EventMethods.deleteEvent(event._id);
+                                        }
+                                    }
+                                    callback();
+                                });
+                            });
+                        }
                     } else {
                             console.log("updateTeamEvents: Unsuccessful Graph API call");
                             console.log(err + "\n" + 

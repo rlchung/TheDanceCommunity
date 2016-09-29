@@ -2,7 +2,8 @@ var express     = require("express"),
     router      = express.Router(),
     async       = require("async"),
     Locality    = require("../locality"),
-    Team        = require("../models/team");
+    Team        = require("../models/team"),
+    TeamMethods = require("../methods/teamMethods");
 
 // cityFunciton is a function that, for a given baseCity, searches the nearest 3 communities and renders the local page
 var cityFunction = function(req,res){
@@ -17,11 +18,14 @@ var cityFunction = function(req,res){
                 else {
                     // update each team
                     async.each(teamsFromDB, function(team, callback){
-                        // TeamMethods.updateTeam(team._id);
+                        TeamMethods.updateTeam(team._id);
                         callback();
                     }, function(err){
                         if(err){
                             console.log("Failed to update teams");
+                            res.render("local", {
+                                teams: teamsFromDB
+                            }); 
                         } else {
                             res.render("local", {
                                 teams: teamsFromDB

@@ -382,6 +382,7 @@ h2{
 
 #team-box ul.nav>li>a:hover {
     text-decoration: none;
+    background-color: black !important;
 }
 
 #team-box .nav {
@@ -581,6 +582,16 @@ object > img{
 }
 
 /*TEAM DIRECTORY SHOW PAGE*/
+.directory-container {
+    max-width: 100%;
+    padding-left: 3.5%;
+}
+
+.directory-grid-item {
+    width: 30%;
+    margin:1.3%;
+}
+
 .hover-text a div .team-block-info {
     color: #fff200;
     font-size: 220%;

@@ -15,6 +15,19 @@ html, body {
     letter-spacing: 1.5px;
 }
 
+a:visited {
+    background-color: black !important;
+}
+
+img {
+    width:100%;
+}
+
+.show {
+    background-color: black;
+    margin: 0 auto;
+}
+
 /*NAVBAR*/
 
 .navbar {
@@ -22,7 +35,6 @@ html, body {
     border: 0;
     margin: 0;
     background-color: black;
-    position: relative;
 }
 
 .brand-centered {
@@ -122,11 +134,14 @@ input {
     border-radius: 0;
     font-size:24px;
     height: 50px;
-    letter-spacing: 0;
     padding-left: 1em;
     padding-right: 50px;
     vertical-align:bottom;
     width: 405px;
+}
+
+.pac-container {
+    letter-spacing: 0;
 }
 
 .input-append .btn {
@@ -185,7 +200,7 @@ section.cities ul.localities>li {
 }
 
 section.cities ul.localities>li:not(:last-child) {
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid #4c4c4c;
 }
 
 section.cities ul.localities h6 {
@@ -249,7 +264,6 @@ footer ul.nav>li>a {
 }
 
 footer ul.nav>li>a:hover {
-    background-color: transparent;
     text-decoration: none;
 }
 
@@ -266,7 +280,7 @@ footer .container {
 footer .copyright {
     padding-top:1.5%;
     padding-bottom:1%;
-    border-top: 1px solid gray;
+    border-top: 1px solid #4c4c4c;
     text-align: center;
 }
 
@@ -322,6 +336,7 @@ body {
 
 h2{
     background-color: #f8f8f8;
+    color: #595959;
     font-weight: 300;
     margin: 0 auto;
     max-width: 35%;
@@ -349,12 +364,12 @@ h2{
 
 #team-box ul.nav>li:not(:first-child){
     padding-left: 1%;
-    border-left: 1px solid gray;
+    border-left: 1px solid #4c4c4c;
 }
 
 #team-box ul.nav>li:not(:last-child){
     padding-right: 1%;
-    border-right: 1px solid gray;
+    border-right: 1px solid #4c4c4c;
 }
 
 #team-box ul.nav>li>a {
@@ -366,7 +381,6 @@ h2{
 }
 
 #team-box ul.nav>li>a:hover {
-    background-color: transparent;
     text-decoration: none;
 }
 
@@ -386,10 +400,6 @@ h2{
     display: inline-block;
     width: 46%;
     margin: 1.77%;
-}
-
-img {
-    width: 100%;
 }
 
 /*Hover thumbnail for team profiles*/
@@ -469,7 +479,7 @@ img {
 }
 
 .event-hero {
-    margin: 0 auto;
+    background-color: transparent;
 }
 
 object,
@@ -480,7 +490,7 @@ object > img{
 
 #expired-hero {
     background-color:black;
-    background-image: url("http://i.imgur.com/l6tJRxn.jpg");
+    background-image: url("https://res.cloudinary.com/dce6r25eh/image/upload/v1475111160/l6tJRxn_rnswpf.jpg");
     background-position: top center;
     background-size: 100% 100%;
     box-shadow: 0 0 0 0.3em #fff;
@@ -498,12 +508,9 @@ object > img{
 
 .event-info {
     color: #fff;
-    background-color: black;
     font-weight: 300;
     line-height: 200%;
     margin-top: 3%;
-    margin-right: auto;
-    margin-left: auto;
     padding: 3%;
 }
 
@@ -531,12 +538,12 @@ object > img{
 }
 
 .event-description a:last-child:hover {
-    background-color: transparent;
+    background-color:black;
     text-decoration:underline;
 }
 
 .event-description a:not(:first-child):not(:last-child):hover {
-    background-color: transparent;
+    background-color:black;
     text-decoration:underline;
 }
 
@@ -554,7 +561,7 @@ object > img{
 }
 
 .event-info ul.nav>li:not(:first-child):not(:last-child) {
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid #4c4c4c;
 }
 
 .event-times-place span {
@@ -580,19 +587,17 @@ object > img{
     letter-spacing: 0.2em;
 }
 
+.team-block-info {
+    padding:0 5%;
+}
+
 /*TEAM SHOW PAGE*/
-/*.show {*/
-/*    margin: 0 auto;*/
-/*}*/
 
 .team-info {
     color: #fff;
-    background-color: black;
     font-weight: 300;
     line-height: 200%;
     margin-top: 3%;
-    margin-right: auto;
-    margin-left: auto;
     padding: 3%;
 }
 
@@ -600,6 +605,23 @@ object > img{
     display: table-cell;
     overflow: hidden;
     width: 50%;
+}
+
+.social-media-bar {
+    padding-bottom: 5%;
+    width:8%;
+    white-space:nowrap;
+}
+
+.icons{
+    opacity: 1;
+    transition: opacity .25s ease-in;
+    -webkit-transition: opacity .25 ease-in;
+    -webkit-backface-visibility: hidden;
+}
+
+.icons:hover {
+    opacity: 0.6;
 }
 
 #team-profile {
@@ -619,6 +641,8 @@ object > img{
     color: #fff200;
     font-weight: 300;
     letter-spacing: 0.3em;
+    padding-top: 2%;
+    padding-bottom: 2%;
 }
 
 #team-description article {
@@ -630,7 +654,7 @@ object > img{
 }
 
 #team-description article>span:not(:first-child){
-    border-top: 1px solid gray;
+    border-top: 1px solid #4c4c4c;
     border-left: 0;
     padding-top: 4.5%;
     padding-right: 0;
@@ -643,8 +667,15 @@ object > img{
 }
 
 .team-events {
-    margin: 0 auto;
+    background-color: transparent;
     padding-top: 4em;
+}
+
+/*About us*/
+
+#disclaimer {
+    color: #8d8d8d;
+    font-size: 0.9em;
 }
 
 /*MEDIA SCREEN*/
@@ -745,6 +776,26 @@ object > img{
     #sorts.btn-group.btn-group-lg button {
         padding: 4%;
     }
+    
+    #team-description {
+        text-align:justify;
+    }
+    
+    #team-description h3{
+        text-align: center;
+    }
+    
+    .team-info .container {
+        display: table-row;
+        width:100%;
+    }
+    
+    .social-media-bar {
+        margin-left: 35%;
+        padding-bottom: 5%;
+        width:15%;
+        white-space:nowrap;
+    }
 }
 
 @media only screen and (max-width: 480px){
@@ -759,7 +810,7 @@ object > img{
     #team-box ul.nav>li:not(:first-child){
         display: inherit;
         margin-bottom: 2.5%;
-        border-top: 1px solid gray;
+        border-top: 1px solid #4c4c4c;
         border-left: 0;
         padding-top: 3.5%;
         padding-right: 0;
@@ -781,15 +832,4 @@ object > img{
         margin-left: 0;
         left: 45%;
     }
-    
-    #team-description {
-        text-align:center;
-    }
-    
-    .team-info .container {
-        display: table-row;
-        width:100%;
-    }
-    
-
 }

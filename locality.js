@@ -5,6 +5,7 @@ var geolib              = require("geolib"),
     _                   = require('lodash'),
     Directories         = require('./directories');
 
+// geocodeAddress geocodes a given input address into coordinates
 function geocodeAddress(address, callback){
     // searches and geocodes closest matching address in Southern California
     googleMapsClient.geocode({
@@ -21,25 +22,30 @@ function geocodeAddress(address, callback){
     });
 };
 
-// nearestCommunity will take in any coordinate object and will return a callback with the key/name of the closest community
+// nearestCommunity takes in a coordinate and returns a callback with the key/name of the closest community
 function nearestCommunity(coordinates,callback){
     //a coordinate object representing the closest community in our "cities" object
-    var baseCity = geolib.findNearest(coordinates,Directories.cityCoordinatesDirectory,0);
+    var community = geolib.findNearest(coordinates,Directories.cityCoordinatesDirectory,0);
+    callback(community.key);
+};
+
+// nearbyCommunities takes in a coordinate and returns a callback with the key/names of 3 nearby communities
+function nearbyCommunities(coordinates, callback){
     var formattedNearbyCity0 = geolib.findNearest(coordinates,Directories.formattedCityCoordinatesDirectory,0);
     var formattedNearbyCity1 = geolib.findNearest(coordinates,Directories.formattedCityCoordinatesDirectory,1);
     var formattedNearbyCity2 = geolib.findNearest(coordinates,Directories.formattedCityCoordinatesDirectory,2);
     
     var results = {
-        baseCity    : baseCity.key,
         formattedNearbyCity0 : formattedNearbyCity0.key,
         formattedNearbyCity1 : formattedNearbyCity1.key,
         formattedNearbyCity2 : formattedNearbyCity2.key
     }
     
     callback(results);
-};
+}
 
 module.exports = {
     geocodeAddress      : geocodeAddress,
-    nearestCommunity    : nearestCommunity
+    nearestCommunity    : nearestCommunity,
+    nearbyCommunities   : nearbyCommunities
 };

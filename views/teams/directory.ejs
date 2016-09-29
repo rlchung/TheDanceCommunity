@@ -13,11 +13,11 @@
                 <div class="grid team-grid">
                     <% teams.forEach(function(team){ %>
                         <div class="grid-item">
-                            <img class="teamThumbnail" src="<%=team.profilePic%>" alt="<%=team.name%>">
+                            <img class="gridThumbnail" src="<%=team.profilePic%>" alt="<%=team.name.toUpperCase()%>">
                             <div class="hover-text">
                                 <a href="/teams/<%=team._id%>">
                                     <div id="grid-text">
-                                        <div class="team-block-info name"><%=team.name%></div>
+                                        <div class="team-block-info name"><%=team.name.toUpperCase()%></div>
                                     </div>
                                 </a>
                             </div>

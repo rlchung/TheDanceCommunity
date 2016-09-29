@@ -6,9 +6,10 @@
                     <img src="<%=team.profilePic%>" alt="<%=team.name%>">
                 </div>
                 <div id="team-description" class="container">
-                    <h3><%=team.name%></h3>
+                    <h3><%=team.name.toUpperCase()%></h3>
                     <div class="social-media-bar">
-                        
+                        <a href="mailto:<%=team.email%>"><img class="icons" src="https://res.cloudinary.com/dce6r25eh/image/upload/v1475111322/email_grey_ebcvc1.png"></a>
+                        <a href="<%=team.fbLink%>"><img class="icons" src="https://res.cloudinary.com/dce6r25eh/image/upload/v1475111322/facebook_grey_bmkyf5.png"></a>
                     </div>
                     <article>
                         <% if(typeof team.shortDescription != 'undefined'){%>
@@ -42,7 +43,7 @@
                             <% team.events.forEach(function(event){ %>
                                 <% if ((event.endTime.getTime() - Date.now()) >= 0){%>
                                     <div class="grid-item <%= event.category %> not-expired" >
-                                        <img class="eventThumbnail" src="<%= event.coverFallback %>" alt="TDC">
+                                        <img class="gridThumbnail" src="<%= event.coverFallback %>" alt="TDC">
                                         <div class="hover-text">
                                             <a href="/teams/<%=team._id%>/<%=event._id%>">
                                                 <div id="grid-text">
@@ -56,7 +57,7 @@
                                 <!---if event is not-expired-->
                                 <% } else { %>
                                     <div class="grid-item <%= event.category %> expired" >
-                                        <img class="eventThumbnail" src="<%= event.coverFallback %>" alt="TDC">
+                                        <img class="gridThumbnail" src="<%= event.coverFallback %>" alt="TDC">
                                         <div class="hover-text">
                                             <a href="/teams/<%=team._id%>/<%=event._id%>">
                                                 <div id="grid-text">

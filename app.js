@@ -25,7 +25,6 @@ var indexRoutes     = require("./routes/index"),
 mongoose.connect(process.env.DATABASEURL);
 // mongoose.connect("mongodb://admin:theyear20xx@ds047166.mlab.com:47166/thedancecommunity");
 
-
 // To parse form data
 app.use(bodyParser.urlencoded({extended:true}));
 // Sets view engine for ejs files

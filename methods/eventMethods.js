@@ -18,7 +18,7 @@ function initializeEvent(fbEventId){
             if(event.length != 0)
                 console.log(fbEventId + " event already exists in database");
             else {
-                request("https://graph.facebook.com/" + fbEventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,updated_time&access_token=" + Credentials.token, function (err, response, body){
+                request("https://graph.facebook.com/" + fbEventId + "?fields=name,cover,owner,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,updated_time&access_token=" + Credentials.fb_token, function (err, response, body){
                     if (!err && response.statusCode == 200) {
                         var eventJson = JSON.parse(body);
                         
@@ -81,7 +81,7 @@ function initializeEvent(fbEventId){
                                 // coverFallback instantiation
                                 coverFallbackCheck = eventJson["cover"]["source"];
                                 newEvent.coverFallback = coverFallbackCheck;
-                                request("https://graph.facebook.com/" + eventJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(err, response, body){
+                                request("https://graph.facebook.com/" + eventJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.fb_token, function(err, response, body){
                                     if (!err && response.statusCode == 200) {
                                         var coverObj = JSON.parse(body);
                                         coverCheck = coverObj["webp_images"][0]["source"];
@@ -149,7 +149,7 @@ function updateEvent(dbEventId){
             if(event.length == 0)
                 console.log(dbEventId + " event does not exist in the database");
             else {
-                request("https://graph.facebook.com/" + event.fbId + "?fields=name,cover,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,updated_time&access_token=" + Credentials.token, function (err, response, body){
+                request("https://graph.facebook.com/" + event.fbId + "?fields=name,cover,description,place,start_time,end_time,attending_count,declined_count,interested_count,maybe_count,updated_time&access_token=" + Credentials.fb_token, function (err, response, body){
                     if (!err && response.statusCode == 200) {
                         var currentEventJson = JSON.parse(body);
                         
@@ -215,7 +215,7 @@ function updateEvent(dbEventId){
                                 if (typeof currentEventJson["cover"] != 'undefined') {
                                     // coverFallback instantiation
                                     updatedEvent.coverFallback = currentEventJson["cover"]["source"];
-                                    request("https://graph.facebook.com/" + currentEventJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.token, function(err, response, body){
+                                    request("https://graph.facebook.com/" + currentEventJson["cover"]["id"] + "?fields=webp_images&access_token=" + Credentials.fb_token, function(err, response, body){
                                         if (!err && response.statusCode == 200) {
                                             var coverObj = JSON.parse(body);
                                             updatedEvent.cover = coverObj["webp_images"][0]["source"];
@@ -348,7 +348,7 @@ function deleteEvent(dbEventId){
 //             if(event.length == 0)
 //                 console.log(dbEventId + " event does not exist in the database");
 //             else {
-//                 request("https://graph.facebook.com/" + event.fbId + "?fields=feed&access_token=" + Credentials.token, function (err, response, body){
+//                 request("https://graph.facebook.com/" + event.fbId + "?fields=feed&access_token=" + Credentials.fb_token, function (err, response, body){
 //                     if (!err && response.statusCode == 200) {
 //                         var currentEventJson = JSON.parse(body);
 //                         if (typeof currentEventJson["feed"] != 'undefined'){

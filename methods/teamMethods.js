@@ -19,7 +19,7 @@ function initializeTeam(fbTeamId){
             if(team.length != 0)
                 console.log(fbTeamId + " team already exist in database");
             else {
-                request("https://graph.facebook.com/" + fbTeamId + "?fields=name,id,emails,link,bio,description,about,personal_info,general_info,awards,events&access_token=" + Credentials.token, function (err, response, body) {
+                request("https://graph.facebook.com/" + fbTeamId + "?fields=name,id,emails,link,bio,description,about,personal_info,general_info,awards,events&access_token=" + Credentials.fb_token, function (err, response, body) {
                     if (!err && response.statusCode == 200) {
                         var infoJson = JSON.parse(body);
                         var name                = infoJson["name"],
@@ -122,7 +122,7 @@ function updateTeam(dbTeamId){
            if(team.length == 0){
                console.log(dbTeamId + " team does not exist in the database");
            } else {
-               request("https://graph.facebook.com/" + team.fbId + "?fields=name,emails,link,bio,description,about,personal_info,general_info,awards&access_token=" + Credentials.token, function (err, response, body){
+               request("https://graph.facebook.com/" + team.fbId + "?fields=name,emails,link,bio,description,about,personal_info,general_info,awards&access_token=" + Credentials.fb_token, function (err, response, body){
                     if (!err && response.statusCode == 200){
                         
                         var currentTeamJson = JSON.parse(body);
@@ -209,7 +209,7 @@ function updateTeamEvents(dbTeamId){
             if(team.length == 0)
                 console.log(dbTeamId + " team does not exist in the database");
             else {
-                request("https://graph.facebook.com/" + team.fbId + "?fields=events&access_token=" + Credentials.token, function (err, response, body){
+                request("https://graph.facebook.com/" + team.fbId + "?fields=events&access_token=" + Credentials.fb_token, function (err, response, body){
                     if(!err && response.statusCode == 200) {
                         var currentTeamJson = JSON.parse(body);
                         

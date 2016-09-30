@@ -15,7 +15,7 @@ function initializePost(fbPostId){
             if(post.length != 0)
                 console.log(fbPostId + " post already exists in database");
             else {
-                request("https://graph.facebook.com/" + fbPostId + "?fields=from,target,message,link,attachments,created_time,updated_time&access_token=" + Credentials.token, function (err, response, body){
+                request("https://graph.facebook.com/" + fbPostId + "?fields=from,target,message,link,attachments,created_time,updated_time&access_token=" + Credentials.fb_token, function (err, response, body){
                     if(!err && response.statusCode == 200){
                         var postJson = JSON.parse(body);
                         
@@ -95,7 +95,7 @@ function updatePost(dbPostId){
                 console.log(dbPostId + " post does not exist in database");
             else {
                 //Main function logic goes in here
-                request("https://graph.facebook.com/" + post.fbId + "?fields=message,attachments,updated_time&access_token=" + Credentials.token, function (err, response, body){
+                request("https://graph.facebook.com/" + post.fbId + "?fields=message,attachments,updated_time&access_token=" + Credentials.fb_token, function (err, response, body){
                     if(!err && response.statusCode == 200){
                         var currentPostJson = JSON.parse(body);
                         

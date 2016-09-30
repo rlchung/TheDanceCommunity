@@ -9,7 +9,7 @@
             <% } else {%>
             <section id="expired-hero" class="show event-hero">
                 <section>
-                    <span>THIS EVENT HAS ENDED :(</span>
+                    <span>THIS EVENT HAS ENDED</span>
                 </section>
             <% } %>
             </section>
@@ -42,7 +42,7 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Readmore.js/2.2.0/readmore.min.js"></script>
-    <script>
+    <script async>
         $('article').readmore({embedCSS: false});
     </script>
 <% include ../partials/footer %>

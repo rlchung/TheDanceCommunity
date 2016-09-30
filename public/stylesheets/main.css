@@ -1,4 +1,4 @@
-*, *:before, *:after {
+*, *:before, *:after{
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -8,70 +8,70 @@
   width: device-width;
 }
 
-html, body {
+html, body{
     font-size:14px;
     background-color: #f8f8f8;
     font-family: 'Open Sans', sans-serif;
     letter-spacing: 1.5px;
 }
 
-a:visited {
+a:visited{
     background-color: black !important;
 }
 
-img {
+img{
     width:100%;
 }
 
-.show {
+h1, h2, h3, h6{
+    font-weight: 300;
+}
+
+h3{
+    color: #fff200;
+}
+
+.show{
     background-color: black;
     margin: 0 auto;
 }
 
 /*NAVBAR*/
 
-.navbar {
+.navbar{
     padding: 0;
     border: 0;
     margin: 0;
     background-color: black;
 }
 
-.brand-centered {
+.brand-centered{
     position: absolute;
     left: 50%;
     margin-left: -15px !important;
     display: block;
 }
 
-.navbar-brand {
+.navbar-brand{
     padding: 10% 10%;
 }
 
 
-.navbar-brand>img {
+.navbar-brand>img{
     height: 100%;
     width: auto;
 }
 
-.navbar-text {
+.navbar-text{
     float: right;
     padding-right: 3%;
 }
 
-.navbar a {
+.navbar a{
     color: #fff;
 }
 
-h1 {
-    font-weight: 300;
-}
-
-h6 {
-    font-weight: 300;
-}
-
-.content {
+.content{
     text-align: center;
     top: 0;
     left: 0;
@@ -84,7 +84,7 @@ h6 {
 
 /*LANDING-HERO*/
 
-.top {
+.top{
     height: 770px;
     margin: 0 auto;
     min-width: 780px;
@@ -94,7 +94,7 @@ h6 {
     position: relative;
 }
 
-#overlay {
+#overlay{
     position: absolute;
     top: 0;
     left: 0;
@@ -107,7 +107,7 @@ h6 {
     opacity: 0.5;
 }
 
-.hero .container {
+.hero .container{
     position: absolute;
     text-align: center;
     top: 40%;
@@ -119,16 +119,16 @@ h6 {
     padding-bottom: 40px;
 }
 
-input {
+input{
     color: #fff;
 }
 
-.input-append {
+.input-append{
     padding-top: 4%;
     font-size: 0;
 }
 
-#pac-input {
+#pac-input{
     background-color: transparent;
     border: 1px solid #fff200;
     border-radius: 0;
@@ -140,11 +140,11 @@ input {
     width: 405px;
 }
 
-.pac-container {
+.pac-container{
     letter-spacing: 0;
 }
 
-.input-append .btn {
+.input-append .btn{
     width: 55px;
     padding: 0;
     height: 50px;
@@ -158,7 +158,7 @@ input {
 
 /*LANDING-CITIES*/
 
-.main-content {
+.main-content{
     margin: 0 auto;
     max-width: 1366px;
     padding: 5% 6%;
@@ -168,26 +168,24 @@ input {
     background-size:40%;
 }
 
-.main-content section {
+.main-content section{
     width: 100%;
 }
 
-.main-content.cities {
+.main-content.cities{
     width: 1336px;
 }
 
-.cities h3 {
-    font-weight: 300;
+.cities h3{
     font-style: normal;
     letter-spacing: 0.5em;
     margin: 0 auto;
     background-color:black;
-    color: #fff200;
     padding: 5%;
     padding-bottom:1%;
 }
 
-.localities {
+.localities{
     list-style-type: none;
     padding: 2% 5%;
     text-align: left;
@@ -195,15 +193,15 @@ input {
     background-color:black;
 }
 
-section.cities ul.localities>li {
+section.cities ul.localities>li{
     padding: 1em 0;
 }
 
-section.cities ul.localities>li:not(:last-child) {
+section.cities ul.localities>li:not(:last-child){
     border-bottom: 1px solid #4c4c4c;
 }
 
-section.cities ul.localities h6 {
+section.cities ul.localities h6{
     text-align: left;
     float: left;
     white-space: nowrap;
@@ -216,13 +214,13 @@ section.cities ul.localities h6 {
     margin-top: 8px;
 }
 
-section.cities ul.cities {
+section.cities ul.cities{
     list-style-type: none;
     padding-left: 50px;
     overflow: hidden;
 }
 
-section.cities ul.cities li {
+section.cities ul.cities li{
     padding: 0.5em 1em;
     width: 30%;
     display: inline-block;
@@ -238,7 +236,7 @@ section.cities ul.cities li>a{
 
 /*FOOTER*/
 
-footer {
+footer{
     background-color: black;
     vertical-align: top;
     text-align: left;
@@ -249,13 +247,13 @@ footer {
     text-align: center;
 }
 
-footer ul.nav>li {
+footer ul.nav>li{
     margin: 5% 0;
     padding: 0 5%;
     display: inline;
 }
 
-footer ul.nav>li>a {
+footer ul.nav>li>a{
     display:inline;
     color: #fff;
     width:100%;
@@ -263,52 +261,71 @@ footer ul.nav>li>a {
     padding: 0;
 }
 
-footer ul.nav>li>a:hover {
+footer ul.nav>li>a:hover{
     text-decoration: none;
 }
 
-footer .nav {
+footer .nav{
     padding-left: 0;
     list-style: none;
 }
 
-footer .container {
+footer .container{
     padding-top: 1.6%;
     padding-bottom: 1.6%;
 }
 
-footer .copyright {
+footer .copyright{
     padding-top:1.5%;
     padding-bottom:1%;
     border-top: 1px solid #4c4c4c;
     text-align: center;
 }
 
-#footer-TDC {
+#footer-TDC{
     color: #fff200;
 }
 
 /*flexbox footer*/
-body {
+body{
     display: flex;
     min-height: 100vh;
     flex-direction: column;
 }
 
-.content {
+.content{
     flex: 1;
 }
 
 /*LOCAL CSS*/
 
+.grid-item.no-events-message {
+    color: black;
+    position: relative !important;
+    box-shadow: none;
+}
+
+.glyphicon-ban-circle {
+    font-size:6em;
+    padding: 4%;
+}
+
+.no-events-message h2 {
+    background-color: #fff200;
+    color: black;
+    margin: 0 auto;
+    max-width: none;
+    padding: 2%;
+}
+
 /*FILTERS*/
-.btn-group {
+.btn-group{
     display:flex;
     margin: 0 auto;
     width:50%;
 }
 
-.btn-group.btn-group-lg button {
+.btn-group.btn-group-lg button{
     background-color: #f8f8f8;
     border-radius: 0;
     padding: 1%;
@@ -316,17 +333,17 @@ body {
     flex-grow:1;
 }
 
-.btn-group.btn-group-lg button:focus {
+.btn-group.btn-group-lg button:focus{
     outline: none;
 }
 
-.btn-default.btn-responsive.is-checked {
+.btn-default.btn-responsive.is-checked{
     transition: background-color 0.3s ease-out;
     background-color: #a6a6a6;
 }
 
 /*TEAM CONTENT*/
-.container {
+.container{
     width: 100%;
     max-width: 900px;
     padding: 10px;
@@ -337,14 +354,13 @@ body {
 h2{
     background-color: #f8f8f8;
     color: #595959;
-    font-weight: 300;
     margin: 0 auto;
     max-width: 35%;
     padding: 1%;
     text-align: center;
 }
 
-#team-box {
+#team-box{
     background-color: black;
     vertical-align: top;
     text-align: left;
@@ -357,7 +373,7 @@ h2{
     margin: 1.77%;
 }
 
-#team-box ul.nav>li {
+#team-box ul.nav>li{
     margin: 0 0 5px;
     display: inline;
 }
@@ -372,7 +388,7 @@ h2{
     border-right: 1px solid #4c4c4c;
 }
 
-#team-box ul.nav>li>a {
+#team-box ul.nav>li>a{
     color: #fff;
     display:inline;
     height:100%;
@@ -380,22 +396,22 @@ h2{
     width:100%;
 }
 
-#team-box ul.nav>li>a:hover {
+#team-box ul.nav>li>a:hover{
     text-decoration: none;
     background-color: black !important;
 }
 
-#team-box .nav {
+#team-box .nav{
     padding-left: 0;
     list-style: none;
 }
 
-#team-box .container {
+#team-box .container{
     padding-top: 1.6%;
     padding-bottom: 1.6%;
 }
 
-.grid-item {
+.grid-item{
     position: relative;
     box-shadow: 0 0 0 0.3em #fff;
     display: inline-block;
@@ -405,7 +421,7 @@ h2{
 
 /*Hover thumbnail for team profiles*/
 
-.hover-text {
+.hover-text{
     background: rgba(0,0,0,0.8);
     bottom: 0;
     height: 100%;
@@ -419,23 +435,23 @@ h2{
 }
 
 .expired #team-name span,
-.expired #grid-text>div {
+.expired #grid-text>div{
     color: gray;
 }
 
-.hover-text a {
+.hover-text a{
     display: table;
     height: 100%;
     width: 100%;
     text-decoration: none;
 }
 
-#grid-text {
+#grid-text{
     display: table-cell;
     padding: 0 1%;
 }
 
-.hover-text a div {
+.hover-text a div{
     color:#fff;
     display: block;
     font-size: 1.0em;
@@ -444,42 +460,42 @@ h2{
     vertical-align: middle;
 }
 
-#team-name {
+#team-name{
     color: #8d8d8d;
     font-size: 0.9em;
     padding-top: 1%;
 }
 
-#team-name span {
+#team-name span{
     color: #fff200;
 }
 
-#start-date {
+#start-date{
     padding-top: 5%;
     font-size: 0.85em;
 }
 
-.grid-item img {
+.grid-item img{
     vertical-align: top;
 }
 
-.grid-item:hover .hover-text {
+.grid-item:hover .hover-text{
     opacity: 1;
 }
 
 /*CONTENT*/
 
-.events {
+.events{
     width: 100%;
     padding-top: 2%;
 }
 
 /*EVENT SHOW PAGE*/
-.main-content .show {
+.main-content .show{
     width: 85%;
 }
 
-.event-hero {
+.event-hero{
     background-color: transparent;
 }
 
@@ -489,7 +505,7 @@ object > img{
     width: 100%;
 }
 
-#expired-hero {
+#expired-hero{
     background-color:black;
     background-image: url("https://res.cloudinary.com/dce6r25eh/image/upload/v1475111160/l6tJRxn_rnswpf.jpg");
     background-position: top center;
@@ -498,16 +514,15 @@ object > img{
     padding: 20%;
 }
 
-#expired-hero section span {
+#expired-hero section span{
     width:100%;
     height:100%;
     color: #8d8d8d;
     font-size:250%;
-    font-style: italic;
     font-weight: 300;
 }
 
-.event-info {
+.event-info{
     color: #fff;
     font-weight: 300;
     line-height: 200%;
@@ -515,12 +530,12 @@ object > img{
     padding: 3%;
 }
 
-.event-info .container {
+.event-info .container{
     width: 90%;
     overflow: hidden;
 }
 
-.event-name {
+.event-name{
     color: #fff200;
     font-size: 2em;
     font-weight: 400;
@@ -530,81 +545,81 @@ object > img{
     display: none;
 }
 
-.morelink {
+.morelink{
     display: inline-block;
 }
 
-.event-description a:last-child {
+.event-description a:last-child{
     color: #fff200;
 }
 
-.event-description a:last-child:hover {
+.event-description a:last-child:hover{
     background-color:black;
     text-decoration:underline;
 }
 
-.event-description a:not(:first-child):not(:last-child):hover {
+.event-description a:not(:first-child):not(:last-child):hover{
     background-color:black;
     text-decoration:underline;
 }
 
-#description {
+#description{
     text-align: justify;
 }
 
-.event-info ul.nav>li:not(:last-child) {
+.event-info ul.nav>li:not(:last-child){
     padding-top:5.5%;
 }
 
-.event-info ul.nav>li:not(:first-child) {
+.event-info ul.nav>li:not(:first-child){
     padding-top:5.5%;
     padding-bottom:5.5%;
 }
 
-.event-info ul.nav>li:not(:first-child):not(:last-child) {
+.event-info ul.nav>li:not(:first-child):not(:last-child){
     border-bottom: 1px solid #4c4c4c;
 }
 
-.event-times-place span {
+.event-times-place span{
     color: #fff200;
     font-size: 1.5em;
     padding: 1%;
 }
 
-.event-times-place ul.nav>li:first-child {
+.event-times-place ul.nav>li:first-child{
     padding-top: 0;
     padding-bottom: 1%;
 }
 
-.event-times-place ul.nav>li:last-child {
+.event-times-place ul.nav>li:last-child{
     padding-top: 1%;
     padding-bottom: 0;
 }
 
 /*TEAM DIRECTORY SHOW PAGE*/
-.directory-container {
+.directory-container{
     max-width: 100%;
     padding-left: 3.5%;
 }
 
-.directory-grid-item {
+.directory-grid-item{
     width: 30%;
     margin:1.3%;
 }
 
-.hover-text a div .team-block-info {
+.hover-text a div .team-block-info{
     color: #fff200;
     font-size: 220%;
     letter-spacing: 0.2em;
 }
 
-.team-block-info {
+.team-block-info{
     padding:0 5%;
 }
 
 /*TEAM SHOW PAGE*/
 
-.team-info {
+.team-info{
     color: #fff;
     font-weight: 300;
     line-height: 200%;
@@ -612,13 +627,13 @@ object > img{
     padding: 3%;
 }
 
-.team-info .container {
+.team-info .container{
     display: table-cell;
     overflow: hidden;
     width: 50%;
 }
 
-.social-media-bar {
+.social-media-bar{
     padding-bottom: 5%;
     width:8%;
     white-space:nowrap;
@@ -631,32 +646,30 @@ object > img{
     -webkit-backface-visibility: hidden;
 }
 
-.icons:hover {
+.icons:hover{
     opacity: 0.6;
 }
 
-#team-profile {
+#team-profile{
     padding:5%;
 }
 
-#team-profile img {
+#team-profile img{
     box-shadow: 0 0 0 0.3em #fff;
 }
 
-#team-description {
+#team-description{
     text-align: left;
 }
 
-#team-description h3 {
+#team-description h3{
     background-color: transparent;
-    color: #fff200;
-    font-weight: 300;
     letter-spacing: 0.3em;
     padding-top: 2%;
     padding-bottom: 2%;
 }
 
-#team-description article {
+#team-description article{
     overflow: hidden;
 }
 
@@ -677,14 +690,14 @@ object > img{
     padding-right: 0;
 }
 
-.team-events {
+.team-events{
     background-color: transparent;
     padding-top: 4em;
 }
 
 /*About us*/
 
-#disclaimer {
+#disclaimer{
     color: #8d8d8d;
     font-size: 0.9em;
 }
@@ -692,103 +705,106 @@ object > img{
 /*MEDIA SCREEN*/
 @media only screen and (max-width: 1366px){
     
-    section.top {
+    section.top{
         min-width: 320px;
         width: 100%;
         height: 700px;
     }
     
-    #pac-input {
+    #pac-input{
         width:70%;
     }
     
-    #overlay {
+    #overlay{
         background-size: initial;
     }
     
-    .main-content.cities {
+    .main-content.cities{
         min-width:320px;
         width: 100%;
     }
     
-    section.cities ul.localities h6 {
+    section.cities ul.localities h6{
         float: none;
         padding: 0 20px;
         text-align: left;
     }
     
-    section.cities ul.cities {
+    section.cities ul.cities{
         display: block;
         padding: 0 20px;
         text-align: left;
     }
     
-    section.cities ul.cities li {
+    section.cities ul.cities li{
         width: 30%;
     }
     
-    .content {
+    .content{
         margin: initial;
         min-width:100%;
     }
     
-    #expired-hero {
+    #expired-hero{
         background-size: initial;
     }
 }
-
 @media only screen and (max-width: 780px){
-    h2 {
+    h2{
         font-size: 1.5em;
         margin: 3%;
         max-width: 100%;
         padding: 4%;
     }
     
-    footer ul.nav>li {
+    footer ul.nav>li{
         display: inherit;
     }
     
-    .brand-centered {
+    .brand-centered{
         left: 49%;
     }
     
-    .main-content.cities {
+    .main-content.cities{
         width: 100%;
     }
     
-    footer .copyright {
+    footer .copyright{
         padding-top:4%;
     }
     
-    .btn-group {
+    .btn-group{
         width:100%;
     }
     
-    .btn-responsive {
+    .btn-responsive{
         flex-grow:1;
         font-size: 90% !important;
     }
     
-    .grid-item {
+    .grid-item{
         width: 100%;
         margin: 3% 0;
     }
     
-    #team-box {
+    #team-box{
         margin: 0;
     }
     
-    .main-content .show {
+    .main-content .show{
         width: 100%;
         padding: 7%;
     }
     
-    #sorts.btn-group.btn-group-lg button {
+    .main-content .cities{
+        padding: 0;
+    }
+    
+    #sorts.btn-group.btn-group-lg button{
         padding: 4%;
     }
     
-    #team-description {
+    #team-description{
         text-align:justify;
     }
     
@@ -796,25 +812,24 @@ object > img{
         text-align: center;
     }
     
-    .team-info .container {
+    .team-info .container{
         display: table-row;
         width:100%;
     }
     
-    .social-media-bar {
+    .social-media-bar{
         margin-left: 35%;
         padding-bottom: 5%;
         width:15%;
         white-space:nowrap;
     }
 }
-
 @media only screen and (max-width: 480px){
-    .hero .container {
+    .hero .container{
         top: 30%;
     }
     
-    #team-box .nav {
+    #team-box .nav{
         padding: 1% 15%;
     }
     
@@ -835,11 +850,11 @@ object > img{
         padding-right: 0;
     }
     
-    section.cities ul.cities li {
+    section.cities ul.cities li{
         width: 49%;
     }
     
-    .brand-centered {
+    .brand-centered{
         margin-left: 0;
         left: 45%;
     }

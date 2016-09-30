@@ -48,6 +48,11 @@ cloudinary.config({
 //     else TeamMethods.updateTeam(team[0]._id);
 // })
 
+app.use(function(req, res, next) {
+   res.locals.url   = req.originalUrl;
+   next();
+});
+
 app.use(indexRoutes);
 app.use(teamsRoutes);
 

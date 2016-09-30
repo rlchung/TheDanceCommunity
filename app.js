@@ -42,7 +42,7 @@ cloudinary.config({
     api_secret: Credentials.cloud_api_secret
 });
 
-// seedDB();
+seedDB();
 // restartData();
 
 // Team.findByFbId(Directories.teamFbIdDirectory.samahangModern).exec(function(err,team){

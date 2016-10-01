@@ -19,7 +19,11 @@
                         <li class="event-name"><%=event.name.toUpperCase()%></li>
                         <li class="event-description">
                             <article id="description" style="overflow:hidden">
-                                <%=event.description%>
+                                <% if(typeof event.description != 'undefined'){ %>
+                                    <%=event.description%>
+                                <% } else { %>
+                                    CHECK FACEBOOK PROFILE FOR MORE INFO
+                                <% } %>
                             </article>
                             <a href="https://www.facebook.com/events/<%=event.fbId%>/" target="blank">
                                 SEE FACEBOOK EVENT PAGE
@@ -31,7 +35,12 @@
                                     <span class="glyphicon glyphicon-time"></span><%=event.startTime.toDateString().toUpperCase()%> (<%=event.startTime.toLocaleTimeString()%>) - <%=event.endTime.toDateString().toUpperCase()%> (<%=event.endTime.toLocaleTimeString()%>)
                                 </li>
                                 <li id="place">
-                                    <span class="glyphicon glyphicon-map-marker"></span><%=event.place.toUpperCase()%>
+                                    <span class="glyphicon glyphicon-map-marker"></span>
+                                    <% if(typeof event.place != 'undefined'){ %>
+                                        <%=event.place.toUpperCase()%>
+                                    <% } else { %>
+                                        CHECK FACEBOOK PROFILE FOR MORE INFO
+                                    <% } %>
                                 </li>
                             </ul>
                         </li>

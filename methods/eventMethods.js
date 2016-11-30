@@ -324,7 +324,7 @@ function deleteEvent(dbEventId){
     });
 }
 
-// // finalizeEventPosts is a helper function for finalizeEvent that initializes all posts for initializeEvent
+// finalizeEventPosts is a helper function for finalizeEvent that initializes all posts for initializeEvent
 // function finalizeEventPosts(eventContainer){
 //     async.each(eventContainer.fbPostsIdArray,function(id,callback){
 //         PostMethods.initializePost(id);
@@ -338,8 +338,9 @@ function deleteEvent(dbEventId){
 //     });  
 // }
 
-// // updateEventPosts is a helper function for updateEvent that updates all posts for the given event
-// // posts not in db are added, posts in db are updated, and posts no longer current are removed
+// updateEventPosts is a helper function for updateEvent that updates all posts for the given event
+// posts not in db are added, posts in db are updated, and posts no longer current are removed
+// NOTE: current version excludes posts implementation: may revisit in future versions
 // function updateEventPosts(dbEventId){
 //     Event.findById(dbEventId).exec(function(err,event){
 //         if(err){

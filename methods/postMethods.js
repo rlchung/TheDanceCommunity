@@ -122,10 +122,6 @@ function updatePost(dbPostId){
                             post.message        = currentMessage;
                             post.updatedTime    = currentUpdatedTime;
                             post.attachments    = currentAttachments;
-                            
-                            // post.save(function(){
-                            //     console.log(dbPostId + " post updated");
-                            // });
                             post.save();
                         }
                         
